@@ -24,8 +24,8 @@ jobs:
     - name: Build TypeScript
       run: npm run build
 
-    - name: Bundle Release
-      run: npm run bundle
+    - name: Bundle Dist Files
+      run: cp -v *.{'html','css','svg'} ./dist
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.3
