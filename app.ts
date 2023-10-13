@@ -1,18 +1,159 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const contentDiv = document.getElementById('content');
+    const contentDiv = document.getElementById('content')!;
+
+    const homeContent: string = `
+        <p><img src='wolpy.svg' /></p>
+    `;
+    const aboutContent: string = `
+        <p>
+        The Department of Decentralization is a collective of people from various crypto,
+        decentralization and peer-to-peer communities in and around Berlin.
+        The group assembled in 2018 to organize ETHBerlin and has been active since.
+        </p>
+        <p>
+        We aim to be an agnostic vehicle to drive adoption, educate
+        newcomers, and raise awareness of the challenges and benefits of
+        decentralization and open-source software.
+        </p>
+        <p>Upcoming events:</p>
+        <ul>
+        <li>
+            <strong>ETHBerlin (2024):</strong>
+            the hackathon returns in May 2024:
+            <a href="https://ethberlin.org" target="_blank">
+            ethberlin.org
+            </a>
+        </li>
+        </ul>
+        </p>
+        <p>Our projects to date:</p>
+        <ul>
+        <li>
+            <strong>Protocol Berg (2023):</strong>
+            the decentralized protocol and infrastructure conference:
+            <a href="https://protocol.berlin" target="_blank">
+            protocol.berlin
+            </a>
+        </li>
+        <li>
+            <strong>ETHBerlin³ - to the power of 3 (2022):</strong>
+            hackathon, conference, and cultural festival, third edition:
+            <a href="https://ethberlin.ooo" target="_blank">
+            ethberlin.ooo
+            </a>
+        </li>
+        <li>
+            <strong>StrikeDAO (2022):</strong> The Ethereum
+            domain of Bundeskunsthalle was squatted by artist Hito Steyerl and the
+            DoD. The StrikeDAO voted on three models of the future governance of this
+            squatted domain quadratically:
+            <a href="https://strikedao.com" target="_blank">strikedao.com</a>
+        </li>
+        <li>
+            <strong>
+            TwoPointFive (2020) - The Talk Show:
+            </strong>
+            TwoPointFive was a white-label virtual conference. No shill, no
+            sponsors, from the community for the community and truly in it for the
+            tech:
+            <a href="https://web.archive.org/web/20220426113132/https://twopointfive.online/" target="_blank">twopointfive.online</a>
+        </li>
+        <li>
+            <strong>
+            ETHParis 2 (2020) - The Un-Hackathon:
+            </strong>
+            ETHParis 2 was hosted by the Department of Decentralization and
+            Ethereum France as an unconference-style hackathon in the
+            engineering school l'ESGI:
+            <a href="https://web.archive.org/web/20200318163540/https://www.hackparis.io/" target="_blank">hackparis.com</a>
+        </li>
+        <li>
+            <strong>Ecosystem Job-Openings (2019): </strong>
+            connecting talent with web3-companies during the bear market.
+        </li>
+        <li>
+            <strong>ETHBerlin ZWEI (2019): </strong>hackathon,
+            conference, and cultural festival, second edition:
+            <a href="https://ethberlinzwei.com" target="_blank">
+            ethberlinzwei.com
+            </a>
+        </li>
+        <li>
+            <strong>
+            There is no such thing as Blockchain Art (2019):
+            </strong>
+            a study to explore the art world and the intersection with our
+            systems.
+        </li>
+        <li>
+            <strong>
+            Blockstars Education Program (2019):
+            </strong>
+            A partnership with <a href="https://b9lab.com/" target="_blank">B9lab</a>
+            to onboard new hackers to web3.
+        </li>
+        <li>
+            <strong>Goerli Testnet (2019): </strong>Born at
+            ETHBerlin and launched at GoerliCon, the Goerli Testnet is now
+            the essential public-facing Ethereum testnets after the Merge.
+        </li>
+        <li>
+            <strong>G&ouml;rliCon 0 (2019): </strong>The Ethereum
+            testnet and infrastructure conference where the Goerli Testnet was
+            launched live on stage: <a href="https://goerli.net/" target="_blank">
+            goerli.net
+            </a>
+        </li>
+        <li>
+            <strong>ETHBerlin (2018):</strong> Hackathon,
+            conference, and the first event that ran almost entirely using
+            decentralized applications:
+            <a href="https://ethberlin.com" target="_blank">
+            ethberlin.com
+            </a>
+        </li>
+        </ul>
+        <p className="mt-8">
+        Currently, the Department is primarily run from Berlin. The collective
+        is composed of around a dozen members who contribute voluntarily.
+        </p>
+    `;
+    const contactContent: string = `
+    <p>
+    We are (in random order): Raul, Kirill, Eylon, Wesley, Caspar, Phil,
+    Franzi, Kaan, Rose, Tim, Ksenya, Ligi, Stina, Helena, MP, Martin,
+    Alex, Afri, Nich, Carl, Hany, Jacob, and Peter. Supported by
+    countless volunteers and creative contributors. &lt;3
+    </p>
+    <p>
+    Letters can be send to
+    <a href="mailto:goerli@dod.ngo" target="_blank">goerli@dod.ngo</a>
+    or Goerli Dezentral gGmbH, Mariannenstra&szlig;e 9-10, 10999 Berlin,
+    Germany. Call us at
+    <a href="tel:+493020613410" target="_blank">+49 (0) 30 20613410</a>.
+    Responsible for the content here according to &sect; 5 TMG is Afri
+    Schoedon. Goerli Dezentral gGmbH is a non-profit organization
+    serving tax-privileged purposes, according to the articles of
+    association. The organization meets the statutory requirements
+    under &sect;&sect; 51, 59, 60, and 61 AO in Germany. Please get in
+    touch if you want to donate or require a donation receipt.
+    </p>
+    `;
+    const noContent: string = "<h1>Not Found</h1>";
 
     const routes: { [key: string]: string } = {
-        'home': '<h1>Welcome Home</h1>',
-        'about': '<h1>About Us</h1>'
+        'home': homeContent,
+        'about': aboutContent,
+        'contact': contactContent
     };
 
     function render(route: string) {
-        contentDiv.innerHTML = routes[route] || '<h1>Not Found</h1>';
+        contentDiv.innerHTML = routes[route] || noContent;
     }
 
     document.getElementById('home')!.addEventListener('click', () => render('home'));
     document.getElementById('about')!.addEventListener('click', () => render('about'));
+    document.getElementById('contact')!.addEventListener('click', () => render('contact'));
 
-    render('home');  // Default content
+    render('home');
 });
-
