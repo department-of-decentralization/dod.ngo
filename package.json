@@ -4,7 +4,9 @@
   "description": "More awesome website of the Department of Decentralization.",
   "main": "index.js",
   "scripts": {
+    "clean": "rm -rv ./dist",
     "build": "tsc",
+    "bundle": "cp -v *.{html,css,svg} ./dist",
     "start": "lite-server"
   },
   "keywords": [],

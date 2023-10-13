@@ -21,12 +21,15 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Build
+    - name: Build TypeScript
       run: npm run build
+
+    - name: Bundle Release
+      run: npm run bundle
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.3
       with:
         branch: gh-pages
-        folder: .
+        folder: ./dist
         clean: true
