@@ -1,9 +1,10 @@
+"use strict";
 document.addEventListener('DOMContentLoaded', () => {
-    const contentDiv = document.getElementById('content')!;
-    const homeContent: string = `
+    const contentDiv = document.getElementById('content');
+    const homeContent = `
         <p><img src='wolpy.svg' /></p>
     `;
-    const aboutContent: string = `
+    const aboutContent = `
         <p>
         The Department of Decentralization is a collective of people from various crypto,
         decentralization and peer-to-peer communities in and around Berlin.
@@ -117,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         is composed of around a dozen members who contribute voluntarily.
         </p>
     `;
-    const conductContent: string = `
+    const conductContent = `
     <p>
     We are a collective, and we want to bring people in the community
     together to exchange ideas, make new friends, and build things as an
@@ -201,8 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
     support you. If you can't find anyone in person, reach out via email:
     <a href="mailto:escalate@dod.ngo">escalate@dod.ngo</a>
     </p>
-    `
-    const contactContent: string = `
+    `;
+    const contactContent = `
     <p>
     We are (in random order): Raul, Kirill, Eylon, Wesley, Caspar, Phil,
     Franzi, Kaan, Rose, Tim, Ksenya, Ligi, Stina, Helena, MP, Martin,
@@ -223,19 +224,19 @@ document.addEventListener('DOMContentLoaded', () => {
     touch if you want to donate or require a donation receipt.
     </p>
     `;
-    const noContent: string = "<h1>Not Found</h1>";
-    const routes: { [key: string]: string } = {
+    const noContent = "<h1>Not Found</h1>";
+    const routes = {
         'home': homeContent,
         'about': aboutContent,
         'conduct': conductContent,
         'contact': contactContent
     };
-    function render(route: string) {
+    function render(route) {
         contentDiv.innerHTML = routes[route] || noContent;
     }
-    document.getElementById('home')!.addEventListener('click', () => render('home'));
-    document.getElementById('about')!.addEventListener('click', () => render('about'));
-    document.getElementById('conduct')!.addEventListener('click', () => render('conduct'));
-    document.getElementById('contact')!.addEventListener('click', () => render('contact'));
+    document.getElementById('home').addEventListener('click', () => render('home'));
+    document.getElementById('about').addEventListener('click', () => render('about'));
+    document.getElementById('conduct').addEventListener('click', () => render('conduct'));
+    document.getElementById('contact').addEventListener('click', () => render('contact'));
     render('home');
 });
