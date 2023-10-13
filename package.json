@@ -1,0 +1,17 @@
+{
+  "name": "dod.ngo",
+  "version": "0.1.0",
+  "description": "More awesome website of the Department of Decentralization.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "lite-server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1",
+    "typescript": "^5.2.2"
+  }
+}
