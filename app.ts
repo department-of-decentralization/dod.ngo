@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const contentDiv = document.getElementById('content')!;
-
     const homeContent: string = `
         <p><img src='wolpy.svg' /></p>
     `;
@@ -140,20 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
     `;
     const noContent: string = "<h1>Not Found</h1>";
-
     const routes: { [key: string]: string } = {
         'home': homeContent,
         'about': aboutContent,
         'contact': contactContent
     };
-
     function render(route: string) {
         contentDiv.innerHTML = routes[route] || noContent;
     }
-
     document.getElementById('home')!.addEventListener('click', () => render('home'));
     document.getElementById('about')!.addEventListener('click', () => render('about'));
     document.getElementById('contact')!.addEventListener('click', () => render('contact'));
-
     render('home');
 });
