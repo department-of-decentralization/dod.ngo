@@ -25,11 +25,11 @@ jobs:
       run: npm run build
 
     - name: Bundle Dist Files
-      run: cp -v *.{'html','css','svg'} ./dist
+      run: cp -v *.{'html','css','svg'} ./public
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.4.3
       with:
         branch: gh-pages
-        folder: ./dist
+        folder: ./public
         clean: true
