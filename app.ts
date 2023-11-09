@@ -264,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
     <p>
     We are coordinating on Matrix:
-    <a href="https://matrix.to/#/%23ethberlin:matrix.org" target="_blank" rel="noopener noreferrer">
-    #ethberlin:matrix.org</a>
+    <a href="https://matrix.to/#/%23stammtisch:dod.ngo" target="_blank" rel="noopener noreferrer">
+    #stammtisch:dod.ngo</a>
     </p>
     <p>
     Email us at
