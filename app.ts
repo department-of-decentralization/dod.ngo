@@ -23,6 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ethberlin.org
             </a>
         </li>
+        <li>
+            <strong>Criticial Decentralization Cluster (2023):</strong>
+            the &num;37c3 assembly in collaboration with the Social
+            Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics:
+            <a href="https://decentral.community" target="_blank">
+            decentral.community
+            </a>
+        </li>
         </ul>
         </p>
         <p>Our projects to date:</p>
