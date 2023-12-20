@@ -272,6 +272,11 @@ document.addEventListener('DOMContentLoaded', () => {
     countless volunteers and creative contributors. &lt;3
     </p>
     <p>
+    Our public, in-person Stammtisch happens every 3rd Wednesday at the 
+    <a href="https://c-base.org/">c-base</a>
+    in Berlin. Drop in and say hi!
+    </p>
+    <p>
     We are coordinating on Matrix:
     <a href="https://matrix.to/#/%23stammtisch:dod.ngo" target="_blank" rel="noopener noreferrer">
     #stammtisch:dod.ngo</a>
