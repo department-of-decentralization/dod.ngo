@@ -56,6 +56,10 @@ export default function Events() {
                 </a>
             </li>
             <li>
+                <strong>Merkle Root (Round Table):</strong> an exploration of the Berlin
+                blockchain-art experiments from the early days till present, alongside an expedition.
+            </li>
+            <li>
                 <strong>StrikeDAO (2022):</strong> The Ethereum
                 domain of Bundeskunsthalle was squatted by artist Hito Steyerl and the
                 DoD. The StrikeDAO voted on three models of the future governance of this
@@ -64,6 +68,15 @@ export default function Events() {
                   target="_blank"
                   rel="noreferrer"
                 >strikedao.com</a>
+            </li>
+            <li>
+                <strong>Wanderer above the Sea of FUD (2021):</strong> a follow-up study
+                exploring funding mechanisms for culture through blockchain technologies
+                that documented in real time (and accidentally) the start of the 2021 NFT bubble: <a
+                  href="https://academia.edu/45026803"
+                  target="_blank"
+                  rel="noreferrer"
+                >academia.edu/45026803</a>
             </li>
             <li>
                 <strong>
@@ -83,11 +96,15 @@ export default function Events() {
                 </strong>
                 ETHParis 2 was hosted by the Department of Decentralization and
                 Ethereum France as an unconference-style hackathon in the
-                engineering school l'ESGI: <a
+                engineering school l&apos;ESGI: <a
                   href="https://web.archive.org/web/20200318163540/https://www.hackparis.io/"
                   target="_blank"
                   rel="noreferrer"
                 >hackparis.com</a>
+            </li>
+            <li>
+                <strong>Crypto grows on trees (2019):</strong> an art exhibition at
+                the Ethereum Devcon 4 in Osaka.
             </li>
             <li>
                 <strong>Ecosystem Job-Openings (2019): </strong>

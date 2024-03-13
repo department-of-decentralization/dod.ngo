@@ -22,7 +22,7 @@ export default function Privacy() {
         of onboarding you as an attendee. This data may include:
       </div>
       <ol>
-        <li>Your email address; that's all we need.</li>
+        <li>Your email address; that&apos;s all we need.</li>
       </ol>
       <div>
         This data is collected in order to communicate with you. The legal basis
@@ -41,7 +41,7 @@ export default function Privacy() {
         </li>
       </ul>
       <h3>Sharing your data</h3>
-      <div>We don't pass on your information to anyone.</div>
+      <div>We don&apos;t pass on your information to anyone.</div>
       <h3>Transferring your data outside of the EU</h3>
       <div>
         Goerli Dezentral gGmbH is based in Germany. Your data, will be processed
@@ -67,12 +67,12 @@ export default function Privacy() {
       <h3>Your rights as a subject</h3>
       <div>
         You have certain rights under applicable legislation, and in particular
-        under Regulation EU 2016/679 (General Data Protection Regulation or 'GDPR').
+        under Regulation EU 2016/679 (General Data Protection Regulation or &apos;GDPR&apos;).
         We explain these below. You can find out more about the GDPR and your rights
         by accessing the <a
         href="https://ec.europa.eu/info/law/law-topic/data-protection_en"
         target="_blank"
-        rel="noreferrer">European Commission's website</a>.
+        rel="noreferrer">European Commission&apos;s website</a>.
       </div>
       <div>
         You have a right to be informed about the processing of your personal

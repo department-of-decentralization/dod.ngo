@@ -31,7 +31,7 @@ export default function Code() {
         technology, so we should be open to everyone and everything. We all
         bring different backgrounds and experiences. Great things can happen
         when we show up with an open mind and curiosity to explore. If you
-        don't have an open mind, this group is not for you.
+        don&apos;t have an open mind, this group is not for you.
       </div>
       <h3>Be Respectful</h3>
       <div>
@@ -60,7 +60,7 @@ export default function Code() {
       <div>
         Everyone in this community is responsible for their own tasks. So if you
         have a project, it is your responsibility to manage it. We are not here
-        to spoon-feed you or do your work for you. Ain't nobody got time for
+        to spoon-feed you or do your work for you. Ain&apos;t nobody got time for
         that. But we are a community and here to support you. So always reach out if
         you need help with completing a task.
       </div>
@@ -86,7 +86,7 @@ export default function Code() {
         If you are subject to or witness unacceptable behaviour or have any
         other concerns, you can always notify a project lead, event organizer,
         or member of the core group. Anytime. We will do everything to help and
-        support you. If you can't find anyone in person, reach out via email: <a
+        support you. If you can&apos;t find anyone in person, reach out via email: <a
         href="mailto:escalate@dod.ngo">escalate@dod.ngo</a>
       </div>
       <Foot></Foot>
