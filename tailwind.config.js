@@ -22,7 +22,8 @@ module.exports = {
         14: '3.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-merriweather)', ...fontFamily.sans],
+        sans: ['var(--font-barlow)', ...fontFamily.sans],
+        serif: ['var(--font-merriweather)', ...fontFamily.serif],
       },
       colors: {
         primary: {

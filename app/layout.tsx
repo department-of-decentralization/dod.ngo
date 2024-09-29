@@ -2,7 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Merriweather } from 'next/font/google'
+import { Barlow, Merriweather } from 'next/font/google'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
 import SectionContainer from '@/components/SectionContainer'
@@ -16,6 +16,13 @@ const merriweather = Merriweather({
   display: 'swap',
   variable: '--font-merriweather',
   weight: ['300', '400', '700', '900'],
+})
+
+const barlow = Barlow({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-barlow',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
 export const metadata: Metadata = {
@@ -64,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${merriweather.variable} scroll-smooth`}
+      className={`${merriweather.variable} ${barlow.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <link
@@ -94,7 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="my-6 bg-butter-400 pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
+      <body className="bg-butter-400 my-6 pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
             <Header />
