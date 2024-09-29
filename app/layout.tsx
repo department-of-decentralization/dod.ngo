@@ -101,13 +101,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="bg-butter-400 my-6 pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
+      <body className="bg-butter-400 my-6 text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <Header />
-            <SectionContainer>
-              <main className="mb-auto">{children}</main>
-            </SectionContainer>
+            <div className="flex">
+              <div className="w-64 flex-shrink-0">
+                <Header />
+              </div>
+              <SectionContainer className="flex-grow">
+                <main className="mx-12 my-12 mb-auto ">{children}</main>
+              </SectionContainer>
+            </div>
           </SearchProvider>
           <Footer />
         </ThemeProviders>
