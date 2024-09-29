@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 const Header = () => {
   return (
-    <header className={'fixed mx-8 flex h-screen w-56 flex-col bg-white dark:bg-gray-950'}>
+    <header className={'bg-butter-400 fixed mx-8 flex h-screen w-56 flex-col dark:bg-gray-950'}>
       {/* Logo and Title */}
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex flex-row items-center justify-between">
@@ -17,7 +17,9 @@ const Header = () => {
             <Image src={Logo} alt="Logo" width={100} height={100} />
           </div>
           {typeof siteMetadata.headerTitle === 'string' ? (
-            <div className="hidden text-xl font-semibold sm:block">{siteMetadata.headerTitle}</div>
+            <div className="hidden text-base font-semibold sm:block">
+              {siteMetadata.headerTitle}
+            </div>
           ) : (
             siteMetadata.headerTitle
           )}
@@ -31,10 +33,14 @@ const Header = () => {
             <Link
               key={link.title}
               href={link.href}
-              className="block text-2xl font-medium leading-10 text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
+              className="hover:text-secondary-500 dark:hover:text-secondary-400 group block text-2xl font-medium leading-10 text-gray-900 dark:text-gray-100"
             >
-              <span className="text-primary-500 dark:text-primary-400">{link.title.charAt(0)}</span>
-              {link.title.slice(1)}
+              <span className="relative">
+                <span className="text-secondary-500 dark:text-secondary-400">[</span>
+                <span className="">{link.title.charAt(0)}</span>
+                <span className="text-secondary-500 dark:text-secondary-400">]</span>
+              </span>
+              <span className="">{link.title.slice(1)}</span>
             </Link>
           ))}
         <SearchButton />
