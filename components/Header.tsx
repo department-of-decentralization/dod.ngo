@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 const Header = () => {
   return (
-    <header className={'bg-butter-400 fixed mx-8 flex h-screen w-56 flex-col dark:bg-gray-950'}>
+    <header className={'fixed mx-8 flex h-screen w-56 flex-col bg-butter-400 dark:bg-gray-950'}>
       {/* Logo and Title */}
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex flex-row items-center justify-between">
@@ -33,12 +33,12 @@ const Header = () => {
             <Link
               key={link.title}
               href={link.href}
-              className="hover:text-secondary-500 dark:hover:text-secondary-400 group block text-2xl font-medium leading-10 text-gray-900 dark:text-gray-100"
+              className="group block text-2xl font-medium leading-10 text-gray-900 hover:text-secondary-500 dark:text-gray-100 dark:hover:text-secondary-400"
             >
               <span className="relative">
-                <span className="text-secondary-500 dark:text-secondary-400">[</span>
+                <span className="text-primary-500 dark:text-primary-400">[</span>
                 <span className="">{link.title.charAt(0)}</span>
-                <span className="text-secondary-500 dark:text-secondary-400">]</span>
+                <span className="text-primary-500 dark:text-primary-400">]</span>
               </span>
               <span className="">{link.title.slice(1)}</span>
             </Link>
