@@ -30,7 +30,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, tags } = content
+  const { filePath, path, slug, date, title, tags, summary } = content
   const basePath = path.split('/')[0]
 
   return (
@@ -52,6 +52,9 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               </dl>
               <div>
                 <PageTitle>{title}</PageTitle>
+              </div>
+              <div className="prose flex max-w-none justify-center py-2 dark:prose-invert">
+                <p className="max-w-xl text-center text-lg">{summary}</p>
               </div>
             </div>
           </header>
