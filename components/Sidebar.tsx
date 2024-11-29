@@ -7,9 +7,9 @@ import ThemeSwitch from './ThemeSwitch'
 import SearchButton from './SearchButton'
 import Image from 'next/image'
 
-const Header = () => {
+const Sidebar = () => {
   return (
-    <header className="bg-butter-400 flex h-screen flex-col dark:bg-gray-950">
+    <header className="mx-4 flex h-screen flex-col bg-butter-400 pb-12 dark:bg-gray-950">
       {/* Logo and Title */}
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex flex-row items-center justify-between font-serif">
@@ -26,7 +26,7 @@ const Header = () => {
         </div>
       </Link>
       {/* Navigation Links */}
-      <div className="mt-8 flex flex-col">
+      <div className="mx-1 mt-8 flex flex-1 flex-col">
         {headerNavLinks
           .filter((link) => link.href !== '/')
           .map((link) => (
@@ -43,12 +43,15 @@ const Header = () => {
               <span className=""> {link.title.slice(1)}</span>
             </Link>
           ))}
-        <SearchButton />
-        <ThemeSwitch />
+        {/* <SearchButton /> */}
         <MobileNav />
+      </div>
+      {/* Theme Switch at bottom */}
+      <div className="mx-1 mb-8">
+        <ThemeSwitch />
       </div>
     </header>
   )
 }
 
-export default Header
+export default Sidebar

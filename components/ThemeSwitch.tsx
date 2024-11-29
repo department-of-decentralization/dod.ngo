@@ -70,7 +70,7 @@ const ThemeSwitch = () => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-50 mt-2 w-32 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800">
+          <Menu.Items className="absolute bottom-full left-0 z-50 mb-2 w-32 origin-bottom-left divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800">
             <RadioGroup value={theme} onChange={setTheme}>
               <div className="p-1">
                 <RadioGroup.Option value="light">
@@ -78,7 +78,7 @@ const ThemeSwitch = () => {
                     {({ active }) => (
                       <button
                         className={`${
-                          active ? 'bg-primary-600 text-white' : ''
+                          active ? 'bg-primary-500 text-white' : ''
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
                         <div className="mr-2">
@@ -94,7 +94,7 @@ const ThemeSwitch = () => {
                     {({ active }) => (
                       <button
                         className={`${
-                          active ? 'bg-primary-600 text-white' : ''
+                          active ? 'bg-primary-500 text-white' : ''
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
                         <div className="mr-2">
@@ -110,7 +110,7 @@ const ThemeSwitch = () => {
                     {({ active }) => (
                       <button
                         className={`${
-                          active ? 'bg-primary-600 text-white' : ''
+                          active ? 'bg-primary-500 text-white' : ''
                         } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                       >
                         <div className="mr-2">

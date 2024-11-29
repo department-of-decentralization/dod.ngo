@@ -4,7 +4,7 @@ import 'remark-github-blockquote-alert/alert.css'
 
 import { Barlow, Merriweather } from 'next/font/google'
 import { SearchProvider, SearchConfig } from 'pliny/search'
-import Header from '@/components/Header'
+import Sidebar from '@/components/Sidebar'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
@@ -101,19 +101,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="bg-butter-400 my-6 text-black antialiased dark:bg-gray-950 dark:text-white">
+      <body className="my-6 bg-butter-400 text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <div className="flex">
-              <div className="w-64 flex-shrink-0">
-                <Header />
+            <div className="flex h-screen">
+              <div className="fixed h-screen w-64 flex-shrink-0">
+                <Sidebar />
               </div>
-              <SectionContainer className="flex-grow">
-                <main className="mx-12 my-12 mb-auto ">{children}</main>
-              </SectionContainer>
+              <div className="ml-64 flex-grow overflow-y-auto">
+                <SectionContainer className="">
+                  <main className="mx-12 my-12 mb-auto">{children}</main>
+                  <Footer />
+                </SectionContainer>
+              </div>
             </div>
           </SearchProvider>
-          <Footer />
         </ThemeProviders>
       </body>
     </html>
