@@ -8,9 +8,9 @@ import SearchButton from './SearchButton'
 import Image from 'next/image'
 import SocialIcon from './social-icons'
 
-const Sidebar = () => {
+const Menu = () => {
   return (
-    <header className="mx-4 flex min-h-screen flex-shrink-0 flex-row justify-between bg-butter-400 py-4 dark:bg-gray-950 md:fixed md:h-screen md:w-64 md:flex-col">
+    <header className="mx-4 flex flex-shrink-0 flex-row justify-between bg-butter-400 py-4 dark:bg-gray-950 md:fixed md:h-screen md:min-h-screen md:w-64 md:flex-col">
       {/* Logo and Title */}
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex flex-row items-center justify-between font-serif">
@@ -94,4 +94,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default Menu

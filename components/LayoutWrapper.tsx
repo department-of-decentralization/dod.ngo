@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import { ReactNode } from 'react'
-import Sidebar from './Sidebar'
+import Menu from './Menu'
 
 interface Props {
   children: ReactNode
@@ -16,7 +16,7 @@ const LayoutWrapper = ({ children }: Props) => {
   return (
     <SectionContainer>
       <div className={`${inter.className} flex h-screen flex-col justify-between font-sans`}>
-        <Sidebar />
+        <Menu />
         <main className="mb-auto">{children}</main>
         <Footer />
       </div>

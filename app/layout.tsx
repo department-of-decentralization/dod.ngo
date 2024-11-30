@@ -4,7 +4,7 @@ import 'remark-github-blockquote-alert/alert.css'
 
 import { Barlow, Merriweather } from 'next/font/google'
 import { SearchProvider, SearchConfig } from 'pliny/search'
-import Sidebar from '@/components/Sidebar'
+import Sidebar from '@/components/Menu'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
