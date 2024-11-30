@@ -62,10 +62,14 @@ export default function Footer() {
                     return (
                       <>
                         {beforeChar}
-                        <span className="relative mx-0.5">
-                          <span className="text-primary-500 dark:text-primary-400">[</span>
+                        <span className="relative md:mx-0.5">
+                          <span className="hidden text-primary-500 dark:text-primary-400 md:inline">
+                            [
+                          </span>
                           <span>{char}</span>
-                          <span className="text-primary-500 dark:text-primary-400">]</span>
+                          <span className="hidden text-primary-500 dark:text-primary-400 md:inline">
+                            ]
+                          </span>
                         </span>
                         {afterChar}
                       </>
