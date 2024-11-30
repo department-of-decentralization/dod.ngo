@@ -37,7 +37,7 @@ export default function Footer() {
             <div>{` • `}</div>
             <Link href="/privacy-policy">Privacy Policy</Link>
             <div>{` • `}</div>
-            <Link href="https://github.com/yourusername/yourrepository">Source</Link>
+            <Link href={siteMetadata.siteRepo}>Source</Link>
           </div>
         </div>
       </div>
