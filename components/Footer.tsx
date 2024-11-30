@@ -31,6 +31,8 @@ export default function Footer() {
         </div> */}
         <div>
           <div className="flex space-x-4 text-sm text-gray-500 dark:text-gray-400">
+            <Link href="/impressum">Impressum</Link>
+            <div>{` • `}</div>
             <Link href="/code-of-conduct">Code of Conduct</Link>
             <div>{` • `}</div>
             <Link href="/privacy-policy">Privacy Policy</Link>
