@@ -10,6 +10,7 @@ import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
+import ButtonScript from './hotkeys'
 
 const merriweather = Merriweather({
   subsets: ['latin'],
@@ -101,14 +102,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="mt-6 bg-butter-400 text-black antialiased dark:bg-gray-950 dark:text-white">
+      <body className="bg-butter-400 text-black antialiased dark:bg-gray-950 dark:text-white">
+        <ButtonScript />
         <ThemeProviders>
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
             <div className="flex min-h-screen flex-col md:flex-row">
               <Sidebar />
               <div className="flex-grow overflow-y-auto md:ml-64">
-                <SectionContainer className="">
-                  <main className="my-12 mb-auto md:mx-12">{children}</main>
+                <SectionContainer className="flex h-full flex-col">
+                  <main className="my-12 flex-grow md:mx-12">{children}</main>
                   <Footer />
                 </SectionContainer>
               </div>

@@ -1,6 +1,7 @@
 import Link from './Link'
 import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
+import footerNavLinks from '@/data/footerNavLinks'
 
 export default function Footer() {
   return (
@@ -31,13 +32,48 @@ export default function Footer() {
         </div> */}
         <div>
           <div className="flex flex-col text-sm text-gray-500 dark:text-gray-400 md:flex-row md:space-x-4">
-            <Link href="/impressum">Impressum</Link>
-            <div>{` • `}</div>
-            <Link href="/code-of-conduct">Code of Conduct</Link>
-            <div>{` • `}</div>
-            <Link href="/privacy-policy">Privacy Policy</Link>
-            <div>{` • `}</div>
-            <Link href={siteMetadata.siteRepo}>Source</Link>
+            {footerNavLinks.map((link, index) => (
+              <>
+                {index > 0 && <div>{` • `}</div>}
+                <Link href={link.href}>
+                  {(() => {
+                    // This component renders navigation links with hotkeys
+                    // Format: "About" with hotkey 'b' becomes "A[b]ut"
+                    // If no hotkey specified or not found, defaults to first letter [A]bout
+
+                    const hotkeyChar = link.hotkey
+                    const title = link.title
+                    let beforeChar = '' // Text before the bracketed char
+                    let char = '' // Character to be bracketed
+                    let afterChar = '' // Text after the bracketed char
+
+                    // If hotkey exists and is found in title (case insensitive)
+                    if (hotkeyChar && title.toLowerCase().includes(hotkeyChar.toLowerCase())) {
+                      const index = title.toLowerCase().indexOf(hotkeyChar.toLowerCase())
+                      beforeChar = title.slice(0, index) // Get text before hotkey
+                      char = title.charAt(index) // Get actual character at hotkey position
+                      afterChar = title.slice(index + 1) // Get remaining text
+                    } else {
+                      // Fallback: use first character
+                      char = title.charAt(0)
+                      afterChar = title.slice(1)
+                    }
+
+                    return (
+                      <>
+                        {beforeChar}
+                        <span className="relative mx-0.5">
+                          <span className="text-primary-500 dark:text-primary-400">[</span>
+                          <span>{char}</span>
+                          <span className="text-primary-500 dark:text-primary-400">]</span>
+                        </span>
+                        {afterChar}
+                      </>
+                    )
+                  })()}
+                </Link>
+              </>
+            ))}
           </div>
         </div>
       </div>
