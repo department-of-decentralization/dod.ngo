@@ -6,6 +6,7 @@ import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import SearchButton from './SearchButton'
 import Image from 'next/image'
+import SocialIcon from './social-icons'
 
 const Sidebar = () => {
   return (
@@ -47,12 +48,18 @@ const Sidebar = () => {
               <span className=""> {link.title.slice(1)}</span>
             </Link>
           ))}
+        <div className="mt-4">
+          <ThemeSwitch />
+        </div>
         {/* <SearchButton /> */}
       </div>
+
       <MobileNav />
+
       {/* Theme Switch at bottom */}
-      <div className="mx-2 hidden md:block">
-        <ThemeSwitch />
+      <div className="mx-2 hidden flex-row  gap-4 md:flex">
+        <SocialIcon kind="github" href={siteMetadata.github} size={5} />
+        <SocialIcon kind="x" href={siteMetadata.x} size={5} />
       </div>
     </header>
   )
