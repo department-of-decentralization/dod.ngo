@@ -51,7 +51,7 @@ const Sidebar = () => {
       </div>
       <MobileNav />
       {/* Theme Switch at bottom */}
-      <div className="mx-1 mb-8 hidden md:block">
+      <div className="mx-2 hidden md:block">
         <ThemeSwitch />
       </div>
     </header>
