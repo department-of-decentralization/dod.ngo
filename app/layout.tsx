@@ -104,13 +104,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="my-6 bg-butter-400 text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <div className="flex h-screen">
-              <div className="fixed h-screen w-64 flex-shrink-0">
-                <Sidebar />
-              </div>
-              <div className="ml-64 flex-grow overflow-y-auto">
+            <div className="flex min-h-screen flex-col md:flex-row">
+              <Sidebar />
+              <div className="flex-grow overflow-y-auto md:ml-64">
                 <SectionContainer className="">
-                  <main className="mx-12 my-12 mb-auto">{children}</main>
+                  <main className="my-12 mb-auto md:mx-12">{children}</main>
                   <Footer />
                 </SectionContainer>
               </div>

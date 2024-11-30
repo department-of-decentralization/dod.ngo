@@ -9,15 +9,19 @@ import Image from 'next/image'
 
 const Sidebar = () => {
   return (
-    <header className="mx-4 flex h-screen flex-col bg-butter-400 pb-12 dark:bg-gray-950">
+    <header className="mx-4 flex flex-shrink-0 flex-row justify-between bg-butter-400 pb-12 dark:bg-gray-950 md:fixed md:h-screen md:w-64 md:flex-col">
       {/* Logo and Title */}
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex flex-row items-center justify-between font-serif">
-          <div className="mr-3">
+          <div className="mr-3 hidden md:block">
             <Image src={Logo} alt="Logo" width={100} height={100} />
           </div>
+          <div className="mr-3 block md:hidden">
+            <Image src={Logo} alt="Logo" width={54} height={54} />
+          </div>
+
           {typeof siteMetadata.headerTitle === 'string' ? (
-            <div className="hidden text-base font-semibold sm:block">
+            <div className="block max-w-48 text-sm font-semibold md:text-base">
               {siteMetadata.headerTitle}
             </div>
           ) : (
@@ -26,7 +30,7 @@ const Sidebar = () => {
         </div>
       </Link>
       {/* Navigation Links */}
-      <div className="mx-1 mt-8 flex flex-1 flex-col">
+      <div className="mx-1 mt-8 hidden flex-1 flex-col md:flex">
         {headerNavLinks
           .filter((link) => link.href !== '/')
           .map((link) => (
@@ -44,10 +48,10 @@ const Sidebar = () => {
             </Link>
           ))}
         {/* <SearchButton /> */}
-        <MobileNav />
       </div>
+      <MobileNav />
       {/* Theme Switch at bottom */}
-      <div className="mx-1 mb-8">
+      <div className="mx-1 mb-8 hidden md:block">
         <ThemeSwitch />
       </div>
     </header>

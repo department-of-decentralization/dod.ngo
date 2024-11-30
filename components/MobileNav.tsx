@@ -5,6 +5,7 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 import { Fragment, useState, useEffect, useRef } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
+import ThemeSwitch from './ThemeSwitch'
 
 const MobileNav = () => {
   const [navShow, setNavShow] = useState(false)
@@ -28,7 +29,7 @@ const MobileNav = () => {
 
   return (
     <>
-      <button aria-label="Toggle Menu" onClick={onToggleNav} className="sm:hidden">
+      <button aria-label="Toggle Menu" onClick={onToggleNav} className="md:hidden">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
@@ -82,6 +83,9 @@ const MobileNav = () => {
                     {link.title}
                   </Link>
                 ))}
+                <div className="mx-1 mt-4 block md:hidden">
+                  <ThemeSwitch large />
+                </div>
               </nav>
 
               <button
