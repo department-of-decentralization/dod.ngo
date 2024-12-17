@@ -1,6 +1,10 @@
 # dod.ngo
 
-Website and blog of the Department of Decentralization
+<div align="center">
+  <div align="center">Website and blog of the Department of Decentralization</div>
+  <img src="./public/static/images/wolpy.png" alt="Wolpy" width="300" />
+  
+</div>
 
 ## Install
 
