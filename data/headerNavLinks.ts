@@ -6,7 +6,6 @@ type HeaderNavLink = {
 
 const headerNavLinks: HeaderNavLink[] = [
   { href: '/', title: 'Home' },
-  // { href: '/about', title: 'About' },
   { href: '/events', title: 'Events' },
   { href: '/blog', title: 'Blog' },
   { href: '/impressum', title: 'Contact' },
