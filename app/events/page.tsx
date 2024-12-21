@@ -1,9 +1,9 @@
 import PageTitle from '@/components/PageTitle'
 import { genPageMetadata } from 'app/seo'
 
-export const metadata = genPageMetadata({ title: 'Impressum' })
+export const metadata = genPageMetadata({ title: 'Projects' })
 
-export default function Impressum() {
+export default function Projects() {
   return (
     <>
       <PageTitle>Events</PageTitle>
