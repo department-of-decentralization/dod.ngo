@@ -10,11 +10,6 @@ export default function Impressum() {
       <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
         <h2>Contact</h2>
         <p>
-          We are (in random order): Raul, Kirill, Eylon, Wesley, Caspar, Phil, Franzi, Kaan, Rose,
-          Tim, Ksenya, Ligi, Stina, Helena, MP, Martin, Alex, Afri, Nich, Carl, Hany, Jacob, and
-          Peter. Supported by countless volunteers and creative contributors. &lt;3
-        </p>
-        <p>
           Our public, in-person Stammtisch happens every 3rd Wednesday at the{' '}
           <a href="https://c-base.org/" target="_blank" rel="noreferrer">
             c-base
