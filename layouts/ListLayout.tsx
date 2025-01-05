@@ -8,6 +8,8 @@ import type { Blog } from 'contentlayer/generated'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
+import Image from 'next/image'
+import tagData from 'app/tag-data.json'
 
 interface PaginationProps {
   totalPages: number
@@ -72,13 +74,17 @@ export default function ListLayout({
     return searchContent.toLowerCase().includes(searchValue.toLowerCase())
   })
 
+  const tagCounts = tagData as Record<string, number>
+  const tagKeys = Object.keys(tagCounts)
+  const sortedTags = tagKeys.sort((a, b) => tagCounts[b] - tagCounts[a])
+
   // If initialDisplayPosts exist, display it if no searchValue is specified
   const displayPosts =
     initialDisplayPosts.length > 0 && !searchValue ? initialDisplayPosts : filteredBlogPosts
 
   return (
     <>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="mx-4 divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pb-8 pt-6 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             {title}
@@ -109,21 +115,26 @@ export default function ListLayout({
               />
             </svg>
           </div>
+          <div className="flex flex-wrap">
+            <div className="text-lg  font-medium uppercase">Tags</div>
+            <div className="flex flex-wrap">
+              {sortedTags?.map((tag) => <Tag key={tag} text={tag} />)}
+            </div>
+          </div>
         </div>
         <ul>
           {!filteredBlogPosts.length && 'No posts found.'}
           {displayPosts.map((post) => {
-            const { path, date, title, summary, tags } = post
+            const { path, date, title, summary, tags, images } = post
             return (
-              <li key={path} className="py-4">
-                <article className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
-                  <dl>
-                    <dt className="sr-only">Published on</dt>
-                    <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                      <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
-                    </dd>
-                  </dl>
-                  <div className="space-y-3 xl:col-span-3">
+              <li key={path} className="py-6">
+                <article className="mx-auto max-w-md space-y-2 lg:grid lg:max-w-none lg:grid-cols-4 lg:items-center lg:space-y-2">
+                  <div className="relative aspect-[16/9]">
+                    {images?.[0] && (
+                      <Image src={images[0]} alt={title} fill className="object-cover" />
+                    )}
+                  </div>
+                  <div className="ml-4 space-y-3 lg:col-span-3">
                     <div>
                       <h3 className="text-2xl font-bold leading-8 tracking-tight">
                         <Link href={`/${path}`} className="text-gray-900 dark:text-gray-100">
@@ -133,6 +144,12 @@ export default function ListLayout({
                       <div className="flex flex-wrap">
                         {tags?.map((tag) => <Tag key={tag} text={tag} />)}
                       </div>
+                      <dl>
+                        <dt className="sr-only">Published on</dt>
+                        <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                          <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
+                        </dd>
+                      </dl>
                     </div>
                     <div className="prose max-w-none text-gray-500 dark:text-gray-400">
                       {summary}
