@@ -4,13 +4,11 @@ import 'remark-github-blockquote-alert/alert.css'
 
 import { Barlow, Merriweather } from 'next/font/google'
 import { SearchProvider, SearchConfig } from 'pliny/search'
-import Sidebar from '@/components/Menu'
-import SectionContainer from '@/components/SectionContainer'
-import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import ButtonScript from './hotkeys'
+import LayoutContent from './layoutContent'
 
 const merriweather = Merriweather({
   subsets: ['latin'],
@@ -106,15 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ButtonScript />
         <ThemeProviders>
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <div className="flex min-h-screen flex-col md:flex-row">
-              <Sidebar />
-              <div className="flex-grow overflow-y-auto md:ml-64">
-                <SectionContainer className="flex h-full flex-col">
-                  <main className="my-12 flex-grow md:mx-12">{children}</main>
-                  <Footer />
-                </SectionContainer>
-              </div>
-            </div>
+            <LayoutContent>{children}</LayoutContent>
           </SearchProvider>
         </ThemeProviders>
       </body>
