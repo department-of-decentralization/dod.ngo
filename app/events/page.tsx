@@ -18,6 +18,11 @@ export default function Projects() {
                 protocol.berlin
               </a>
             </li>
+          </ul>
+        </div>
+        <h3>Our projects to date:</h3>
+        <div>
+          <ul>
             <li>
               <strong>Criticial Decentralization Cluster (12/2024): </strong> the #38c3 assembly in
               collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss
@@ -26,11 +31,6 @@ export default function Projects() {
                 decentral.community
               </a>{' '}
             </li>
-          </ul>
-        </div>
-        <h3>Our projects to date:</h3>
-        <div>
-          <ul>
             <li>
               <strong>Ethereum Berlin Meetup (10/2024): </strong> Road to DEVCON VII SEA Bangkok.
             </li>
@@ -55,7 +55,7 @@ export default function Projects() {
             <li>
               <strong>Protocol Berg (09/2023): </strong> the decentralized protocol and
               infrastructure conference:{' '}
-              <a href="https://2023.protocol.berlin" target="_blank" rel="noreferrer">
+              <a href="https://v1.protocol.berlin" target="_blank" rel="noreferrer">
                 protocol.berlin
               </a>{' '}
             </li>
