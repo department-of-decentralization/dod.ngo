@@ -63,8 +63,8 @@ export const events: Event[] = [
     date: '2023-09-01',
     description: 'the decentralized protocol and infrastructure conference',
     link: {
-      url: 'https://2023.protocol.berlin',
-      label: 'protocol.berlin',
+      url: 'https://v1.protocol.berlin',
+      label: 'v1.protocol.berlin',
     },
   },
   {
