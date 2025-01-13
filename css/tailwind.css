@@ -58,3 +58,11 @@ input:-webkit-autofill:focus {
   display: inline-block;
   vertical-align: middle;
 }
+
+.fade-in-left {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.5s,
+    visibility 0.5s;
+}
