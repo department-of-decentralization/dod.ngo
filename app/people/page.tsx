@@ -7,7 +7,8 @@ function SocialLinks({ socials }: { socials: Record<string, string> }) {
     <div className="mt-1 flex gap-2">
       {socials.twitter && <SocialIcon kind="twitter" href={socials.twitter} size={5} />}
       {socials.github && <SocialIcon kind="github" href={socials.github} size={5} />}
-      {socials.website && <SocialIcon kind="mail" href={`mailto:${socials.website}`} size={5} />}
+      {socials.website && <SocialIcon kind="website" href={socials.website} size={5} />}
+      {socials.mail && <SocialIcon kind="mail" href={`mailto:${socials.mail}`} size={5} />}
       {socials.linkedin && <SocialIcon kind="linkedin" href={socials.linkedin} size={5} />}
     </div>
   )
