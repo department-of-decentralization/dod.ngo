@@ -9,6 +9,7 @@ const headerNavLinks: HeaderNavLink[] = [
   { href: '/events', title: 'Events' },
   { href: '/blog', title: 'Blog' },
   { href: '/impressum', title: 'Contact' },
+  { href: '/people', title: 'People' },
 ]
 
 export default headerNavLinks
