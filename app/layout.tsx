@@ -110,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Sidebar />
               <div className="flex-grow overflow-y-auto md:ml-64">
                 <SectionContainer className="flex h-full flex-col">
-                  <main className="my-12 flex-grow md:mx-12">{children}</main>
+                  <main className="mx-4 my-12 flex-grow md:mx-12">{children}</main>
                   <Footer />
                 </SectionContainer>
               </div>
