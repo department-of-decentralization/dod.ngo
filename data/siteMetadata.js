@@ -6,7 +6,7 @@ const siteMetadata = {
   description: 'The website for the Department of Decentralization',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
+  siteUrl: 'https://dod.ngo',
   siteRepo: 'https://github.com/department-of-decentralization/dod.ngo',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card-dod.png`,
