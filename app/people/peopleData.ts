@@ -31,6 +31,7 @@ export const peopleData: PersonData[] = [
     avatar: ligiImg,
     isAlumni: false,
     socials: {
+      website: 'https://ligi.de',
       twitter: 'https://twitter.com/mr_ligi',
       github: 'https://github.com/ligi',
     },
