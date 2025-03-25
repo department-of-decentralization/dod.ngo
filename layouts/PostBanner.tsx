@@ -106,10 +106,6 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
           )}
           <div className="prose max-w-none py-4 dark:prose-invert">{children}</div>
           <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
-            <Link href={discussUrl(path)} rel="nofollow">
-              Discuss on Twitter
-            </Link>
-            {` • `}
             <Link href={editUrl(filePath)}>View on GitHub</Link>
           </div>
           {siteMetadata.comments && (
