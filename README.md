@@ -10,8 +10,8 @@
 
 1. Clone the repo
 
-SSH: `git clone git@github.com:argotorg/argot.org.git`
-HTTP: `git clone https://github.com/argotorg/argot.org.git`
+SSH: `git clone git@github.com/department-of-decentralization/dod.ngo.git`
+HTTP: `git clone https://github.com/department-of-decentralization/dod.ngo.git`
 
 2. Install
 
