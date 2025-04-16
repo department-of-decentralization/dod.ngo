@@ -2,6 +2,7 @@
 
 export default function NextStammtisch() {
   const today = new Date()
+  const yesterday = new Date(today.getDate() - 1)
   const currentMonth = today.getMonth()
   const currentYear = today.getFullYear()
 
@@ -17,7 +18,7 @@ export default function NextStammtisch() {
   date.setDate(date.getDate() + 14)
 
   // If 3rd Wednesday already passed this month, move to next month
-  if (date < today) {
+  if (date < yesterday) {
     date = new Date(currentYear, currentMonth + 1, 1)
     while (date.getDay() !== 3) {
       date.setDate(date.getDate() + 1)
