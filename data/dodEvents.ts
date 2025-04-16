@@ -33,11 +33,19 @@ export const events: Event[] = [
     title: 'Ethereum Berlin Meetup',
     date: '2024-10-01',
     description: 'Road to DEVCON VII SEA Bangkok.',
+    link: {
+      url: 'https://www.meetup.com/berlin-ethereum-meetup/events/303919363',
+      label: 'meetup.com',
+    },
   },
   {
     title: 'Ethereum Berlin Meetup',
     date: '2024-08-01',
     description: '10 years Ethereum Berlin Meetup.',
+    link: {
+      url: 'https://www.meetup.com/berlin-ethereum-meetup/events/302923436',
+      label: 'meetup.com',
+    },
   },
   {
     title: 'ETHBerlin 04 - Identity Crisis',
