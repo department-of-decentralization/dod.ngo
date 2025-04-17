@@ -1,34 +1,34 @@
 'use client'
 
 export default function NextStammtisch() {
-  const today = new Date()
-  const yesterday = new Date(today.getDate() - 1)
-  const currentMonth = today.getMonth()
-  const currentYear = today.getFullYear()
+  const currentDate = new Date()
+  const currentMonth = currentDate.getUTCMonth()
+  const currentYear = currentDate.getUTCFullYear()
+  let nextStammtisch = new Date()
+  let nextMonth = 0
 
-  // Create date object for 1st of current month
-  let date = new Date(currentYear, currentMonth, 1)
+  do {
+    // Create date object for 1st of current month
+    nextStammtisch = new Date(Date.UTC(currentYear, currentMonth + nextMonth, 1))
 
-  // Find first Wednesday
-  while (date.getDay() !== 3) {
-    date.setDate(date.getDate() + 1)
-  }
-
-  // Add 2 weeks to get to 3rd Wednesday
-  date.setDate(date.getDate() + 14)
-
-  // If 3rd Wednesday already passed this month, move to next month
-  if (date < yesterday) {
-    date = new Date(currentYear, currentMonth + 1, 1)
-    while (date.getDay() !== 3) {
-      date.setDate(date.getDate() + 1)
+    // Find first Wednesday
+    while (nextStammtisch.getUTCDay() !== 3) {
+      nextStammtisch.setUTCDate(nextStammtisch.getUTCDate() + 1)
     }
-    date.setDate(date.getDate() + 14)
-  }
+
+    // Add 2 weeks to get to 3rd Wednesday
+    nextStammtisch.setUTCDate(nextStammtisch.getUTCDate() + 14)
+
+    // Set start time to 21:00 UTC which is intentially a bit into the event
+    nextStammtisch.setUTCHours(21)
+
+    // If Stammtisch already started/passed this month, move to next month
+    nextMonth++
+  } while (nextStammtisch < currentDate)
 
   return (
     <span className="font-medium">
-      {date.toLocaleDateString('en-US', {
+      {nextStammtisch.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
