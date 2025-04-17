@@ -33,7 +33,9 @@ function PersonCard({ person }: { person: PersonData }) {
 }
 
 export default function PeoplePage() {
-  const currentMembers = peopleData.filter((person) => !person.isAlumni).sort(() => Math.random() - 0.5)
+  const currentMembers = peopleData
+    .filter((person) => !person.isAlumni)
+    .sort(() => Math.random() - 0.5)
   const alumni = peopleData.filter((person) => person.isAlumni).sort(() => Math.random() - 0.5)
 
   return (

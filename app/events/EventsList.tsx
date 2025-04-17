@@ -40,14 +40,13 @@ export default function EventsList() {
       <div>
         <ul>
           {upcomingEvents.map(renderEvent)}
-          <li>Next Stammtisch (informal meetup) at{' '}
-            <a
-              href="https://c-base.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          <li>
+            Next Stammtisch (informal meetup) at{' '}
+            <a href="https://c-base.org" target="_blank" rel="noopener noreferrer">
               c-base
-            </a>: <NextStammtisch /> at 19:00 Berlin time.</li>
+            </a>
+            : <NextStammtisch /> at 19:00 Berlin time.
+          </li>
         </ul>
       </div>
       <h3>Past events:</h3>

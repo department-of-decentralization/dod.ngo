@@ -158,8 +158,7 @@ export const peopleData: PersonData[] = [
     name: 'Alex',
     avatar: noImg,
     isAlumni: true,
-    socials: {
-    },
+    socials: {},
   },
   {
     name: 'Lili',
@@ -174,8 +173,7 @@ export const peopleData: PersonData[] = [
     name: 'Guto',
     avatar: noImg,
     isAlumni: true,
-    socials: {
-    },
+    socials: {},
   },
   {
     name: 'Caspar',
@@ -189,8 +187,7 @@ export const peopleData: PersonData[] = [
     name: 'Elias',
     avatar: noImg,
     isAlumni: true,
-    socials: {
-    },
+    socials: {},
   },
   {
     name: 'Nichanan',
@@ -205,22 +202,19 @@ export const peopleData: PersonData[] = [
     name: 'Adeola',
     avatar: noImg,
     isAlumni: true,
-    socials: {
-    },
+    socials: {},
   },
   {
     name: 'Phil',
     avatar: noImg,
     isAlumni: true,
-    socials: {
-    },
+    socials: {},
   },
   {
     name: 'Griffin',
     avatar: noImg,
     isAlumni: true,
-    socials: {
-    },
+    socials: {},
   },
   {
     name: 'Carl',
