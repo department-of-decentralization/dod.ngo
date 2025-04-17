@@ -12,6 +12,13 @@ import jacobImg from './images/jacob.jpeg'
 import helsImg from './images/hels.jpeg'
 import franziImg from './images/franzi.jpeg'
 import afriImg from './images/afri.jpeg'
+import alexImg from './images/alex.jpg'
+import liliImg from './images/lili.jpg'
+import carlImg from './images/carl.jpg'
+import jommiImg from './images/jommi.jpg'
+import nichImg from './images/nich.jpg'
+import casparImg from './images/caspar.jpg'
+import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
   name: string
@@ -42,6 +49,7 @@ export const peopleData: PersonData[] = [
     isAlumni: false,
     socials: {
       github: 'https://github.com/q9f',
+      twitter: 'https://twitter.com/q9fcc',
       website: 'https://q9f.cc/',
     },
   },
@@ -78,18 +86,21 @@ export const peopleData: PersonData[] = [
     isAlumni: false,
     socials: {
       website: 'https://pimenov.cc/',
+      github: 'https://github.com/kirushik',
     },
   },
   {
     name: 'Raul',
     avatar: raulImg,
     isAlumni: false,
-    socials: {},
+    socials: {
+      twitter: 'https://twitter.com/nachortti',
+    },
   },
   {
     name: 'Stina',
     avatar: stinaImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/stinalinneag',
     },
@@ -97,7 +108,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Lea',
     avatar: leaImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/_schmitted',
     },
@@ -105,7 +116,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Rose',
     avatar: roseImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/roseighteth',
     },
@@ -129,9 +140,102 @@ export const peopleData: PersonData[] = [
   {
     name: 'MP',
     avatar: mpImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/MPtherealmvp',
+      website: 'https://www.mariapaula.net/',
+    },
+  },
+  {
+    name: 'Alexandra',
+    avatar: alexImg,
+    isAlumni: true,
+    socials: {
+      twitter: 'https://twitter.com/cto_o_alex',
+    },
+  },
+  {
+    name: 'Alex',
+    avatar: noImg,
+    isAlumni: true,
+    socials: {
+    },
+  },
+  {
+    name: 'Lili',
+    avatar: liliImg,
+    isAlumni: true,
+    socials: {
+      website: 'https://impermanence.co/',
+      twitter: 'https://twitter.com/lililashka',
+    },
+  },
+  {
+    name: 'Guto',
+    avatar: noImg,
+    isAlumni: true,
+    socials: {
+    },
+  },
+  {
+    name: 'Caspar',
+    avatar: casparImg,
+    isAlumni: true,
+    socials: {
+      twitter: 'https://twitter.com/casparschwa',
+    },
+  },
+  {
+    name: 'Elias',
+    avatar: noImg,
+    isAlumni: true,
+    socials: {
+    },
+  },
+  {
+    name: 'Nichanan',
+    avatar: nichImg,
+    isAlumni: true,
+    socials: {
+      twitter: 'https://twitter.com/nichanank',
+      github: 'https://github.com/nichanank',
+    },
+  },
+  {
+    name: 'Adeola',
+    avatar: noImg,
+    isAlumni: true,
+    socials: {
+    },
+  },
+  {
+    name: 'Phil',
+    avatar: noImg,
+    isAlumni: true,
+    socials: {
+    },
+  },
+  {
+    name: 'Griffin',
+    avatar: noImg,
+    isAlumni: true,
+    socials: {
+    },
+  },
+  {
+    name: 'Carl',
+    avatar: carlImg,
+    isAlumni: false,
+    socials: {
+      github: 'https://github.com/Cbezzenberger',
+    },
+  },
+  {
+    name: 'Jommi',
+    avatar: jommiImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://twitter.com/joakimhi',
     },
   },
 ]

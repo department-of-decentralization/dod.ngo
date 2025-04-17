@@ -1,6 +1,7 @@
 'use client'
 
 import { events } from '@/data/dodEvents'
+import NextStammtisch from 'app/NextStammtisch'
 
 export default function EventsList() {
   const now = new Date()
@@ -37,7 +38,17 @@ export default function EventsList() {
     <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
       <h3>Upcoming events:</h3>
       <div>
-        <ul>{upcomingEvents.map(renderEvent)}</ul>
+        <ul>
+          {upcomingEvents.map(renderEvent)}
+          <li>Next Stammtisch (informal meetup) at{' '}
+            <a
+              href="https://c-base.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              c-base
+            </a>: <NextStammtisch /> at 19:00 Berlin time.</li>
+        </ul>
       </div>
       <h3>Past events:</h3>
       <div>

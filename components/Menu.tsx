@@ -89,6 +89,7 @@ const Menu = () => {
       <div className="mx-2 hidden flex-row  gap-4 md:flex">
         <SocialIcon kind="github" href={siteMetadata.github} size={5} />
         <SocialIcon kind="x" href={siteMetadata.x} size={5} />
+        <SocialIcon kind="youtube" href={siteMetadata.youtube} size={5} />
       </div>
     </header>
   )
