@@ -9,8 +9,8 @@ export default function Page() {
       <PageTitle>Department of Decentralization</PageTitle>
       <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
         <div>
-          The Department of Decentralization is a collective of people from Berlin.
-          The group assembled in 2018 to organize the{' '}
+          The Department of Decentralization is a collective of people from Berlin. The group
+          assembled in 2018 to organize the{' '}
           <a href="https://ethberlin.com" target="_blank" rel="noopener noreferrer">
             ETHBerlin
           </a>{' '}
