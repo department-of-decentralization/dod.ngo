@@ -7,7 +7,7 @@ type FooterNavLink = {
 }
 
 const footerNavLinks: FooterNavLink[] = [
-  { href: '/impressum', title: 'Impressum' },
+  { href: '/impressum', title: 'Impressum', hotkey: 'i' },
   { href: '/conduct', title: 'Code of Conduct', hotkey: 'o' },
   { href: '/privacy', title: 'Privacy Policy', hotkey: 'v' },
 ]

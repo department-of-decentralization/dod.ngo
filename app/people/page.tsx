@@ -33,12 +33,14 @@ function PersonCard({ person }: { person: PersonData }) {
 }
 
 export default function PeoplePage() {
-  const currentMembers = peopleData.filter((person) => !person.isAlumni)
-  const alumni = peopleData.filter((person) => person.isAlumni)
+  const currentMembers = peopleData
+    .filter((person) => !person.isAlumni)
+    .sort(() => Math.random() - 0.5)
+  const alumni = peopleData.filter((person) => person.isAlumni).sort(() => Math.random() - 0.5)
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="mb-12 text-center text-4xl font-bold">Department Members</h1>
+      <h1 className="mb-12 text-center text-4xl font-bold">Collective Members</h1>
 
       <section className="mb-16">
         <h2 className="mb-8 text-2xl font-semibold">Office</h2>
