@@ -13,6 +13,7 @@ const siteMetadata = {
   // mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'hello@dod.ngo',
   github: 'https://github.com/department-of-decentralization',
+  bluesky: 'https://bsky.app/profile/dod.ngo',
   x: 'https://x.com/dod_berlin',
   twitter: 'https://twitter.com/dod_berlin',
   // facebook: 'https://facebook.com',
