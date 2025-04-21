@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import { ReactNode } from 'react'
-import Menu from './Menu'
+import Menu from './Menu/Menu'
 
 interface Props {
   children: ReactNode

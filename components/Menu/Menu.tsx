@@ -1,12 +1,12 @@
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 import Logo from '@/data/wolpy.png'
-import Link from './Link'
+import Link from '../Link'
 import MobileNav from './MobileNav'
-import ThemeSwitch from './ThemeSwitch'
-import SearchButton from './SearchButton'
+import ThemeSwitch from '../ThemeSwitch'
+import SearchButton from '../SearchButton'
 import Image from 'next/image'
-import SocialIcon from './social-icons'
+import SocialIcons from '../SocialIcons'
 
 const Menu = () => {
   return (
@@ -86,11 +86,8 @@ const Menu = () => {
       <MobileNav />
 
       {/* Theme Switch at bottom */}
-      <div className="mx-2 hidden flex-row  gap-4 md:flex">
-        <SocialIcon kind="github" href={siteMetadata.github} size={5} />
-        <SocialIcon kind="bluesky" href={siteMetadata.bluesky} size={5} />
-        <SocialIcon kind="x" href={siteMetadata.x} size={5} />
-        <SocialIcon kind="youtube" href={siteMetadata.youtube} size={5} />
+      <div className="mx-2 hidden flex-row gap-4 md:flex">
+        <SocialIcons />
       </div>
     </header>
   )
