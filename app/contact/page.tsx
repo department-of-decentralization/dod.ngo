@@ -16,7 +16,9 @@ export default function Contact() {
           <a href="https://c-base.org/" target="_blank" rel="noreferrer">
             c-base
           </a>{' '}
-          in Berlin. Drop in and say hi!
+          in Berlin. A Stammtisch (also known as "regulars' table") is not a structured meeting or
+          meetup with talks, but simply a friendly get-together of like-minded people. Come by and
+          say hi!
         </p>
         <div>
           <p>
@@ -28,7 +30,7 @@ export default function Contact() {
         </div>
         <h2>On the Internet</h2>
         <p>
-          We are coordinating on [Matrix]:
+          We are chatting on [Matrix]:
           <a
             href="https://matrix.to/#/%23stammtisch:dod.ngo"
             target="_blank"

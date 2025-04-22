@@ -18,6 +18,9 @@ import carlImg from './images/carl.jpg'
 import jommiImg from './images/jommi.jpg'
 import nichImg from './images/nich.jpg'
 import casparImg from './images/caspar.jpg'
+import gutoImg from './images/guto.jpg'
+import philImg from './images/phil.jpg'
+import griffImg from './images/griffin.jpg'
 import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
@@ -171,9 +174,11 @@ export const peopleData: PersonData[] = [
   },
   {
     name: 'Guto',
-    avatar: noImg,
+    avatar: gutoImg,
     isAlumni: true,
-    socials: {},
+    socials: {
+      twitter: 'https://x.com/gutomartino',
+    },
   },
   {
     name: 'Caspar',
@@ -206,15 +211,19 @@ export const peopleData: PersonData[] = [
   },
   {
     name: 'Phil',
-    avatar: noImg,
+    avatar: philImg,
     isAlumni: true,
-    socials: {},
+    socials: {
+      twitter: 'https://x.com/ph_lux',
+    },
   },
   {
     name: 'Griffin',
-    avatar: noImg,
+    avatar: griffImg,
     isAlumni: true,
-    socials: {},
+    socials: {
+      twitter: 'https://x.com/gichiba',
+    },
   },
   {
     name: 'Carl',
