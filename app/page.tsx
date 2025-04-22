@@ -33,7 +33,7 @@ export default function Page() {
           />
           <div style={{ textAlign: 'center' }}>
             <em>
-              The DoD team at{' '}
+              The DoD team and friends at{' '}
               <a href="https://v1.protocol.berlin" target="_blank" rel="noopener noreferrer">
                 Protocol Berg v1
               </a>{' '}
