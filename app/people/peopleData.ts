@@ -21,6 +21,9 @@ import casparImg from './images/caspar.jpg'
 import gutoImg from './images/guto.jpg'
 import philImg from './images/phil.jpg'
 import griffImg from './images/griffin.jpg'
+import adeolImg from './images/adeola.jpg'
+import eliasImg from './images/elias.jpg'
+import eylImg from './images/eylon.jpg'
 import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
@@ -190,9 +193,11 @@ export const peopleData: PersonData[] = [
   },
   {
     name: 'Elias',
-    avatar: noImg,
+    avatar: eliasImg,
     isAlumni: true,
-    socials: {},
+    socials: {
+      twitter: 'https://x.com/8bitpal',
+    },
   },
   {
     name: 'Nichanan',
@@ -205,9 +210,11 @@ export const peopleData: PersonData[] = [
   },
   {
     name: 'Adeola',
-    avatar: noImg,
+    avatar: adeolImg,
     isAlumni: true,
-    socials: {},
+    socials: {
+      twitter: 'https://x.com/adeolaogunwole',
+    },
   },
   {
     name: 'Phil',
@@ -239,6 +246,14 @@ export const peopleData: PersonData[] = [
     isAlumni: false,
     socials: {
       twitter: 'https://twitter.com/joakimhi',
+    },
+  },
+  {
+    name: 'Eylon',
+    avatar: eylImg,
+    isAlumni: true,
+    socials: {
+      twitter: 'https://twitter.com/TheEylon',
     },
   },
 ]
