@@ -22,6 +22,13 @@ export default function NextStammtisch() {
     // Set start time to 21:00 UTC which is intentially a bit into the event
     nextStammtisch.setUTCHours(21)
 
+    // Check if this is June 2025 because of ProtocolBerg v2 (month 5, since January is 0)
+    if (nextStammtisch.getUTCFullYear() === 2025 && nextStammtisch.getUTCMonth() === 5) {
+      // Skip June 2025
+      nextMonth++
+      continue
+    }
+
     // If Stammtisch already started/passed this month, move to next month
     nextMonth++
   } while (nextStammtisch < currentDate)
