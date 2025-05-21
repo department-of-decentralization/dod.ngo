@@ -1,11 +1,17 @@
 'use client'
 
+import skippedDates from '@/data/skippedStammtisch'
+
 export default function NextStammtisch() {
+  // For testing
+  // const currentDate = new Date('2025-06-02T12:00:00Z')
   const currentDate = new Date()
   const currentMonth = currentDate.getUTCMonth()
   const currentYear = currentDate.getUTCFullYear()
   let nextStammtisch = new Date()
   let nextMonth = 0
+
+  let shouldSkip = false
 
   do {
     // Create date object for 1st of current month
@@ -22,16 +28,30 @@ export default function NextStammtisch() {
     // Set start time to 21:00 UTC which is intentially a bit into the event
     nextStammtisch.setUTCHours(21)
 
-    // Check if this is June 2025 because of ProtocolBerg v2 (month 5, since January is 0)
-    if (nextStammtisch.getUTCFullYear() === 2025 && nextStammtisch.getUTCMonth() === 5) {
-      // Skip June 2025
-      nextMonth++
+    // Check if this month is in the skipped dates list
+    shouldSkip = skippedDates.skippedDates.some(
+      (skipped) =>
+        skipped.year === nextStammtisch.getUTCFullYear() &&
+        skipped.month === nextStammtisch.getUTCMonth()
+    )
+
+    console.log(
+      `shouldSkip: ${shouldSkip}, date: ${nextStammtisch.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}`
+    )
+
+    if (shouldSkip) {
+      ++nextMonth
       continue
     }
 
     // If Stammtisch already started/passed this month, move to next month
-    nextMonth++
-  } while (nextStammtisch < currentDate)
+    ++nextMonth
+  } while (nextStammtisch < currentDate || shouldSkip)
 
   return (
     <span className="font-medium">
