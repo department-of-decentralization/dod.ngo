@@ -8,8 +8,8 @@ const siteMetadata = {
   theme: 'system', // system, dark or light
   siteUrl: 'https://dod.ngo',
   siteRepo: 'https://github.com/department-of-decentralization/dod.ngo',
-  siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
-  socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card-dod.png`,
+  siteLogo: `${process.env.BASE_PATH || 'https://dod.ngo'}/static/images/logo.png`,
+  socialBanner: `${process.env.BASE_PATH || 'https://dod.ngo'}/static/images/twitter-card-dod.png`,
   // mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'hello@dod.ngo',
   github: 'https://github.com/department-of-decentralization',
