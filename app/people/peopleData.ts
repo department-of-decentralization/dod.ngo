@@ -24,6 +24,8 @@ import griffImg from './images/griffin.jpg'
 import adeolImg from './images/adeola.jpg'
 import eliasImg from './images/elias.jpg'
 import eylImg from './images/eylon.jpg'
+import yrnImg from './images/yaron.jpg'
+import mirImg from './images/miriam.jpg'
 import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
@@ -89,7 +91,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Kirill',
     avatar: kirillImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       website: 'https://pimenov.cc/',
       github: 'https://github.com/kirushik',
@@ -254,6 +256,22 @@ export const peopleData: PersonData[] = [
     isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/TheEylon',
+    },
+  },
+  {
+    name: 'Yaron',
+    avatar: yrnImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://twitter.com/yaronski',
+    },
+  },
+  {
+    name: 'Miriam',
+    avatar: mirImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://twitter.com/mcnaclh2o',
     },
   },
 ]
