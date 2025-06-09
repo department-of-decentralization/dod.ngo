@@ -25,6 +25,7 @@ import adeolImg from './images/adeola.jpg'
 import eliasImg from './images/elias.jpg'
 import eylImg from './images/eylon.jpg'
 import yrnImg from './images/yaron.jpg'
+import mirImg from './images/miriam.jpg'
 import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
@@ -260,9 +261,17 @@ export const peopleData: PersonData[] = [
   {
     name: 'Yaron',
     avatar: yrnImg,
-    isAlumni: true,
+    isAlumni: false,
     socials: {
       twitter: 'https://twitter.com/yaronski',
+    },
+  },
+  {
+    name: 'Miriam',
+    avatar: mirImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://twitter.com/mcnaclh2o',
     },
   },
 ]
