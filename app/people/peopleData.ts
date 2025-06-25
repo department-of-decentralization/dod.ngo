@@ -24,6 +24,7 @@ import griffImg from './images/griffin.jpg'
 import adeolImg from './images/adeola.jpg'
 import eliasImg from './images/elias.jpg'
 import eylImg from './images/eylon.jpg'
+import peterImg from './images/peter.jpg'
 import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
@@ -254,6 +255,14 @@ export const peopleData: PersonData[] = [
     isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/TheEylon',
+    },
+  },
+  {
+    name: 'Peter',
+    avatar: peterImg,
+    isAlumni: true,
+    socials: {
+      website: 'https://kalambet.dev/',
     },
   },
 ]
