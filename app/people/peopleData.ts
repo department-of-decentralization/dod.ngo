@@ -260,7 +260,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Peter',
     avatar: peterImg,
-    isAlumni: true,
+    isAlumni: false,
     socials: {
       website: 'https://kalambet.dev/',
     },
