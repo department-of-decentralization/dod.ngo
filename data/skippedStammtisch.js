@@ -11,6 +11,11 @@ const skippedStammtisch = {
       month: 8, // August
       reason: 'c-base maintenance days (cmd)',
     },
+    {
+      year: 2025,
+      month: 9, // september
+      reason: '30 years of c-base',
+    },
   ],
 }
 
