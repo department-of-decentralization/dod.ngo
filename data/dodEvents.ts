@@ -11,6 +11,16 @@ interface Event {
 
 export const events: Event[] = [
   {
+    title: 'Criticial Decentralization Cluster',
+    date: '2025-12-01',
+    description:
+      'the #39c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
+    link: {
+      url: 'https://decentral.community',
+      label: 'decentral.community',
+    },
+  },
+  {
     title: 'Protocol Berg v2',
     date: '2025-06-01',
     description: 'the decentralized protocol and infrastructure conference',
