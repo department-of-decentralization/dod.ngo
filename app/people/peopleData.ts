@@ -92,7 +92,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Kirill',
     avatar: kirillImg,
-    isAlumni: true,
+    isAlumni: false,
     socials: {
       website: 'https://pimenov.cc/',
       github: 'https://github.com/kirushik',
