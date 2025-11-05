@@ -109,7 +109,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Stina',
     avatar: stinaImg,
-    isAlumni: true,
+    isAlumni: false,
     socials: {
       twitter: 'https://twitter.com/stinalinneag',
     },
