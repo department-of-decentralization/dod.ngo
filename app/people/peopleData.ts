@@ -24,7 +24,9 @@ import griffImg from './images/griffin.jpg'
 import adeolImg from './images/adeola.jpg'
 import eliasImg from './images/elias.jpg'
 import eylImg from './images/eylon.jpg'
-import peterImg from './images/peter.jpg'
+import yrnImg from './images/yaron.jpg'
+import mirImg from './images/miriam.jpg'
+import ptrImg from './images/peter.jpg'
 import noImg from './images/noPhoto.jpg'
 
 export interface PersonData {
@@ -107,7 +109,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Stina',
     avatar: stinaImg,
-    isAlumni: true,
+    isAlumni: false,
     socials: {
       twitter: 'https://twitter.com/stinalinneag',
     },
@@ -258,11 +260,28 @@ export const peopleData: PersonData[] = [
     },
   },
   {
+    name: 'Yaron',
+    avatar: yrnImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://twitter.com/yaronski',
+    },
+  },
+  {
+    name: 'Miriam',
+    avatar: mirImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://twitter.com/mcnaclh2o',
+    },
+  },
+  {
     name: 'Peter',
-    avatar: peterImg,
+    avatar: ptrImg,
     isAlumni: false,
     socials: {
       website: 'https://kalambet.dev/',
+      github: 'https://github.com/kalambet',
     },
   },
 ]
