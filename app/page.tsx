@@ -46,7 +46,6 @@ export default function Page() {
             style={{ width: '100%', aspectRatio: '16 / 9', border: 0 }}
             src="https://www.youtube.com/embed/NW6ViGipnT8"
             title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
-            frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen>
