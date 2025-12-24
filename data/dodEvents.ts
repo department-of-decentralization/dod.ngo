@@ -197,8 +197,8 @@ export const events: Event[] = [
     description:
       'The Ethereum testnet and infrastructure conference where the Goerli Testnet was launched live on stage',
     link: {
-      url: 'https://goerli.net/',
-      label: 'goerli.net',
+      url: 'https://goerli.dod.ngo/',
+      label: 'goerli.dod.ngo',
     },
   },
   {
