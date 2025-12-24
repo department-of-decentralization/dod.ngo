@@ -90,8 +90,8 @@ export const events: Event[] = [
     date: '2022-09-01',
     description: 'hackathon, conference, and cultural festival, third edition',
     link: {
-      url: 'https://ethberlin.ooo',
-      label: 'ethberlin.ooo',
+      url: 'https://2022.ethberlin.org',
+      label: '2022.ethberlin.org',
     },
   },
   {
