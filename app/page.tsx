@@ -11,7 +11,7 @@ export default function Page() {
         <div>
           The Department of Decentralization is a collective of people from Berlin. The group
           assembled in 2018 to organize the{' '}
-          <a href="https://ethberlin.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://2018.ethberlin.org" target="_blank" rel="noopener noreferrer">
             ETHBerlin
           </a>{' '}
           hackathon and has been active since.

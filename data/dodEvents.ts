@@ -208,8 +208,8 @@ export const events: Event[] = [
     description:
       'Hackathon, conference, and the first event that ran almost entirely using decentralized applications',
     link: {
-      url: 'https://ethberlin.com',
-      label: 'ethberlin.com',
+      url: 'https://2018.ethberlin.org',
+      label: '2018.ethberlin.org',
     },
   },
 ]
