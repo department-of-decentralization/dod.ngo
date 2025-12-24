@@ -163,8 +163,8 @@ export const events: Event[] = [
     yearOnly: true,
     description: 'hackathon, conference, and cultural festival, second edition',
     link: {
-      url: 'https://ethberlinzwei.com',
-      label: 'ethberlinzwei.com',
+      url: 'https://2019.ethberlin.org',
+      label: '2019.ethberlin.org',
     },
   },
   {
