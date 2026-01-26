@@ -45,7 +45,7 @@ export default function Page() {
           <iframe
             width="1273"
             height="716"
-            src="https://www.youtube.com/embed/NW6ViGipnT8"
+            src="https://www.youtube.com/embed/a6Ee1sas5IQ"
             title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
