@@ -51,7 +51,7 @@ export default function Page() {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
-         />
+          />
           <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
             <em>Insights on how we work by Afri at W3PN meetup, 2024.</em>
           </div>
