@@ -16,6 +16,11 @@ const skippedStammtisch = {
       month: 9, // september
       reason: '30 years of c-base',
     },
+    {
+      year: 2026,
+      month: 6, // june
+      reason: 'ProtocolBerg v3',
+    },
   ],
 }
 
