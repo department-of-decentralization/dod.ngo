@@ -43,8 +43,8 @@ export default function Page() {
         </div>
         <div style={{ marginTop: '2rem' }}>
           <iframe
-            width="1273"
-            height="716"
+            width="1918"
+            height="783"
             src="https://www.youtube.com/embed/a6Ee1sas5IQ"
             title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
             frameBorder="0"
