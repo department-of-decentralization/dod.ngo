@@ -46,12 +46,17 @@ export default function Page() {
           </div>
         </div>
         <div style={{ marginTop: '2rem' }}>
-          <YouTubeConsentEmbed
-            videoId="a6Ee1sas5IQ"
-            title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
-            thumbnailSrc="/static/youtube-cover.png"
-            caption="Insights on how we work by Afri at W3PN meetup, 2024."
-          />
+          <div className="relative w-full overflow-hidden rounded-md pb-[56.25%]">
+            <YouTubeConsentEmbed
+              videoId="a6Ee1sas5IQ"
+              title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
+              thumbnailSrc="/static/youtube-cover.png"
+              caption="Insights on how we work by Afri at W3PN meetup, 2024."
+            />
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
+            <em>Insights on how we work by Afri at W3PN meetup, 2024.</em>
+          </div>
         </div>
       </div>
     </>
