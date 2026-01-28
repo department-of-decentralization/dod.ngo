@@ -42,16 +42,17 @@ export default function Page() {
           </div>
         </div>
         <div style={{ marginTop: '2rem' }}>
-          <iframe
-            width="1918"
-            height="783"
-            src="https://www.youtube.com/embed/a6Ee1sas5IQ"
-            title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
+          <div className="relative w-full overflow-hidden rounded-md pb-[56.25%]">
+            <iframe
+              className="absolute left-0 top-0 h-full w-full"
+              src="https://www.youtube.com/embed/a6Ee1sas5IQ"
+              title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
+          </div>
           <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
             <em>Insights on how we work by Afri at W3PN meetup, 2024.</em>
           </div>
