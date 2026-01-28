@@ -54,9 +54,6 @@ export default function Page() {
               caption="Insights on how we work by Afri at W3PN meetup, 2024."
             />
           </div>
-          <div style={{ textAlign: 'center', marginTop: '0.5rem' }}>
-            <em>Insights on how we work by Afri at W3PN meetup, 2024.</em>
-          </div>
         </div>
       </div>
     </>
