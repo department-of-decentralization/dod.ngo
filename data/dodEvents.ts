@@ -20,7 +20,7 @@ export const events: Event[] = [
     },
   },
   {
-    title: 'Protocol Berg v3',
+    title: 'Protocol Berg w3',
     date: '2026-06-01',
     description: 'the decentralized protocol and infrastructure conference',
     link: {
