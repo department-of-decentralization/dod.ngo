@@ -12,7 +12,7 @@ interface Event {
 export const events: Event[] = [
   {
     title: 'DWeb Camp 2026',
-    date: '2026-07-01',
+    date: '2026-07-08',
     description: 'the decentralized web camp right outside berlin in collaboration with Internet Archive and the DWeb Berlin community',
     link: {
       url: 'https://dwebcamp.org',
@@ -21,7 +21,7 @@ export const events: Event[] = [
   },
   {
     title: 'Protocol Berg w3',
-    date: '2026-06-01',
+    date: '2026-06-19',
     description: 'the decentralized protocol and infrastructure conference',
     link: {
       url: 'https://protocol.berlin',
