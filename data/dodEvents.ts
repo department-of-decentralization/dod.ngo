@@ -15,7 +15,7 @@ export const events: Event[] = [
     date: '2026-07-01',
     description: 'the decentralized web camp right outside berlin in collaboration with Internet Archive and the DWeb Berlin community',
     link: {
-      url: 'https://dwebcamp.net',
+      url: 'https://dwebcamp.org',
       label: 'dwebcamp.net',
     },
   },
