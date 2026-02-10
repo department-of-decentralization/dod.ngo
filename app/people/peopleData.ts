@@ -92,7 +92,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Kirill',
     avatar: kirillImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       website: 'https://pimenov.cc/',
       github: 'https://github.com/kirushik',
@@ -238,7 +238,7 @@ export const peopleData: PersonData[] = [
   {
     name: 'Carl',
     avatar: carlImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       github: 'https://github.com/Cbezzenberger',
     },
@@ -270,10 +270,16 @@ export const peopleData: PersonData[] = [
   {
     name: 'Miriam',
     avatar: mirImg,
-    isAlumni: false,
+    isAlumni: true,
     socials: {
       twitter: 'https://twitter.com/mcnaclh2o',
     },
+  },
+  {
+    name: 'Florian',
+    avatar: noImg,
+    isAlumni: false,
+    socials: {},
   },
   {
     name: 'Peter',
