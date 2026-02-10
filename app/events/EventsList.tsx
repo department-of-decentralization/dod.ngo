@@ -1,6 +1,7 @@
 'use client'
 
 import { events } from '@/data/dodEvents'
+import NextBerlinMeshMeetup from 'app/NextBerlinMeshMeetup'
 import NextStammtisch from 'app/NextStammtisch'
 
 export default function EventsList() {
@@ -41,11 +42,22 @@ export default function EventsList() {
         <ul>
           {upcomingEvents.map(renderEvent)}
           <li>
-            Next Stammtisch (informal meetup) at{' '}
+            Next <strong>DoD Stammtisch</strong> (informal meetup) at{' '}
             <a href="https://c-base.org" target="_blank" rel="noopener noreferrer">
               c-base
             </a>
             : <NextStammtisch /> at 19:00 Berlin time.
+          </li>
+          <li>
+            Next{' '}
+            <a href="https://chaosmesh.net/" target="_blank" rel="noopener noreferrer">
+              <strong>Berlin Chaos Mesh</strong>
+            </a>{' '}
+            meetup (Meshtastic/Meshcore/Reticulum) at{' '}
+            <a href="https://c-base.org" target="_blank" rel="noopener noreferrer">
+              c-base
+            </a>
+            : <NextBerlinMeshMeetup /> at 19:00 Berlin time.
           </li>
         </ul>
       </div>
