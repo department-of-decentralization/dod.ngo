@@ -13,6 +13,7 @@ import helsImg from './images/hels.jpeg'
 import franziImg from './images/franzi.jpeg'
 import afriImg from './images/afri.jpeg'
 import alexImg from './images/alex.jpg'
+import bethImg from './images/beth.jpg'
 import liliImg from './images/lili.jpg'
 import carlImg from './images/carl.jpg'
 import jommiImg from './images/jommi.jpg'
@@ -35,6 +36,7 @@ export interface PersonData {
   isAlumni: boolean
   socials: {
     twitter?: string
+    bluesky?: string
     github?: string
     website?: string
     linkedin?: string
@@ -49,6 +51,7 @@ export const peopleData: PersonData[] = [
     socials: {
       website: 'https://ligi.de',
       twitter: 'https://twitter.com/mr_ligi',
+      bluesky: 'https://bsky.app/profile/ligi.de',
       github: 'https://github.com/ligi',
     },
   },
@@ -57,9 +60,18 @@ export const peopleData: PersonData[] = [
     avatar: afriImg,
     isAlumni: false,
     socials: {
-      github: 'https://github.com/q9f',
-      twitter: 'https://twitter.com/q9fcc',
-      website: 'https://q9f.cc/',
+      website: 'https://l5y.tech/',
+      github: 'https://github.com/l5yth',
+      bluesky: 'https://bsky.app/profile/l5y.tech',
+    },
+  },
+  {
+    name: 'Beth',
+    avatar: bethImg,
+    isAlumni: false,
+    socials: {
+      twitter: 'https://x.com/ontologymachine',
+      github: 'https://github.com/ontologymachine',
     },
   },
   {
@@ -68,6 +80,7 @@ export const peopleData: PersonData[] = [
     isAlumni: false,
     socials: {
       twitter: 'https://twitter.com/_franzihei',
+      bluesky: 'https://bsky.app/profile/did:plc:sdqcstxdiwgdugbkbxjho6nc',
       github: 'https://github.com/franzihei',
     },
   },
@@ -86,6 +99,7 @@ export const peopleData: PersonData[] = [
     isAlumni: false,
     socials: {
       twitter: 'https://twitter.com/kaanuzdogan',
+      bluesky: 'https://bsky.app/profile/did:plc:3gbk5qi45u4fmh752xy5ibwb',
       github: 'https://github.com/kuzdogan',
     },
   },
