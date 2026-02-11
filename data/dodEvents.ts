@@ -11,6 +11,16 @@ interface Event {
 
 export const events: Event[] = [
   {
+    title: 'DWeb Camp Unconference + Meetup',
+    date: '2026-02-28',
+    description:
+      'help co-create dwebcamp at the unconference and get inspired and connected at the meetup',
+    link: {
+      url: 'https://dwebcamp.org/berlin-2026/',
+      label: 'dwebcamp.org/berlin-2026',
+    },
+  },
+  {
     title: 'Criticial Decentralization Cluster',
     date: '2025-12-01',
     description:
