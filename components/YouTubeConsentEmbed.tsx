@@ -2,6 +2,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from '@/components/Image'
 
 interface YouTubeConsentEmbedProps {
   /** The YouTube video ID to embed. */
@@ -42,10 +43,12 @@ export default function YouTubeConsentEmbed({
           <div className="absolute inset-0">
             {thumbnailSrc ? (
               <>
-                <img
+                <Image
                   src={thumbnailSrc}
                   alt=""
-                  className="absolute inset-0 h-full w-full object-cover blur-md"
+                  fill
+                  sizes="100vw"
+                  className="object-cover blur-md"
                 />
                 <div className="absolute inset-0 bg-black/40" />
               </>

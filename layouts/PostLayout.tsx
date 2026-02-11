@@ -14,15 +14,12 @@ const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
 
-const bskyHref = (value?: string) =>
-  value
-    ? value.trim().startsWith('http')
-      ? value.trim()
-      : `https://bsky.app/profile/${value.trim().replace(/^@/, '')}`
-    : undefined
+const bskyHref = (value: string) =>
+  value.trim().startsWith('http')
+    ? value.trim()
+    : `https://bsky.app/profile/${value.trim().replace(/^@/, '')}`
 
-const bskyLabel = (value?: string) => {
-  if (!value) return undefined
+const bskyLabel = (value: string) => {
   const trimmed = value.trim()
   if (trimmed.startsWith('http')) {
     const match = trimmed.match(/bsky\.app\/profile\/([^/?#]+)/)

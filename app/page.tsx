@@ -1,6 +1,7 @@
 import { genPageMetadata } from './seo'
 import PageTitle from '@/components/PageTitle'
 import YouTubeConsentEmbed from '@/components/YouTubeConsentEmbed'
+import Image from '@/components/Image'
 
 export const metadata = genPageMetadata({ title: 'Department of Decentralization' })
 
@@ -30,9 +31,12 @@ export default function Page() {
           components. Our collective entirely runs on donations.
         </div>
         <div>
-          <img
+          <Image
             alt="The DoD team at Protocol Berg v1 in 2023"
             src="/static/images/team.jpg"
+            width={1200}
+            height={800}
+            className="h-auto w-full"
             style={{ marginBottom: 0 }}
           />
           <div style={{ textAlign: 'center' }}>
