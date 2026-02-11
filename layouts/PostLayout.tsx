@@ -14,6 +14,23 @@ const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
 
+const bskyHref = (value?: string) =>
+  value
+    ? value.trim().startsWith('http')
+      ? value.trim()
+      : `https://bsky.app/profile/${value.trim().replace(/^@/, '')}`
+    : undefined
+
+const bskyLabel = (value?: string) => {
+  if (!value) return undefined
+  const trimmed = value.trim()
+  if (trimmed.startsWith('http')) {
+    const match = trimmed.match(/bsky\.app\/profile\/([^/?#]+)/)
+    return match ? `@${match[1]}` : trimmed
+  }
+  return trimmed.startsWith('@') ? trimmed : `@${trimmed}`
+}
+
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
   year: 'numeric',
@@ -77,6 +94,17 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                       <dl className="whitespace-nowrap text-sm font-medium leading-5">
                         <dt className="sr-only">Name</dt>
                         <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
+                        <dt className="sr-only">Bluesky</dt>
+                        <dd>
+                          {author.bsky && (
+                            <Link
+                              href={bskyHref(author.bsky)}
+                              className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                            >
+                              {bskyLabel(author.bsky)}
+                            </Link>
+                          )}
+                        </dd>
                         <dt className="sr-only">Twitter</dt>
                         <dd>
                           {author.twitter && (

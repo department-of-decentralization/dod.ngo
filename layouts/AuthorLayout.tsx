@@ -9,7 +9,13 @@ interface Props {
 }
 
 export default function AuthorLayout({ children, content }: Props) {
-  const { name, avatar, occupation, company, email, twitter, linkedin, github } = content
+  const { name, avatar, occupation, company, email, twitter, bsky, linkedin, github } = content
+
+  const bskyHref = bsky
+    ? bsky.trim().startsWith('http')
+      ? bsky.trim()
+      : `https://bsky.app/profile/${bsky.trim().replace(/^@/, '')}`
+    : undefined
 
   return (
     <>
@@ -37,6 +43,7 @@ export default function AuthorLayout({ children, content }: Props) {
               <SocialIcon kind="mail" href={`mailto:${email}`} />
               <SocialIcon kind="github" href={github} />
               <SocialIcon kind="linkedin" href={linkedin} />
+              <SocialIcon kind="bluesky" href={bskyHref} />
               <SocialIcon kind="x" href={twitter} />
             </div>
           </div>

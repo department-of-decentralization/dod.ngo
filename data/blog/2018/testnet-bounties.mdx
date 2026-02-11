@@ -1,0 +1,64 @@
+---
+title: The Görli Testnet Initiative Bounties Announcement
+date: 2018-09-13T14:40:31.000Z
+lastmod: 2026-02-11T15:55:37.000Z
+tags: ['Goerli', 'Testnet']
+images: ['/static/images/2020/happy-birthday/beer-and-testnet.jpg']
+summary: 'The Görli testnet initiative is a development campaign to create the first cross-client proof-of-authority network for Ethereum. There are various testnets available for experimenting with contracts and d-apps before going live on the public chain. However, there is no testnet available that is both widely usable across all clients, and robust enough to guarantee consistent availability and high reliability. This is what Görli tries to be.'
+authors: ['Afri']
+---
+
+Since the ETHBerlin hackathon, where the idea was born and [we were disqualified](/blog/2018/proof-of-transparency), we've [come a long way](https://www.ethnews.com/the-goerli-testnet-has-arrived), and the current _test-testnet_ is already supported by four different clients, namely Geth, Pantheon, Nethermind, and Parity Ethereum. Even though the code is not final and not all of these clients are feature-complete yet, they are happily syncing the Görli chain.
+
+[![Demo](https://thepracticaldev.s3.amazonaws.com/i/3j6po1vp14peln4b79cy.png)](https://asciinema.org/a/212949)
+
+A lot of members from the Ethereum community are convinced this project is badly needed and [joined our Gitter](https://gitter.im/goerli/testnet) to help running nodes, [block explorers](https://blockscout.com/eth/goerli), and volunteering in many other ways. Look at this; people even Tweet about the project.
+
+> "_These folks are neat!_" --- [Austin Griffith](https://twitter.com/austingriffith/status/1063898676240748547), hacker
+
+> "_More than being just another testnet, Goerli is proving to be a great environment for collaborative development and cross-team communication and coordination._" --- [E.G. Galano](https://twitter.com/egalano/status/1064034649679118336), infrastructure
+
+> "_Is it too early to say I’m a #Goerli testnet maximalist?_" --- [Maria Paula Fernandez](https://twitter.com/MPtherealMVP/status/1064877800413261824), mvp
+
+The feedback we received so far is encouraging, but it does not pay anyone's bills. Therefore, we are thrilled to announce that the Görli initiative received the first [DAI 52_200 grant from the ETC Cooperative](https://medium.com/@pyskell/building-a-better-unified-testnet-3f48490cd4e1) and an anonymous [donation of DAI 10_000](https://etherscan.io/address/0x6974df01bf293ab9af66127c03aac79b81d494c7) ([who's on the multi-sig?](https://twitter.com/5chdn/status/1063851317028954112)). The funds available now can be used to help to develop this project with all the tools and infrastructure required.
+
+The roadmap ahead will include launching two testnets, a fully Constantinople-enabled Görli testnet for Geth, Parity Ethereum, Pantheon, and all the other Ethereum clients; and a Görli Classic testnet for Geth Classic, Parity Ethereum, and Mantis mimicking Ethereum Classic mainnet conditions.
+
+The first batch of bounties will be announced today, sorted by priority for the cause:
+
+1. A specification for the Clique POA engine as [EIP-225](https://github.com/ethereum/EIPs/pull/1570)/[ECIP-1048](https://github.com/ethereumclassic/ECIPs/pull/7)
+    **DAI 5_000** [claimed by @karalabe](https://etherscan.io/tx/0xab7327d2096788e01fa42b98b05d2583d2512a178f218f70e252aba68e2014dd)
+
+2. A Clique engine written in Rust for [Parity Ethereum #9981](https://github.com/paritytech/parity-ethereum/pull/9981)
+    **DAI 30_000** claimable by @thefallentree and @jwasinger (chunks [A](https://etherscan.io/tx/0xa3424fbc2eb472a89700b7f276d847fc093a84f199e13f75ffb7bb41152c76ba), [B](https://etherscan.io/tx/0x5244da2a481cc43c4816941e91acce6000c4d04cfa98b53d04e6d07b5a007f18), [Gitcoin](https://gitcoin.co/profile/goerli))
+
+3. [Genesis](https://github.com/goerli/testnet/commit/92383483481d541e90adfb58ea43ea55e5bc4ea3) and [chain specs](https://github.com/goerli/testnet/commit/f10cee16d46a8db8272f8d4ca46703a949ba110c) for Görli
+    **DAI 2_500** [claimed by @5chdn](https://etherscan.io/tx/0x227e9bb276ef77f0ecd0bace60932bdf3adad4aced80c5a50d1fdff99fbfab3f)
+
+3. [Genesis](https://github.com/goerli/testnet/commit/5fb2226121516baf398b275f01d466cde476915a) and [chain specs](https://github.com/goerli/testnet/commit/be2b82362103b38c841056954b02f7e737cbdd33) for Kotti (Classic)
+    **DAI 2_500** [claimed by @5chdn](https://etherscan.io/tx/0xed6f9fa97e2b6a24efadc1a120fadee9172a3c0efb6683209f03bf6f8a589af6)
+
+4. Native support for Görli in [Geth #18121](https://github.com/ethereum/go-ethereum/pull/18121)
+    **DAI 2_500** [claimed by @karalabe](https://etherscan.io/tx/0x3026a899de41c5de9dcec7584bba23bc62c01bade3da5b57db9df047cfad5ee5)
+
+4. Native support for Kotti (Classic) in [Multi Geth #17](https://github.com/ethoxy/multi-geth/pull/17)
+    **DAI 2_500** [claimed by @5chdn](https://etherscan.io/tx/0xe99cd5ee49ffaad0eadee7da77da1d3562b0e9e76cf2cb59a1e8ac31aaaefa13)
+
+5. Native support for Görli in [Parity Clique #10](https://github.com/goerli/parity-goerli/pull/10)
+    **DAI 2_500** [claimed by @5chdn](https://etherscan.io/tx/0xcf7b4639be806dd14d105f8ef9b462578274478f3afb9a358940b2f82e5200c2)
+
+5. Native support for Kotti (Classic) in [Parity Clique #45](https://github.com/goerli/parity-goerli/pull/45)
+    **DAI 2_500** [claimed by @5chdn](https://etherscan.io/tx/0xa7baa4840c1eea897d4e9535ceffe0cca7d58598ecd1f5526edd8548d706f09c)
+
+6. Native support for Görli in [Pantheon #370](https://github.com/PegaSysEng/pantheon/pull/370)
+    **DAI 2_500** [claimed by @Nashatyrev](https://etherscan.io/tx/0xd756941ee9e3f0068ce6a859568e02eeb2fb0236e2a5f5df534d1c914ae95bb6)
+
+6. Native support for Görli in [Nethermind #234](https://github.com/NethermindEth/nethermind/pull/234)
+    **DAI 2_500** [claimed by @tkstanczak](https://etherscan.io/tx/0x70db693e6bcb7d84397c60599eb62e661baa1d07e34566bcd1c03f93839c37e2)
+
+7. A one-way throttled bridge faucet from [Ropsten, Kovan, and Rinkeby](https://bridge.goerli.com/)
+    **DAI 5_000** [claimed by @ChainSafe](https://etherscan.io/tx/0x70804ddbdc678525258fe52159c0c0456fe82f0b53f434d3fd63cfa2c31a5c38)
+
+But why are some bounties already assigned to developers before this announcement was published, you might be wondering? It's simply because people were so excited about the Görli testnet initiative that they started working on it without asking for permission; without knowing we already planned to have these bounties available in future. This is the rare instance where we have more developers than funding available.
+
+Hopefully, more bounties will be available and announced as soon as more grants are available. Our [wishlist of projects and tools is sheer endless](https://github.com/goerli/testnet/issues). Open tasks that are claimable will be available on Gitcoin once the Parity Ethereum Clique engine is merged upstream, which is the primary blocker for all other tasks, and the Görli testnet is ready to relaunch with network ID `0x5` to replace Ropsten.
