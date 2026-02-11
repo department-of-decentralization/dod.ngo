@@ -97,7 +97,7 @@ export default function EventsList() {
           : <NextStammtisch /> at 19:00 Berlin time.
         </li>
       ),
-    },
+    } as UpcomingItem,
     {
       type: 'recurring',
       key: 'berlin-mesh',
@@ -115,7 +115,7 @@ export default function EventsList() {
           : <NextBerlinMeshMeetup /> at 19:00 Berlin time.
         </li>
       ),
-    },
+    } as UpcomingItem,
   ].sort((a, b) => b.date.getTime() - a.date.getTime())
 
   return (
