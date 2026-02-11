@@ -5,6 +5,7 @@ import { peopleData, PersonData } from './peopleData'
 function SocialLinks({ socials }: { socials: Record<string, string> }) {
   return (
     <div className="mt-1 flex gap-2">
+      {socials.bluesky && <SocialIcon kind="bluesky" href={socials.bluesky} size={5} />}
       {socials.twitter && <SocialIcon kind="twitter" href={socials.twitter} size={5} />}
       {socials.github && <SocialIcon kind="github" href={socials.github} size={5} />}
       {socials.website && <SocialIcon kind="website" href={socials.website} size={5} />}
