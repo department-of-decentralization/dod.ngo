@@ -14,7 +14,7 @@ export const events: Event[] = [
     title: 'DWeb Camp Unconference + Meetup',
     date: '2026-02-28',
     description:
-      'help co-create dwebcamp at the unconference and get inspired and connected at the meetup',
+      'unconference to help co-creating DWeb Camp and meetup afterward to get inspired and connected',
     link: {
       url: 'https://dwebcamp.org/berlin-2026/',
       label: 'dwebcamp.org/berlin-2026',
@@ -26,8 +26,8 @@ export const events: Event[] = [
     description:
       'the #39c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
-      url: 'https://decentral.community',
-      label: 'decentral.community',
+      url: 'https://decentral.community/39C3/',
+      label: 'decentral.community/39C3',
     },
   },
   {
@@ -35,8 +35,8 @@ export const events: Event[] = [
     date: '2025-06-01',
     description: 'the decentralized protocol and infrastructure conference',
     link: {
-      url: 'https://protocol.berlin',
-      label: 'protocol.berlin',
+      url: 'https://v2.protocol.berlin',
+      label: 'v2.protocol.berlin',
     },
   },
   {
@@ -45,8 +45,8 @@ export const events: Event[] = [
     description:
       'the #38c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
-      url: 'https://decentral.community',
-      label: 'decentral.community',
+      url: 'https://decentral.community/38C3/',
+      label: 'decentral.community/38C3',
     },
   },
   {
@@ -82,8 +82,8 @@ export const events: Event[] = [
     description:
       'the #37c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
-      url: 'https://decentral.community',
-      label: 'decentral.community',
+      url: 'https://decentral.community/37C3/',
+      label: 'decentral.community/37C3',
     },
   },
   {
