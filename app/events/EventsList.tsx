@@ -72,7 +72,11 @@ export default function EventsList() {
     startHourUtc: 21,
   })
 
-  const upcomingItems = [
+  type UpcomingItem =
+    | { type: 'event'; date: Date; event: (typeof events)[number] }
+    | { type: 'recurring'; key: string; date: Date; render: () => JSX.Element }
+
+  const upcomingItems: UpcomingItem[] = [
     ...upcomingEvents.map((event) => ({
       type: 'event',
       date: new Date(event.date),
