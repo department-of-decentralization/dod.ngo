@@ -118,7 +118,7 @@ export const events: Event[] = [
     description:
       'The Ethereum domain of Bundeskunsthalle was squatted by artist Hito Steyerl and the DoD. The StrikeDAO voted on three models of the future governance of this squatted domain quadratically',
     link: {
-      url: 'https://strikedao.com',
+      url: 'https://web.archive.org/web/20230401041247/https://strikedao.com/',
       label: 'strikedao.com',
     },
   },
