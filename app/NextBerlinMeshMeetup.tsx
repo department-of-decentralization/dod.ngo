@@ -1,21 +1,19 @@
 'use client'
 
-import skippedDates from '@/data/skippedStammtisch'
 import { getNextMonthlyWeekdayDate } from '@/lib/recurringEvents'
 
-export default function NextStammtisch() {
+export default function NextBerlinMeshMeetup() {
   // For testing
   // const currentDate = new Date('2025-06-02T12:00:00Z')
-  const nextStammtisch = getNextMonthlyWeekdayDate({
+  const nextMeetup = getNextMonthlyWeekdayDate({
     weekday: 3,
-    weekOfMonth: 3,
+    weekOfMonth: 2,
     startHourUtc: 21,
-    skipMonths: skippedDates.skippedDates,
   })
 
   return (
     <span className="font-medium">
-      {nextStammtisch.toLocaleDateString('en-US', {
+      {nextMeetup.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',

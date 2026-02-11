@@ -1,8 +1,12 @@
 import { genPageMetadata } from './seo'
 import PageTitle from '@/components/PageTitle'
+import YouTubeConsentEmbed from '@/components/YouTubeConsentEmbed'
 
 export const metadata = genPageMetadata({ title: 'Department of Decentralization' })
 
+/**
+ * Renders the Department of Decentralization homepage content.
+ */
 export default function Page() {
   return (
     <>
@@ -39,6 +43,16 @@ export default function Page() {
               </a>{' '}
               in 2023.
             </em>
+          </div>
+        </div>
+        <div style={{ marginTop: '2rem' }}>
+          <div className="relative w-full overflow-hidden rounded-md pb-[56.25%]">
+            <YouTubeConsentEmbed
+              videoId="a6Ee1sas5IQ"
+              title="Collective, Non-Profit. Private | Afri Schoedon | Web3Privacy Now, Berlin, 2024"
+              thumbnailSrc="/static/youtube-cover.png"
+              caption="Insights on how we work by Afri at W3PN meetup, 2024."
+            />
           </div>
         </div>
       </div>

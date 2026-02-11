@@ -29,13 +29,23 @@ export const events: Event[] = [
     },
   },
   {
+    title: 'DWeb Camp Unconference + Meetup',
+    date: '2026-02-28',
+    description:
+      'unconference to help co-creating DWeb Camp and meetup afterward to get inspired and connected',
+    link: {
+      url: 'https://dwebcamp.org/berlin-2026/',
+      label: 'dwebcamp.org/berlin-2026',
+    },
+  },
+  {
     title: 'Criticial Decentralization Cluster',
     date: '2025-12-01',
     description:
       'the #39c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
-      url: 'https://decentral.community',
-      label: 'decentral.community',
+      url: 'https://decentral.community/39C3/',
+      label: 'decentral.community/39C3',
     },
   },
   {
@@ -44,7 +54,7 @@ export const events: Event[] = [
     description: 'the decentralized protocol and infrastructure conference',
     link: {
       url: 'https://v2.protocol.berlin',
-      label: 'protocol.berlin',
+      label: 'v2.protocol.berlin',
     },
   },
   {
@@ -53,8 +63,8 @@ export const events: Event[] = [
     description:
       'the #38c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
-      url: 'https://decentral.community',
-      label: 'decentral.community',
+      url: 'https://decentral.community/38C3/',
+      label: 'decentral.community/38C3',
     },
   },
   {
@@ -90,8 +100,8 @@ export const events: Event[] = [
     description:
       'the #37c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
-      url: 'https://decentral.community',
-      label: 'decentral.community',
+      url: 'https://decentral.community/37C3/',
+      label: 'decentral.community/37C3',
     },
   },
   {
@@ -126,7 +136,7 @@ export const events: Event[] = [
     description:
       'The Ethereum domain of Bundeskunsthalle was squatted by artist Hito Steyerl and the DoD. The StrikeDAO voted on three models of the future governance of this squatted domain quadratically',
     link: {
-      url: 'https://strikedao.com',
+      url: 'https://web.archive.org/web/20230401041247/https://strikedao.com/',
       label: 'strikedao.com',
     },
   },
