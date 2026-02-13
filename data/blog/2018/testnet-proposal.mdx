@@ -1,0 +1,67 @@
+---
+title: The Görli Testnet Proposal - A Call for Participation.
+date: 2018-09-13T14:40:31.000Z
+lastmod: 2026-02-11T15:55:37.000Z
+tags: ['Goerli', 'Testnet']
+images: ['/static/images/2018/goerli.jpg']
+summary: 'There are many Ethereum testnets available for experimenting with smart contracts and deploying decentralised applications before going live on the main Ethereum network. However, there is no testnet available that is both widely usable across all client implementations, and robust enough to guarantee consistent availability and high reliability.'
+authors: ['Afri']
+---
+
+### Existing Public Testnets
+
+**Olympic** used to be the chain "`0`", the public Ethereum testnet prior to the public Frontier launch of the Ethereum main network. The Ethereum genesis block was templated [based on block #1028201](https://blog.ethereum.org/2015/07/27/final-steps/) of the Olympic network. This network was retired soon after the Frontier launch.
+
+**Morden** was introduced as the new public proof-of-work testnet which was launched with the Frontier release of the Ethereum public main network. The Ethereum community abandoned it due to [issues with the Spurious Dragon testing](https://blog.ethereum.org/2016/11/20/from-morden-to-ropsten/) efforts. However, it is still used by the Ethereum Classic community, also known as _Morden Classic_.
+
+**Ropsten** was the last public proof-of-work testnet and as of today, the last testnet that is available across different client implementations. It's the network with specifications closest to the Ethereum main network. It is mostly abandoned due to stability issues but still kept alive as this is the only way to test contracts and dapps on both Geth and Parity Ethereum.
+
+**Kovan** is the first proof-of-authority testnet launched as a response to the [Ropsten spam attacks](https://ethereum.stackexchange.com/questions/12477/ropsten-testnet-is-under-kind-of-attack-what-can-we-do). A consortium of [developers and service providers stepped up](https://medium.com/@Digix/announcing-kovan-a-stable-ethereum-public-testnet-10ac7cb6c85f) to utilise Parity's _Aura_ proof-of-authority engine to run a testnet.
+
+**Rinkeby** was the second proof-of-authority network, also launched in response to the Ropsten spam attacks. However, instead of Aura, it's using Geth's _Clique_ proof-of-authority engine [which differs in its specification](https://github.com/ethereum/EIPs/issues/225).
+
+Many other public Ethereum testnets with various specifications are available, i.e., the **Sokol** testnet, however, none of them are available across different clients while also being highly available and robust.
+
+As of today, only Geth implemented Clique and only Parity Ethereum implemented Aura. To run a cross-client testnet, users have to rely on the Ropsten proof-of-work network. However, proof-of-work mining on networks bearing no value is hard to be incentivised and the resulting low hash rates enable potential attackers to take over the network easily.
+
+### The Görli Testnet Proposal
+
+Now, that EIP-1011, the _hybrid Casper_ proof-of-work/proof-of-stake testnet idea [has been abandoned](https://medium.com/@VidrihMarko/roadmap-change-at-ethereum-sharding-and-casper-at-the-same-time-745f0587ae10) by latest Ethereum research, **Görli** could be the next-generation public Ethereum test network.
+
+We hereby propose,
+
+1. sufficiently specifying a proof-of-authority engine, such as Aura or Clique, in an EIP,
+2. to implement one or multiple of these engines across different clients, such as Geth and Parity Ethereum,
+3. and to bootstrap a new simplistic **Görli** proof-of-authority testnet based on the available implementations that mimics main network conditions.
+
+### Outlook and Roadmap
+
+The _ChainSafe_ team started working on an Aura port to Geth [at the #ETHBerlin hackathon](https://twitter.com/dod_berlin/status/1038803516511473664) and [suggests also porting Clique to Parity Ethereum](https://medium.com/@aidanhyman/chainsafe-systems-g%C3%B6rlitestnet-2583fa13107e). This is not a political proposal to favour one technology over another; it's rather the desire to enable developers with as many diverse tools as possible.
+
+The [Aura EIP](https://github.com/goerli/eips-aura-spec/blob/master/EIPS/eip-aura.md) is being drafted on Github. What's missing is details on the Aura chain-score rules, how the seals are composed, and how finality works. Currently, Aidan and myself are working on the EIP with the help of the Parity Ethereum team.
+
+A basic Aura engine is prepared in [this repository on Github](https://github.com/goerli/go-ethereum-aura). While the work on the integration of the engine and the testnet configuration is done, significant amounts of work still have to be done in the actual implementation of the Aura consensus mechanism. Currently, Elizabeth, David, Dustin, and Tim are working on this but would appreciate help from engineers more confident with writing consensus-critical code in the Go-Ethereum code-base.
+
+Parity Ethereum supports Aura by default, a [working chain-spec for a pre-testnet is available here](https://github.com/goerli/testnet/blob/master/parity/goerli.json). Two [validator nodes and bootnodes are prepared](http://ethstats.goerli.ethberl.in:3000) to enable seamless integration with Geth nodes.
+
+### All hands on deck!
+
+There's still a lot to be done. Here's how you can help:
+
+- Join the chat on Gitter: [gitter.im/goerli/testnet](https://gitter.im/goerli/testnet)
+- Run a node: [github.com/goerli/testnet](https://github.com/goerli/testnet)
+- Report to the dashboard: [ethstats.goerli.ethberl.in](http://ethstats.goerli.ethberl.in:3000)
+- Help with the Aura spec: [eip-aura.md](https://github.com/goerli/eips-aura-spec/blob/master/EIPS/eip-aura.md), [gitter.im/goerli/eip-aura](https://gitter.im/goerli/eip-aura)
+- Help with the Go implementation: [go-ethereum-aura/tree/aura-dev](https://github.com/goerli/go-ethereum-aura/tree/aura-dev), [gitter.im/goerli/geth-aura](https://gitter.im/goerli/geth-aura)
+
+### Acknowledgements
+
+Thanks to MP and the [#ETHBerlin](https://2018.ethberlin.org) team for hosting us at the most amazing hackathon in the world.
+
+Thanks to Tomasz, André, and Thibaut from [Parity Ethereum](https://paritytech.io/ethereum/) helping with analysing the Authority Round specification.
+
+Thanks to Martin from the [Ethereum Foundation](https://ethereum.org/) for helping us with the Golang implementation and debugging our code all night.
+
+Thanks to Kirill and Parity Ethereum to provide us with a node Dashboard.
+
+Thanks to Aidan and the [ChainSafe](https://chainsafe.io/) team to kick this off.

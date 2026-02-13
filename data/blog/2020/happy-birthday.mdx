@@ -1,0 +1,63 @@
+---
+title: Happy Görli Testnet Launch Anniversary
+date: 2020-01-31T14:40:31.000Z
+lastmod: 2026-02-11T15:55:37.000Z
+tags: ['Goerli', 'Testnet']
+images: ['/static/images/2020/goerli.png']
+summary: 'On January 31, 2019, at 4:10:53 pm local time in Berlin, at the first Testnet Conference ever, GörliCon0, the Görli Testnet Block #1 was sealed. Let’s look at what we’ve achieved since our project was conceived and reflect. Happy Görli Testnet Launch Anniversary!'
+authors: ['Afri']
+---
+
+The Görli project has come a long way since it was first ideated in Toronto in Summer 2018 - and began development at ETHBerlin shortly afterward. Today we want to reflect on the achievements we made and the lessons we learned over the last 18 months.
+
+Our idea was simple: an Ethereum testnet for application developers to work freely on, regardless of which tooling or client they use, and as reliable and stable as the main network. The existing testnets available back then were either bound to a certain tech stack (Rinkeby, Kovan) or too unstable (Ropsten) for application testing.
+
+Therefore, at ETHBerlin 2018, some of the people from the **ChainSafe** team and Afri Schoedon took the first steps toward developing Görli and tried to specify the Authority Round (Aura) consensus engine that was powering Kovan and subsequently implementing it in Go for the Geth client. Long story short, the team failed to specify and implement it due to the unprecedented complexity of the engine; however, the idea was favored by the judges and the Görli project eventually won and was able to demo the project on stage.
+
+![ETHBerlin 2018 Görli Demo](/static/images/2020/happy-birthday/ethberlin-2018-goerli-demo.jpeg)
+
+That was probably the most important milestone of the project: Get the idea out of the door and gather feedback. The [hackathon submission was unfortunately disqualified](https://medium.com/ethberlin/proof-of-transparency-ff31c4911462) after other attendees fairly pointed out that we were much more people on stage than the rules allowed. We were so excited about this promising idea, that we accidentally bypassed the hackathon’s rules including “forcing” mentors to code - Thank you, by the way! In spite of the disqualification, the Department of Decentralization pledged to support Görli in any way possible - except for the prize money, of course, which was given to the runner up. We all understood this project had become unstoppable and decided to make it come to life.
+
+The lesson learned at ETHBerlin 2018 - besides honoring hackathon rules - is that Aura is too complex to implement across a variety of clients and there are many unspecified features of that protocol that only exist within the code-base of the Parity Ethereum client. The [EIP Draft for Aura is still available on Github](https://github.com/goerli/eips-poa/blob/a2124c121e81f9727ec9b1e141cc4b47d1776dfe/EIPS/eip-aura.md) if anyone bothers to pick this up one day, and so is [Geth Aura](https://github.com/goerli/go-ethereum-aura).
+
+It then became clear that we needed to investigate Geth's Clique engine and implement it in Rust. Fortunately, the Görli project was able to secure grants both from the **ETC Cooperative** in 2018 and further along the line, the **Ethereum Foundation** in 2019 that helped to realize the project on a broader scale. Many thanks to both organizations for their financial support.
+
+To continue Görli’s development, we decided to pay individual contributors via Gitcoin bounties. Thanks to the hands-on work from Jared Wasinger and Yucong Sun pioneering the [Parity Görli](https://github.com/goerli/parity-goerli) client, Görli was soon able to sync the Rinkeby testnet. This is when we decided to launch the [Kotti Classic](https://github.com/goerli/testnet#meta-data-kotti-classic) cross-client proof-of-authority testnet for Ethereum Classic in December 2018.
+
+The aforementioned milestone was the first test balloon that showed that the idea could work. Half a year after ETHBerlin, with the support of our new partners at the Department of Decentralization, we organized a testnet conference in Berlin, the [GörliCon 0](https://goerli.dod.ngo/), attracting more than 100 attendees. We surprised the audience by launching the Görli testnet live on stage. [Lili Feyerabend pushed the red button](https://www.youtube.com/watch?v=d961TWOSnBU) that Ligi set up and troubleshooted. The first block was sealed on January 31, 2019, at 4:10:53 pm local time.
+
+![Görli Testnet Launch](/static/images/2020/happy-birthday/goerli-testnet-launch.jpg)
+
+Soon after our big launch, Tomasz Stańczak et al. implemented Clique in the Nethermind client. Niklas Adolfsson and Hernando Castano from Parity Technologies finalized the integration with the Parity Ethereum client. The PegaSys team announced the release of a new full Ethereum client including Clique support - and with Holger Drewes surprisingly integrating Görli support in EthereumJS, **Görli Testnet was able to be run in five different Ethereum clients**.
+
+Then, Görli was ready to be fully decentralized: the community quickly picked up the testnet’s governance. Nowadays, we have almost ten active validators. Faucets were created and RPC endpoints were provided.
+
+![Talk at ETHCC 2019](/static/images/2020/happy-birthday/ethcc-2019-talk.jpg)
+
+At [ETHCC 2019 in Paris](https://twitter.com/ParityTech/status/1103294504944222208), Afri Schoedon walked the audience through the success of the Görli testnet initiative. Blockscout and [Etherscan](https://goerli.etherscan.io/) provided block explorers, [Infura](https://blog.infura.io/announcing-gorli-testnet-support-ee887d75437a/) provided API endpoints, and soon after wallets and tooling followed.
+
+Now, a year after launch we would like to thank everyone who made this project happen. It's impossible to name all contributors and supporters. But yet we want to name a few:
+* María Paula Fernández and the Department of Decentralization for hosting ETHBerlin, GörliCon, and further support of the Görli initiative!
+* Péter Szilágyi for enduring our request to make EIP-225 an actual EIP - Thank you for writing, merging and implementing it in Geth!
+* André Silva and the Parity Technologies team for patiently answering all our Aura questions during the ETHBerlin 2018 hackathon!
+* Martin Holst Swende for helping with the Aura integration into Geth.
+* Elizabeth Binks, Aidan Hyman, Priom Chowdhury, David Ansermino, Dustin Brickwood, Christopher Fenos and the ChainSafe team for hacking on Görli from the start!
+* Jared Wasinger, Yucong Sun, Niklas Adolfsson, and Hernando Castano for implementing the most critical code in Parity Ethereum!
+* Lili Feyerabend for making the Görli Genesis about food and pushing the red button; and the website!
+* Tomasz Kajetan Stańczak and the Nethermind team, Chris McKay, Adrian Sutton, Danno Ferrin, and the PegaSys team, Holger Drewes and the EthereumJS team for your early core support!
+* E.G. Galano, Chris Hobcroft, Igor Barinov, Nikola Jokic, and all the other early enthusiasts and supporters!
+* Preston Van Loon and Prysmatic Labs for being visionary about the new testnet and [planning the ETH 2.0 transition right from the start](https://github.com/goerli/testnet/issues/38)!
+* Mudit Gupta for [gathering all resources literally on the first day](https://mudit.blog/getting-started-goerli-testnet/)!
+* Ronin Kaizen for running countless nodes and services since the beginning!
+
+Thank you! This project wouldn't be possible without a community understanding the vision and carrying out the tasks together working towards a common goal.
+
+![A Beer and a Testnet](/static/images/2020/happy-birthday/beer-and-testnet.jpg)
+
+The Görli initiative will wrap up the pending work in 2020 and is confident the testnet will be well maintained in the heart of the Ethereum ecosystem for the years to come.
+
+If you are enthusiastic about Ethereum testnets and the Görli initiative, please attend the talk by Afri Schoedon at [ETHCC 2020](https://ethcc.io/) in Paris who will one last time talk about testnets and why you should care.
+
+If you feel part of the initiative, are a contributor, supporter, or evangelist, please come to Berlin in summer 2020 as [DREI](https://medium.com/ethberlin/dreis-a-charm-21069a4dbd13) will feature a satellite event for celebrating the Görli testnet.
+
+So long! :fish:
