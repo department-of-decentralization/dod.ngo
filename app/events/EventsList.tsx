@@ -181,7 +181,7 @@ export default function EventsList() {
         </li>
       ),
     } as UpcomingItem,
-  ].sort((a, b) => b.date.getTime() - a.date.getTime())
+  ].sort((a, b) => a.date.getTime() - b.date.getTime())
 
   return (
     <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
