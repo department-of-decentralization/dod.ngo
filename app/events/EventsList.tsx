@@ -14,20 +14,89 @@ export default function EventsList() {
     .filter((event) => new Date(event.date) <= now)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-  const renderUpcomingEvent = (event) => (
+  const formatEventDate = (event: (typeof events)[number], mode: 'upcoming' | 'past') => {
+    const startDate = new Date(event.date)
+
+    if (event.yearOnly) {
+      return startDate.getFullYear()
+    }
+
+    if (event.endDate) {
+      const endDate = new Date(event.endDate)
+      const sameYear = startDate.getFullYear() === endDate.getFullYear()
+      const sameMonth = startDate.getMonth() === endDate.getMonth() && sameYear
+
+      if (sameMonth) {
+        const month = startDate.toLocaleDateString('en-US', { month: 'long' })
+        const year = startDate.getFullYear()
+        const startDay = startDate.getDate()
+        const endDay = endDate.getDate()
+        return `${month} ${startDay}-${endDay}, ${year}`
+      }
+
+      if (sameYear) {
+        const startMonthDay = startDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        })
+        const endMonthDay = endDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        })
+        return `${startMonthDay}-${endMonthDay}, ${startDate.getFullYear()}`
+      }
+
+      const startFull = startDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+      const endFull = endDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+      return `${startFull} - ${endFull}`
+    }
+
+    return mode === 'upcoming'
+      ? startDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        })
+      : startDate.toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' })
+  }
+
+  const renderEventDescription = (event: (typeof events)[number]) => {
+    if (!event.textLink) {
+      return event.description
+    }
+
+    const { text, url } = event.textLink
+    const [before, ...afterParts] = event.description.split(text)
+
+    if (afterParts.length === 0) {
+      return event.description
+    }
+
+    return (
+      <>
+        {before}
+        <a href={url} target="_blank" rel="noreferrer">
+          {text}
+        </a>
+        {afterParts.join(text)}
+      </>
+    )
+  }
+
+  const renderUpcomingEvent = (event: (typeof events)[number]) => (
     <li key={`${event.title}-${event.date}`}>
       <strong>
-        {event.title} (
-        {event.yearOnly
-          ? new Date(event.date).getFullYear()
-          : new Date(event.date).toLocaleDateString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-        ){':'}
+        {event.title} ({formatEventDate(event, 'upcoming')}):
       </strong>{' '}
-      {event.description}
+      {renderEventDescription(event)}
       {event.link && (
         <>
           :{' '}
@@ -38,16 +107,12 @@ export default function EventsList() {
       )}
     </li>
   )
-  const renderPastEvent = (event) => (
+  const renderPastEvent = (event: (typeof events)[number]) => (
     <li key={`${event.title}-${event.date}`}>
       <strong>
-        {event.title} (
-        {event.yearOnly
-          ? new Date(event.date).getFullYear()
-          : new Date(event.date).toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' })}
-        ){':'}
+        {event.title} ({formatEventDate(event, 'past')}):
       </strong>{' '}
-      {event.description}
+      {renderEventDescription(event)}
       {event.link && (
         <>
           :{' '}
