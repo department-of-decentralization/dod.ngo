@@ -1,8 +1,13 @@
 interface Event {
   title: string
   date: string // ISO date string
+  endDate?: string // Optional ISO end date for multi-day events
   yearOnly?: boolean // Flag to indicate if the event only has year specified
   description: string
+  textLink?: {
+    text: string
+    url: string
+  }
   link?: {
     url: string
     label: string
@@ -10,6 +15,20 @@ interface Event {
 }
 
 export const events: Event[] = [
+  {
+    title: 'DWeb Camp 2026',
+    date: '2026-07-08',
+    endDate: '2026-07-12',
+    description: 'the decentralized web camp right outside berlin in collaboration with Internet Archive and the DWeb Berlin community',
+    textLink: {
+      text: 'Internet Archive',
+      url: 'https://archive.org/',
+    },
+    link: {
+      url: 'https://dwebcamp.org',
+      label: 'dwebcamp.org',
+    },
+  },
   {
     title: 'DWeb Camp Unconference + Meetup',
     date: '2026-02-28',
