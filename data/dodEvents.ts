@@ -20,15 +20,6 @@ export const events: Event[] = [
     },
   },
   {
-    title: 'Protocol Berg w3',
-    date: '2026-06-19',
-    description: 'the decentralized protocol and infrastructure conference',
-    link: {
-      url: 'https://protocol.berlin',
-      label: 'protocol.berlin',
-    },
-  },
-  {
     title: 'DWeb Camp Unconference + Meetup',
     date: '2026-02-28',
     description:
