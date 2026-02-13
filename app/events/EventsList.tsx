@@ -35,18 +35,36 @@ export default function EventsList() {
       }
 
       if (sameYear) {
-        const startMonthDay = startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
-        const endMonthDay = endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+        const startMonthDay = startDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        })
+        const endMonthDay = endDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+        })
         return `${startMonthDay}-${endMonthDay}, ${startDate.getFullYear()}`
       }
 
-      const startFull = startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-      const endFull = endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      const startFull = startDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+      const endFull = endDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
       return `${startFull} - ${endFull}`
     }
 
     return mode === 'upcoming'
-      ? startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      ? startDate.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        })
       : startDate.toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' })
   }
 
