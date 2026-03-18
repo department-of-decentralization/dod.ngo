@@ -27,8 +27,6 @@ const postDateTemplate: Intl.DateTimeFormatOptions = {
 }
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
-const discussUrl = (path) =>
-  `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
 
 const bskyHref = (value: string) =>
   value.trim().startsWith('http')
@@ -53,8 +51,29 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
       <ScrollTopAndComment />
       <article>
         <div>
-          <div className="text-center dark:border-gray-700">
-            <div className="relative pt-10">
+          {/* Banner image with gradient overlay and title */}
+          {displayImage ? (
+            <Bleed>
+              <div className="relative aspect-[2/1] w-full">
+                <Image src={displayImage} alt={title} fill className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 text-center text-white">
+                  <dl className="mb-3">
+                    <dt className="sr-only">Published on</dt>
+                    <dd className="text-sm font-medium leading-6 text-gray-300">
+                      <time dateTime={date}>
+                        {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
+                      </time>
+                    </dd>
+                  </dl>
+                  <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-lg sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
+                    {title}
+                  </h1>
+                </div>
+              </div>
+            </Bleed>
+          ) : (
+            <div className="pt-10 text-center">
               <dl className="space-y-10">
                 <div>
                   <dt className="sr-only">Published on</dt>
@@ -67,7 +86,11 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
               </dl>
               <PageTitle>{title}</PageTitle>
             </div>
-            <div className="prose flex max-w-none justify-center py-2 dark:prose-invert">
+          )}
+
+          {/* Summary and authors */}
+          <div className="text-center">
+            <div className="prose flex max-w-none justify-center py-4 dark:prose-invert">
               <p className="max-w-xl text-center text-lg">{summary}</p>
             </div>
             <div className="flex flex-row justify-center">
@@ -123,15 +146,7 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
               </dl>
             </div>
           </div>
-          {displayImage && (
-            <div className="w-full">
-              <Bleed>
-                <div className="relative aspect-[2/1] w-full">
-                  <Image src={displayImage} alt={title} fill className="object-contain" />
-                </div>
-              </Bleed>
-            </div>
-          )}
+
           <div className="prose max-w-none py-4 dark:prose-invert">{children}</div>
           <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
             <Link href={editUrl(filePath)}>View on GitHub</Link>
