@@ -88,11 +88,8 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
             </div>
           )}
 
-          {/* Summary and authors */}
+          {/* Authors */}
           <div className="text-center">
-            <div className="prose flex max-w-none justify-center py-4 dark:prose-invert">
-              <p className="max-w-xl text-center text-lg">{summary}</p>
-            </div>
             <div className="flex flex-row justify-center">
               <dl className="py-4">
                 <dt className="sr-only">Authors</dt>
