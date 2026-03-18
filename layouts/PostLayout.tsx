@@ -9,6 +9,7 @@ import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import { BlueSky, Twitter } from '@/components/social-icons/icons'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
@@ -67,9 +68,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div>
                 <PageTitle>{title}</PageTitle>
               </div>
-              <div className="prose flex max-w-none justify-center py-2 dark:prose-invert">
-                <p className="max-w-xl text-center text-lg">{summary}</p>
-              </div>
             </div>
           </header>
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0">
@@ -96,8 +94,9 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           {author.bsky && (
                             <Link
                               href={bskyHref(author.bsky)}
-                              className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                             >
+                              <BlueSky className="h-4 w-4 fill-current" aria-hidden="true" />
                               {bskyLabel(author.bsky)}
                             </Link>
                           )}
@@ -107,8 +106,9 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           {author.twitter && (
                             <Link
                               href={author.twitter}
-                              className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                             >
+                              <Twitter className="h-4 w-4 fill-current" aria-hidden="true" />
                               {author.twitter
                                 .replace('https://twitter.com/', '@')
                                 .replace('https://x.com/', '@')}

@@ -99,6 +99,10 @@ module.exports = {
               },
               code: { color: theme('colors.primary.400') },
             },
+            img: {
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            },
             'h1,h2': {
               fontWeight: '700',
               letterSpacing: theme('letterSpacing.tight'),
