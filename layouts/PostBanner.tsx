@@ -9,6 +9,7 @@ import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import { BlueSky, Twitter } from '@/components/social-icons/icons'
 
 interface LayoutProps {
   content: CoreContent<Blog>
@@ -93,8 +94,9 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
                             {author.bsky && (
                               <Link
                                 href={bskyHref(author.bsky)}
-                                className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                                className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                               >
+                                <BlueSky className="h-4 w-4 fill-current" />
                                 {bskyLabel(author.bsky)}
                               </Link>
                             )}
@@ -104,8 +106,9 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
                             {author.twitter && (
                               <Link
                                 href={author.twitter}
-                                className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                                className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                               >
+                                <Twitter className="h-4 w-4 fill-current" />
                                 {author.twitter
                                   .replace('https://twitter.com/', '@')
                                   .replace('https://x.com/', '@')}
