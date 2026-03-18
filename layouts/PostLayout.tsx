@@ -99,7 +99,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                               href={bskyHref(author.bsky)}
                               className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                             >
-                              <BlueSky className="h-4 w-4 fill-current" />
+                              <BlueSky className="h-4 w-4 fill-current" aria-hidden="true" />
                               {bskyLabel(author.bsky)}
                             </Link>
                           )}
@@ -111,7 +111,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                               href={author.twitter}
                               className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                             >
-                              <Twitter className="h-4 w-4 fill-current" />
+                              <Twitter className="h-4 w-4 fill-current" aria-hidden="true" />
                               {author.twitter
                                 .replace('https://twitter.com/', '@')
                                 .replace('https://x.com/', '@')}

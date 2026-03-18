@@ -54,7 +54,7 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
           {/* Banner image with gradient overlay and title */}
           {displayImage ? (
             <Bleed>
-              <div className="relative aspect-[2/1] w-full">
+              <div className="relative aspect-[2/1] min-h-64 w-full">
                 <Image src={displayImage} alt={title} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 text-center text-white">
@@ -119,7 +119,7 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
                                 href={bskyHref(author.bsky)}
                                 className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                               >
-                                <BlueSky className="h-4 w-4 fill-current" />
+                                <BlueSky className="h-4 w-4 fill-current" aria-hidden="true" />
                                 {bskyLabel(author.bsky)}
                               </Link>
                             )}
@@ -131,7 +131,7 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
                                 href={author.twitter}
                                 className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                               >
-                                <Twitter className="h-4 w-4 fill-current" />
+                                <Twitter className="h-4 w-4 fill-current" aria-hidden="true" />
                                 {author.twitter
                                   .replace('https://twitter.com/', '@')
                                   .replace('https://x.com/', '@')}
