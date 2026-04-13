@@ -35,7 +35,7 @@ export const events: Event[] = [
     description:
       'unconference to help co-creating DWeb Camp and meetup afterward to get inspired and connected',
     link: {
-      url: 'https://dwebcamp.org/berlin-2026/',
+      url: 'https://blog.archive.org/2026/04/02/how-dweb-camp-is-being-built-in-berlin/',
       label: 'dwebcamp.org/berlin-2026',
     },
   },
