@@ -141,7 +141,7 @@ export const peopleData: PersonData[] = [
     avatar: roseImg,
     isAlumni: true,
     socials: {
-      twitter: 'https://twitter.com/roseighteth',
+      twitter: 'https://x.com/roseuniverseEth',
     },
   },
   {
