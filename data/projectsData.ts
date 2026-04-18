@@ -22,6 +22,12 @@ const projectsData: Project[] = [
     imgSrc: '/static/images/time-machine.jpg',
     href: '/blog/the-time-machine',
   },
+  {
+    title: '7/Seven Chain — Perpetual Futures Exchange',
+    description: `7/Seven Chain is an EVM-compatible blockchain (Chain ID: 70007) powering TheSeven.meme — the world's first on-chain immutable synthetic perpetual futures exchange. Trade 100+ pairs with up to 2001× leverage and zero fees on BSC/Parlia consensus.`,
+    imgSrc: '/static/images/google.png',
+    href: 'https://theseven.meme',
+  },
 ]
 
 export default projectsData
