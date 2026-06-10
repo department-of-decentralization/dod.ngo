@@ -301,6 +301,7 @@ export const peopleData: PersonData[] = [
     isAlumni: false,
     socials: {
       website: 'https://kalambet.dev/',
+      bluesky: 'https://bsky.app/profile/kalambet.dev',
       github: 'https://github.com/kalambet',
     },
   },
