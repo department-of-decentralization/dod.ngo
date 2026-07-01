@@ -1,6 +1,7 @@
 'use client'
 
 import { events } from '@/data/dodEvents'
+import skippedBerlinMesh from '@/data/skippedBerlinMesh'
 import skippedDates from '@/data/skippedStammtisch'
 import { getNextMonthlyWeekdayDate } from '@/lib/recurringEvents'
 import NextBerlinMeshMeetup from 'app/NextBerlinMeshMeetup'
@@ -135,6 +136,7 @@ export default function EventsList() {
     weekday: 3,
     weekOfMonth: 2,
     startHourUtc: 21,
+    skipMonths: skippedBerlinMesh.skippedDates,
   })
 
   type UpcomingItem =

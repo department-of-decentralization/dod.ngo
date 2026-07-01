@@ -1,5 +1,6 @@
 'use client'
 
+import skippedDates from '@/data/skippedBerlinMesh'
 import { getNextMonthlyWeekdayDate } from '@/lib/recurringEvents'
 
 export default function NextBerlinMeshMeetup() {
@@ -9,6 +10,7 @@ export default function NextBerlinMeshMeetup() {
     weekday: 3,
     weekOfMonth: 2,
     startHourUtc: 21,
+    skipMonths: skippedDates.skippedDates,
   })
 
   return (
