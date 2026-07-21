@@ -21,6 +21,16 @@ const skippedStammtisch = {
       month: 6, // june
       reason: 'ProtocolBerg v3',
     },
+    {
+      year: 2026,
+      month: 7, // july
+      reason: 'DWeb Camp',
+    },
+    {
+      year: 2026,
+      month: 8, // august
+      reason: 'summer break',
+    },
   ],
 }
 

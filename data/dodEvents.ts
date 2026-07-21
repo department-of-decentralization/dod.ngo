@@ -30,6 +30,16 @@ export const events: Event[] = [
     },
   },
   {
+    title: 'Neocypherpunk Summit',
+    date: '2026-06-14',
+    description:
+      'a summit for hacktivists, researchers, technologists, whistleblowers, and policymakers on how open protocols and privacy tools become a resilient, shared foundation for digital autonomy, free assembly, and accountability, at Funkhaus Berlin',
+    link: {
+      url: 'https://s26ber.web3privacy.info/',
+      label: 's26ber.web3privacy.info',
+    },
+  },
+  {
     title: 'DWeb Camp Unconference + Meetup',
     date: '2026-02-28',
     description:
