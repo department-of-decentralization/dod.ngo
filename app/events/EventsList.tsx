@@ -127,14 +127,14 @@ export default function EventsList() {
 
   const nextStammtischDate = getNextMonthlyWeekdayDate({
     weekday: 3,
-    weekOfMonth: 3,
+    weekOfMonth: 2,
     startHourUtc: 21,
     skipMonths: skippedDates.skippedDates,
   })
 
   const nextBerlinMeshDate = getNextMonthlyWeekdayDate({
     weekday: 3,
-    weekOfMonth: 2,
+    weekOfMonth: 3,
     startHourUtc: 21,
     skipMonths: skippedBerlinMesh.skippedDates,
   })

@@ -6,9 +6,7 @@ import siteMetadata from '../data/siteMetadata.js'
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
 import { sortPosts } from 'pliny/utils/contentlayer.js'
 
-const tagData = JSON.parse(
-  readFileSync(new URL('../app/tag-data.json', import.meta.url), 'utf8')
-)
+const tagData = JSON.parse(readFileSync(new URL('../app/tag-data.json', import.meta.url), 'utf8'))
 
 const generateRssItem = (config, post) => `
   <item>
