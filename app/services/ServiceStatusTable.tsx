@@ -139,30 +139,6 @@ export default function ServiceStatusTable() {
         We run these open-source services for our events and community.
       </p>
 
-      <section className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 rounded-md border border-gray-300 bg-butter-400/40 px-6 py-5 dark:border-gray-700 dark:bg-gray-900">
-        <div className="flex min-w-0 flex-1 basis-80 items-start gap-x-3.5">
-          <StatusDot status={summaryStatus} size={14} />
-          <div className="min-w-0">
-            <div
-              className={`text-xl font-semibold leading-7 ${failed.length ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}
-            >
-              {headline}
-            </div>
-            <div className="mt-0.5 text-sm tabular-nums leading-5 text-gray-700 dark:text-gray-400">
-              {meta}
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={() => void run()}
-          disabled={phase === 'checking'}
-          className="flex-shrink-0 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold leading-5 text-gray-900 hover:bg-gray-100 disabled:cursor-default disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
-        >
-          Run again
-        </button>
-      </section>
-
       <ul className="mt-6 list-none border-t border-gray-200 p-0 dark:border-gray-700">
         {services.map((service, index) => {
           const result = results[index]
@@ -256,6 +232,30 @@ export default function ServiceStatusTable() {
           )
         })}
       </ul>
+
+      <section className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 rounded-md border border-gray-300 bg-butter-400/40 px-6 py-5 dark:border-gray-700 dark:bg-gray-900">
+        <div className="flex min-w-0 flex-1 basis-80 items-start gap-x-3.5">
+          <StatusDot status={summaryStatus} size={14} />
+          <div className="min-w-0">
+            <div
+              className={`text-xl font-semibold leading-7 ${failed.length ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}
+            >
+              {headline}
+            </div>
+            <div className="mt-0.5 text-sm tabular-nums leading-5 text-gray-700 dark:text-gray-400">
+              {meta}
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => void run()}
+          disabled={phase === 'checking'}
+          className="flex-shrink-0 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold leading-5 text-gray-900 hover:bg-gray-100 disabled:cursor-default disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
+        >
+          Run again
+        </button>
+      </section>
 
       <dl className="mt-6 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm leading-5 text-gray-600 dark:text-gray-400">
         <dt className="flex items-center gap-x-1.5 font-medium text-gray-700 dark:text-gray-300">
