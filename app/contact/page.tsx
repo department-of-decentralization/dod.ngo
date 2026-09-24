@@ -11,7 +11,7 @@ export default function Contact() {
       <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
         <h2>Away from Keyboard</h2>
         <p>
-          Our public, in-person <span className="font-medium">Stammtisch</span> happens every 3rd
+          Our public, in-person <span className="font-medium">Stammtisch</span> happens every 2nd
           Wednesday at the{' '}
           <a href="https://c-base.org/" target="_blank" rel="noreferrer">
             c-base

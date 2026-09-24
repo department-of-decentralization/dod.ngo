@@ -36,8 +36,7 @@ export function getNextMonthlyWeekdayDate({
 
     shouldSkip = skipMonths.some(
       (skipped) =>
-        skipped.year === nextDate.getUTCFullYear() &&
-        skipped.month === nextDate.getUTCMonth()
+        skipped.year === nextDate.getUTCFullYear() && skipped.month === nextDate.getUTCMonth()
     )
 
     ++nextMonth

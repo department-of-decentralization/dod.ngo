@@ -8,7 +8,7 @@ export default function NextBerlinMeshMeetup() {
   // const currentDate = new Date('2025-06-02T12:00:00Z')
   const nextMeetup = getNextMonthlyWeekdayDate({
     weekday: 3,
-    weekOfMonth: 2,
+    weekOfMonth: 3,
     startHourUtc: 21,
     skipMonths: skippedDates.skippedDates,
   })
