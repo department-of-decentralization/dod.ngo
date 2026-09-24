@@ -65,29 +65,25 @@ function afterLeadingComments(source: string): string {
 const probeHosts = services.map((s) => new URL(s.probeUrl).hostname)
 
 describe('probe blast radius (SPEC.md D12, acceptance S8)', () => {
-  it('names a probe host only under app/infra or app/privacy', () => {
-    // A visitor who never opens /infra must make no request to any of the
-    // seven. Probing is disclosed on the privacy page, not consent-gated, so
-    // the disclosure is the compensating control and the radius must hold.
+  it('names a probe host only under app/services', () => {
+    // A visitor who never opens /services must make no request to any of the nine.
+    // app/privacy is no longer excluded here: SPEC.md D12 was amended on
+    // 2026-09-24 to drop the privacy-page disclosure, so that file names no
+    // probe host either and the radius is exactly one directory.
     const offenders = tsxFiles('app')
       .concat(tsxFiles('components'))
       .filter((file) => {
-        if (file.startsWith(join('app', 'infra')) || file.startsWith(join('app', 'privacy'))) {
-          return false
-        }
+        if (file.startsWith(join('app', 'services'))) return false
         const source = readFileSync(file, 'utf8')
         return probeHosts.some((host) => source.includes(host))
       })
     expect(offenders).toEqual([])
   })
 
-  it('hardcodes no probe host under app/infra, since the registry owns them', () => {
+  it('hardcodes no probe host under app/services, since the registry owns them', () => {
     // SPEC.md D14: one definition, one consumer. The page renders from the
     // registry, so a hostname literal there would be a second definition.
-    //
-    // app/privacy is deliberately excluded: acceptance S7 *requires* it to name
-    // all seven hosts, because probing is disclosed rather than consent-gated.
-    const offenders = tsxFiles(join('app', 'infra')).filter((file) => {
+    const offenders = tsxFiles(join('app', 'services')).filter((file) => {
       const source = readFileSync(file, 'utf8')
       return probeHosts.some((host) => source.includes(host))
     })
@@ -96,9 +92,9 @@ describe('probe blast radius (SPEC.md D12, acceptance S8)', () => {
 })
 
 describe('registry wiring', () => {
-  it('is imported by the infra page', () => {
-    const page = readFileSync(join('app', 'infra', 'page.tsx'), 'utf8')
-    const client = tsxFiles(join('app', 'infra'))
+  it('is imported by the services page', () => {
+    const page = readFileSync(join('app', 'services', 'page.tsx'), 'utf8')
+    const client = tsxFiles(join('app', 'services'))
       .map((f) => readFileSync(f, 'utf8'))
       .join('\n')
     expect(page + client).toMatch(/from '@\/data\/services'|from '.*data\/services'/)
@@ -108,7 +104,7 @@ describe('registry wiring', () => {
     // SPEC.md D9: I3 was amended to permit a browser-issued request, not to
     // permit baking a status into the HTML. A status true only at build time
     // is not a status.
-    const hasClientDirective = tsxFiles(join('app', 'infra')).some((f) =>
+    const hasClientDirective = tsxFiles(join('app', 'services')).some((f) =>
       // The directive must be the first statement, but a license header may
       // precede it, so compare after stripping leading block comments.
       afterLeadingComments(readFileSync(f, 'utf8')).startsWith("'use client'")

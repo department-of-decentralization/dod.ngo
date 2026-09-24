@@ -48,13 +48,6 @@ export default function Privacy() {
             .
           </li>
         </ul>
-        <h3>Infrastructure status page</h3>
-        <p>
-          Opening <a href="/infra">/infra</a> makes your browser contact each service listed there
-          to check whether it is running. Those services see your IP address. The services are
-          office.dod.ngo, element.dod.ngo, matrix.dod.ngo, tix.dod.ngo, talx.dod.ngo, post.dod.ngo
-          and potatomesh.net. No other page contacts them.
-        </p>
         <h3>Sharing your data</h3>
         <p>We don&apos;t pass on your information to anyone.</p>
         <h3>Transferring your data outside of the EU</h3>

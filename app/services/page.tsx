@@ -26,18 +26,18 @@ import PageTitle from '@/components/PageTitle'
 import { genPageMetadata } from 'app/seo'
 import ServiceStatusTable from './ServiceStatusTable'
 
-export const metadata = genPageMetadata({ title: 'Infrastructure' })
+export const metadata = genPageMetadata({ title: 'Services' })
 
 /**
- * Renders the infrastructure status page at `/infra`.
+ * Renders the service status page at `/services`.
  *
  * The page itself is static; `ServiceStatusTable` is a client component and
  * does the probing, so the export stays a pure static build (`SPEC.md` D9).
  */
-export default function Infrastructure() {
+export default function Services() {
   return (
     <>
-      <PageTitle>Infrastructure</PageTitle>
+      <PageTitle>Services</PageTitle>
       <ServiceStatusTable />
     </>
   )

@@ -28,10 +28,22 @@ import {
   DEFAULT_TIMEOUT_MS,
   STATES_BY_TIER,
   type FetchLike,
+  describeEvidence,
+  formatDuration,
   probeAllServices,
   probeService,
   statusFromHttpCode,
 } from './serviceStatus'
+
+/** A clock that advances a fixed amount per call, so durations are exact. */
+function fakeClock(stepMs: number): () => number {
+  let t = 0
+  return () => {
+    const current = t
+    t += stepMs
+    return current
+  }
+}
 
 /**
  * Build a service fixture. The URLs are inert strings handed to a stub; no test
@@ -40,10 +52,14 @@ import {
 function fixture(overrides: Partial<Service> = {}): Service {
   return {
     name: 'Test Service',
+    desc: 'A service used only by this test file',
     url: 'https://example.invalid',
+    host: 'example.invalid',
+    repo: 'example/test-service',
+    img: '/static/images/services/test.png',
     probeUrl: 'https://example.invalid/health',
     tier: 'verified',
-    access: 'public',
+    access: 'Public',
     ...overrides,
   }
 }
@@ -71,7 +87,7 @@ describe('statusFromHttpCode', () => {
   })
 
   it('treats an auth refusal as operational, because a refusal is not an outage', () => {
-    // Three of seven services are invite only; an anonymous probe is expected
+    // Four of nine services are invite only; an anonymous probe is expected
     // to be turned away, and being turned away proves the app is running.
     expect(statusFromHttpCode(401)).toBe('operational')
     expect(statusFromHttpCode(403)).toBe('operational')
@@ -196,8 +212,22 @@ describe('probeAllServices', () => {
 })
 
 describe('the shipped registry', () => {
-  it('holds seven services', () => {
-    expect(services).toHaveLength(7)
+  it('holds nine services', () => {
+    expect(services).toHaveLength(9)
+  })
+
+  it('gives every service a description, repo and thumbnail', () => {
+    for (const service of services) {
+      expect(service.desc.length).toBeGreaterThan(0)
+      expect(service.repo).toMatch(/^[\w.-]+\/[\w.-]+$/)
+      expect(service.img).toMatch(/^\/static\/images\/services\/.+\.png$/)
+    }
+  })
+
+  it('states the host that its url points at', () => {
+    for (const service of services) {
+      expect(service.host).toBe(new URL(service.url).host)
+    }
   })
 
   it('probes every service over https', () => {
@@ -206,17 +236,30 @@ describe('the shipped registry', () => {
     }
   })
 
-  it('never probes a bare origin, which would measure a redirect', () => {
-    // matrix.dod.ngo and post.dod.ngo both 302 at the root (SPEC.md D11).
+  it('never probes a root that is known to redirect', () => {
+    // matrix.dod.ngo and post.dod.ngo both 302 at the root, so probing there
+    // would measure the redirect rather than the service (SPEC.md D11).
+    // A root probe is fine for a host that answers 200 there, which is why
+    // MeshINT and DWeb Camp Mesh legitimately use one.
+    const redirectingHosts = ['matrix.dod.ngo', 'post.dod.ngo']
     for (const service of services) {
-      expect(new URL(service.probeUrl).pathname).not.toBe('/')
+      const probe = new URL(service.probeUrl)
+      if (redirectingHosts.includes(probe.host)) {
+        expect(probe.pathname).not.toBe('/')
+      }
     }
   })
 
-  it('keeps the three verified and four opaque services as measured', () => {
+  it('keeps the five verified and four opaque services as measured', () => {
     const byTier = (tier: string) => services.filter((s) => s.tier === tier).map((s) => s.name)
-    expect(byTier('verified')).toEqual(['Synapse (Matrix)', 'Pretalx', 'Potato Mesh'])
-    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element (Matrix)', 'Pretix', 'Freescout'])
+    expect(byTier('verified')).toEqual([
+      'Synapse',
+      'Pretalx',
+      'Potato Mesh',
+      'MeshINT',
+      'DWeb Camp Mesh',
+    ])
+    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element', 'Pretix', 'Freescout'])
   })
 
   it('marks Cryptpad opaque despite it sending a CORS header', () => {
@@ -224,5 +267,82 @@ describe('the shipped registry', () => {
     // so the header being present does not make it readable from dod.ngo.
     const cryptpad = services.find((s) => s.name === 'Cryptpad')
     expect(cryptpad?.tier).toBe('opaque')
+  })
+})
+
+describe('formatDuration', () => {
+  it('shows milliseconds below one second', () => {
+    expect(formatDuration(0)).toBe('0 ms')
+    expect(formatDuration(140)).toBe('140 ms')
+    expect(formatDuration(999)).toBe('999 ms')
+  })
+
+  it('switches to one decimal of seconds at one second', () => {
+    expect(formatDuration(1000)).toBe('1.0 s')
+    expect(formatDuration(1103)).toBe('1.1 s')
+    expect(formatDuration(8000)).toBe('8.0 s')
+  })
+})
+
+describe('probe timing', () => {
+  it('measures elapsed time from the injected clock', async () => {
+    const result = await probeService(fixture(), stubOk(200).fetch, 8000, fakeClock(140))
+    expect(result.ms).toBe(140)
+    expect(result.timedOut).toBe(false)
+  })
+
+  it('measures elapsed time for a failed probe too', async () => {
+    // "connection failed after 8 s" and "after 40 ms" are different outages.
+    const result = await probeService(fixture(), stubReject, 8000, fakeClock(40))
+    expect(result.status).toBe('down')
+    expect(result.ms).toBe(40)
+  })
+
+  it('flags a failure that ran out the clock as a timeout', async () => {
+    const result = await probeService(fixture(), stubReject, 8000, fakeClock(8000))
+    expect(result.timedOut).toBe(true)
+  })
+
+  it('does not flag a fast failure as a timeout', async () => {
+    const result = await probeService(fixture(), stubReject, 8000, fakeClock(40))
+    expect(result.timedOut).toBe(false)
+  })
+
+  it('never reports a negative duration if the clock goes backwards', async () => {
+    const result = await probeService(fixture(), stubOk(200).fetch, 8000, fakeClock(-500))
+    expect(result.ms).toBe(0)
+  })
+})
+
+describe('describeEvidence', () => {
+  const evidenceFor = async (
+    tier: 'verified' | 'opaque',
+    fetchImpl: FetchLike,
+    stepMs = 140,
+    timeoutMs = 8000
+  ) =>
+    describeEvidence(await probeService(fixture({ tier }), fetchImpl, timeoutMs, fakeClock(stepMs)))
+
+  it('reports the HTTP status for a verified probe', async () => {
+    expect(await evidenceFor('verified', stubOk(200).fetch)).toBe('HTTP 200 · 140 ms')
+  })
+
+  it('says connection only for an opaque probe, claiming nothing more', async () => {
+    expect(await evidenceFor('opaque', stubOk(200).fetch)).toBe('connection only · 140 ms')
+  })
+
+  it('distinguishes a failed connection from a failed request', async () => {
+    expect(await evidenceFor('opaque', stubReject)).toBe('connection failed · 140 ms')
+    expect(await evidenceFor('verified', stubReject)).toBe('request failed · 140 ms')
+  })
+
+  it('says no answer when the probe ran out the clock', async () => {
+    expect(await evidenceFor('verified', stubReject, 8000)).toBe('no answer within 8.0 s')
+  })
+
+  it('never names a status code an opaque probe could not have read', async () => {
+    for (const code of [200, 404, 500]) {
+      expect(await evidenceFor('opaque', stubOk(code).fetch)).not.toContain('HTTP')
+    }
   })
 })

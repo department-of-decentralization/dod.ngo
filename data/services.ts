@@ -33,15 +33,27 @@
  */
 export type ServiceTier = 'verified' | 'opaque'
 
-/** Whether anyone may sign up, or membership is issued by invitation. */
-export type ServiceAccess = 'public' | 'invite only'
+/**
+ * Whether anyone may sign up, or membership is issued by invitation.
+ *
+ * Rendered verbatim, so these are display strings rather than lowercase keys.
+ */
+export type ServiceAccess = 'Public' | 'Invite only'
 
 /** One service the Department of Decentralization operates. */
 export type Service = {
   /** Display name, as shown on the status page. */
   name: string
+  /** One-line description of what the service does. */
+  desc: string
   /** Public entry point, used for the link a visitor clicks. */
   url: string
+  /** Hostname shown under the service name. */
+  host: string
+  /** Upstream source repository, as `owner/name` on GitHub. */
+  repo: string
+  /** Thumbnail under `public/`, or omitted when no screenshot exists. */
+  img?: string
   /** Endpoint the status probe requests. Not always the same as `url`. */
   probeUrl: string
   /** What a probe of `probeUrl` is able to learn. See `SPEC.md` D11. */
@@ -53,70 +65,128 @@ export type Service = {
 /**
  * The single registry of DoD-operated services (`SPEC.md` D14).
  *
- * Every probe endpoint and tier below was measured on 2026-09-23. A tier is a
+ * Every probe endpoint and tier below was measured directly: the seven original
+ * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. A tier is a
  * property of the service's CORS policy, not a preference: do not promote a
  * service to `verified` without confirming it sends an
  * `Access-Control-Allow-Origin` that covers `https://dod.ngo`.
  *
- * Three entries are easy to get wrong, so each carries its reason inline.
+ * Several entries are easy to get wrong, so each carries its reason inline.
  */
 const services: Service[] = [
   {
     name: 'Cryptpad',
+    desc: 'End-to-end encrypted office suite',
     url: 'https://office.dod.ngo',
+    host: 'office.dod.ngo',
+    repo: 'cryptpad/cryptpad',
+    img: '/static/images/services/cryptpad.png',
     // Sends Access-Control-Allow-Origin, but pinned to https://sicher.dod.ngo
     // (CryptPad's sandbox origin), so it is opaque to dod.ngo specifically.
     probeUrl: 'https://office.dod.ngo/api/config',
     tier: 'opaque',
-    access: 'public',
+    access: 'Public',
   },
   {
-    name: 'Element (Matrix)',
+    name: 'Element',
+    desc: 'Matrix chat in the browser',
     url: 'https://element.dod.ngo',
+    host: 'element.dod.ngo',
+    repo: 'element-hq/element-web',
+    img: '/static/images/services/element.png',
     probeUrl: 'https://element.dod.ngo/version',
     tier: 'opaque',
-    access: 'public',
+    access: 'Public',
   },
   {
-    name: 'Synapse (Matrix)',
+    name: 'Synapse',
+    desc: 'Matrix homeserver',
     url: 'https://matrix.dod.ngo',
+    host: 'matrix.dod.ngo',
+    repo: 'element-hq/synapse',
+    // Synapse has no web interface of its own; its root redirects to Element,
+    // so this row shows the Element screenshot by maintainer instruction.
+    img: '/static/images/services/synapse.png',
     // /health returns 404 at this deployment's edge; the root 302-redirects to
     // element.dod.ngo. This path is CORS-open by Matrix specification.
     probeUrl: 'https://matrix.dod.ngo/_matrix/client/versions',
     tier: 'verified',
-    access: 'invite only',
+    access: 'Invite only',
   },
   {
     name: 'Pretix',
+    desc: 'Event ticketing',
     url: 'https://tix.dod.ngo',
+    host: 'tix.dod.ngo',
+    repo: 'pretix/pretix',
+    img: '/static/images/services/pretix.png',
     probeUrl: 'https://tix.dod.ngo/healthcheck/',
     tier: 'opaque',
-    access: 'invite only',
+    access: 'Invite only',
   },
   {
     name: 'Pretalx',
+    desc: 'Call for papers and schedules',
     url: 'https://talx.dod.ngo',
+    host: 'talx.dod.ngo',
+    repo: 'pretalx/pretalx',
+    img: '/static/images/services/pretalx.png',
     // /healthcheck/ exists but sends no CORS headers. This path does, which is
     // the only reason Pretalx is verified and Pretix is not.
     probeUrl: 'https://talx.dod.ngo/api/events/',
     tier: 'verified',
-    access: 'invite only',
+    access: 'Invite only',
   },
   {
     name: 'Freescout',
+    desc: 'Shared inbox',
     url: 'https://post.dod.ngo',
+    host: 'post.dod.ngo',
+    repo: 'freescout-help-desk/freescout',
+    img: '/static/images/services/freescout.png',
     // The root 302-redirects here; probing it directly measures the app, not
     // the redirect.
     probeUrl: 'https://post.dod.ngo/login',
     tier: 'opaque',
-    access: 'invite only',
+    access: 'Invite only',
   },
   {
     name: 'Potato Mesh',
+    desc: 'Mesh network node dashboard',
     url: 'https://potatomesh.net',
+    host: 'potatomesh.net',
+    repo: 'l5yth/potato-mesh',
+    img: '/static/images/services/potato-mesh.png',
     probeUrl: 'https://potatomesh.net/api/stats',
     tier: 'verified',
-    access: 'public',
+    access: 'Public',
+  },
+  {
+    name: 'MeshINT',
+    desc: 'Berlin Chaos Mesh map and node roster',
+    url: 'https://meshint.potatomesh.net',
+    host: 'meshint.potatomesh.net',
+    repo: 'l5yth/meshint',
+    img: '/static/images/services/meshint.png',
+    // No /api surface: /api, /api/stats and /api/nodes all return 404. The root
+    // answers 200 with Access-Control-Allow-Origin: * and does not redirect, so
+    // it is both the only and a correct verified probe.
+    probeUrl: 'https://meshint.potatomesh.net/',
+    tier: 'verified',
+    access: 'Public',
+  },
+  {
+    name: 'DWeb Camp Mesh',
+    desc: 'Mesh network for DWeb Camp',
+    url: 'https://mesh.dod.ngo',
+    host: 'mesh.dod.ngo',
+    repo: 'department-of-decentralization/dweb-mesh',
+    img: '/static/images/services/dweb-camp-mesh.png',
+    // Same shape as MeshINT: no /api surface, root answers 200 with
+    // Access-Control-Allow-Origin: * and does not redirect.
+    probeUrl: 'https://mesh.dod.ngo/',
+    tier: 'verified',
+    access: 'Public',
   },
 ]
 

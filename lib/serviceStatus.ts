@@ -56,7 +56,17 @@ export type ServiceStatusResult = {
    * cannot read one, and this field is `undefined` there by construction.
    */
   httpStatus?: number
+  /** Round-trip time in milliseconds, measured whether or not the probe won. */
+  ms: number
+  /** True when the probe was cut off by `timeoutMs` rather than answering. */
+  timedOut: boolean
 }
+
+/**
+ * A clock, injected for the same reason `fetch` is: a test that measures real
+ * elapsed time is as non-deterministic as one that makes a real request.
+ */
+export type NowFn = () => number
 
 /**
  * The subset of `fetch` this module uses.
@@ -74,7 +84,7 @@ export const DEFAULT_TIMEOUT_MS = 8000
 /**
  * Decide a `verified` service's status from the HTTP status code it returned.
  *
- * A refusal is not an outage. Three of the seven services are invite only, and
+ * A refusal is not an outage. Four of the nine services are invite only, and
  * an anonymous probe against them is expected to be turned away; a 401 or 403
  * still proves the application is running and answering (`SPEC.md` D11).
  *
@@ -100,15 +110,21 @@ export function statusFromHttpCode(httpStatus: number): ServiceStatus {
  * @param service - The service to probe, from the `data/services` registry.
  * @param fetchImpl - `fetch` implementation; injected for testability.
  * @param timeoutMs - Abort the probe after this many milliseconds.
+ * @param now - Clock used to measure round-trip time; injected for testability.
  * @returns The settled status. Never rejects: a failed probe is a result, not
  *   an error, because one unreachable service must not blank the whole page.
  */
 export async function probeService(
   service: Service,
   fetchImpl: FetchLike,
-  timeoutMs: number = DEFAULT_TIMEOUT_MS
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+  now: NowFn = () => Date.now()
 ): Promise<ServiceStatusResult> {
   const signal = AbortSignal.timeout(timeoutMs)
+  const started = now()
+  // Elapsed time is reported for a failed probe too: "connection failed after
+  // 8 s" and "connection failed after 40 ms" describe different outages.
+  const elapsed = () => Math.max(0, now() - started)
 
   if (service.tier === 'verified') {
     try {
@@ -117,9 +133,12 @@ export async function probeService(
         service,
         status: statusFromHttpCode(response.status),
         httpStatus: response.status,
+        ms: elapsed(),
+        timedOut: false,
       }
     } catch {
-      return { service, status: 'down' }
+      const ms = elapsed()
+      return { service, status: 'down', ms, timedOut: ms >= timeoutMs }
     }
   }
 
@@ -127,9 +146,10 @@ export async function probeService(
   // settled at all carries information.
   try {
     await fetchImpl(service.probeUrl, { mode: 'no-cors', signal })
-    return { service, status: 'reachable' }
+    return { service, status: 'reachable', ms: elapsed(), timedOut: false }
   } catch {
-    return { service, status: 'unreachable' }
+    const ms = elapsed()
+    return { service, status: 'unreachable', ms, timedOut: ms >= timeoutMs }
   }
 }
 
@@ -142,12 +162,46 @@ export async function probeService(
  * @param servicesToProbe - Services to probe, in the order to report them.
  * @param fetchImpl - `fetch` implementation; injected for testability.
  * @param timeoutMs - Abort each probe after this many milliseconds.
+ * @param now - Clock used to measure round-trip time; injected for testability.
  * @returns One result per service, in the order given.
  */
 export async function probeAllServices(
   servicesToProbe: Service[],
   fetchImpl: FetchLike,
-  timeoutMs: number = DEFAULT_TIMEOUT_MS
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+  now: NowFn = () => Date.now()
 ): Promise<ServiceStatusResult[]> {
-  return Promise.all(servicesToProbe.map((s) => probeService(s, fetchImpl, timeoutMs)))
+  return Promise.all(servicesToProbe.map((s) => probeService(s, fetchImpl, timeoutMs, now)))
+}
+
+/**
+ * Format a probe duration the way the status page shows it.
+ *
+ * Milliseconds below one second, one decimal of seconds above, so a slow
+ * service reads "1.1 s" rather than "1103 ms".
+ *
+ * @param ms - Duration in milliseconds.
+ * @returns A short human-readable duration.
+ */
+export function formatDuration(ms: number): string {
+  return ms >= 1000 ? `${(ms / 1000).toFixed(1)} s` : `${Math.round(ms)} ms`
+}
+
+/**
+ * Describe what a probe actually observed, for the line under its status.
+ *
+ * The status word says how healthy the service is; this says what was measured,
+ * so a reader can tell an `operational` backed by `HTTP 200` from a `reachable`
+ * backed by nothing but a completed TCP handshake.
+ *
+ * @param result - A settled probe result.
+ * @returns One short line of evidence.
+ */
+export function describeEvidence(result: ServiceStatusResult): string {
+  const took = formatDuration(result.ms)
+  if (result.timedOut) return `no answer within ${formatDuration(result.ms)}`
+  if (result.status === 'reachable') return `connection only \u00b7 ${took}`
+  if (result.status === 'unreachable') return `connection failed \u00b7 ${took}`
+  if (result.httpStatus) return `HTTP ${result.httpStatus} \u00b7 ${took}`
+  return `request failed \u00b7 ${took}`
 }
