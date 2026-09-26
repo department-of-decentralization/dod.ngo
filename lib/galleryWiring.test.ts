@@ -97,3 +97,35 @@ describe('gallery wiring (SPEC.md D23, D25)', () => {
     expect(offenders).toEqual([join('lib', 'gallery.ts')])
   })
 })
+
+describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
+  const page = read(join('app', 'gallery', '[slug]', 'page.tsx'))
+  const grid = read(join('app', 'gallery', '[slug]', 'PhotoGrid.tsx'))
+
+  it('prebuilds one page per registry gallery and no other', () => {
+    // A static export cannot render an unknown slug on demand (SPEC.md I3).
+    expect(page).toMatch(/export const dynamicParams = false/)
+    expect(page).toMatch(/export function generateStaticParams\(\) \{\s*return galleries\.map\(/)
+  })
+
+  it('renders the grid and lightbox in a client component', () => {
+    expect(afterLeadingComments(grid).startsWith("'use client'")).toBe(true)
+  })
+
+  it('adds no key listener of its own', () => {
+    // The lightbox handles its keys on its own element; a document-level
+    // handler could replace every nav hotkey (SPEC.md D19).
+    expect(grid).not.toMatch(/keydown/i)
+    expect(page).not.toMatch(/keydown/i)
+  })
+
+  it('mirrors the open photo in the URL without adding history entries', () => {
+    expect(grid).toContain('history.replaceState(')
+    expect(grid).not.toContain('pushState(')
+  })
+
+  it('reads the removal address from siteMetadata', () => {
+    for (const source of [page, grid]) expect(source).not.toContain('hello@dod')
+    expect(page).toContain('mailto:${siteMetadata.email}')
+  })
+})

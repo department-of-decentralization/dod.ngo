@@ -259,6 +259,19 @@ export function lightboxCaption(title: string, n: number, count: number): string
 }
 
 /**
+ * Alternative text of a photo in the lightbox. The photo lists carry no
+ * descriptions, so it names the photo's place in its gallery.
+ *
+ * @param title - Gallery title.
+ * @param n - 1-based photo number.
+ * @param count - Photos in the gallery.
+ * @returns For example `Protocol Berg v2, photo 12 of 204`.
+ */
+export function photoAlt(title: string, n: number, count: number): string {
+  return `${title}, photo ${n} of ${count}`
+}
+
+/**
  * Accessible name of the grid button that opens a photo.
  *
  * @param n - 1-based photo number.

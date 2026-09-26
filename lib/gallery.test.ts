@@ -41,6 +41,7 @@ import {
   neighbours,
   openPhotoLabel,
   originalUrl,
+  photoAlt,
   photoCountLabel,
   photoFromHash,
   pickPreview,
@@ -337,6 +338,7 @@ describe('labels', () => {
   it('captions the lightbox and names the grid buttons', () => {
     expect(lightboxCaption('Protocol Berg v2', 12, 204)).toBe('Protocol Berg v2 • 12 / 204')
     expect(openPhotoLabel(12, 204)).toBe('Open photo 12 of 204')
+    expect(photoAlt('Protocol Berg v2', 12, 204)).toBe('Protocol Berg v2, photo 12 of 204')
   })
 })
 

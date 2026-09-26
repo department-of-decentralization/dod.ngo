@@ -12167,6 +12167,7 @@ __metadata:
     typescript: ^5.1.3
     unist-util-visit: ^5.0.0
     vitest: ^4.1.9
+    yet-another-react-lightbox: 3.32.2
   languageName: unknown
   linkType: soft
 
@@ -13173,6 +13174,23 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^21.1.1
   checksum: 73b572e863aa4a8cbef323dd911d79d193b772defd5a51aab0aca2d446655216f5002c42c5306033968193bdbf892a7a4c110b0d77954a7fdf563e653967b56a
+  languageName: node
+  linkType: hard
+
+"yet-another-react-lightbox@npm:3.32.2":
+  version: 3.32.2
+  resolution: "yet-another-react-lightbox@npm:3.32.2"
+  peerDependencies:
+    "@types/react": ^16 || ^17 || ^18 || ^19
+    "@types/react-dom": ^16 || ^17 || ^18 || ^19
+    react: ^16.8.0 || ^17 || ^18 || ^19
+    react-dom: ^16.8.0 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: ab23b5f2a1b6360b5d62cae4e5d9788d7c2fd9849a65169214b35ef3471f55a6d1a25a4fe69c24613bd78f47656b1fb14a65701e057bdcd6f219d665a796cb14
   languageName: node
   linkType: hard
 

@@ -78,3 +78,24 @@ input:-webkit-autofill:focus {
     theme('colors.gray.800') 7px 8px
   );
 }
+
+/* Gallery lightbox (SPEC.md D26): the design's backdrop and button colours, and
+   a 64px bar above and below the photo for the caption and the key legend.
+   The lightbox subtracts its container's padding when it sizes a slide. From
+   the md breakpoint the sides are padded too, so the arrows never cover the
+   photo. */
+.gallery-lightbox {
+  --yarl__color_backdrop: rgb(3 7 18 / 0.96);
+  --yarl__color_button: theme('colors.gray.100');
+  --yarl__color_button_active: theme('colors.primary.400');
+}
+
+.gallery-lightbox .yarl__container {
+  padding: 64px 0;
+}
+
+@media (min-width: 768px) {
+  .gallery-lightbox .yarl__container {
+    padding: 64px 72px;
+  }
+}
