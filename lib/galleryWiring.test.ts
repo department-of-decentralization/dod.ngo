@@ -1,0 +1,99 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Department of Decentralization
+ * SPDX-License-Identifier: MIT
+ *
+ * MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+import { readFileSync, readdirSync, statSync } from 'fs'
+import { join } from 'path'
+import { describe, expect, it } from 'vitest'
+
+/**
+ * `yarn test` exercises `lib/` and never renders a page, so a gallery component
+ * that picked its preview during render, or fetched its photo list, would pass
+ * every other test. That is the blind spot `SPEC.md` D6 records; the checks
+ * below read the gallery sources as text.
+ */
+
+/**
+ * Recursively collect source files under a directory.
+ *
+ * @param dir - Directory to walk.
+ * @param acc - Accumulator, for recursion.
+ * @returns Paths of every `.ts` and `.tsx` file found, tests excluded,
+ *   relative to the repository root.
+ */
+function sourceFiles(dir: string, acc: string[] = []): string[] {
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry)
+    if (statSync(full).isDirectory()) sourceFiles(full, acc)
+    else if (/\.tsx?$/.test(entry) && !entry.endsWith('.test.ts')) acc.push(full)
+  }
+  return acc
+}
+
+/**
+ * Strip leading block comments and whitespace, so a directive prologue can be
+ * found beneath a license header.
+ *
+ * @param source - File contents.
+ * @returns The source from its first statement onward.
+ */
+function afterLeadingComments(source: string): string {
+  return source.replace(/^(\s*\/\*[\s\S]*?\*\/\s*)*/, '')
+}
+
+/**
+ * Read a repository file.
+ *
+ * @param path - Path relative to the repository root.
+ * @returns Its contents.
+ */
+const read = (path: string) => readFileSync(path, 'utf8')
+
+describe('gallery wiring (SPEC.md D23, D25)', () => {
+  it('picks previews in a client component, after hydration', () => {
+    const source = read(join('app', 'gallery', 'GalleryPreview.tsx'))
+    expect(afterLeadingComments(source).startsWith("'use client'")).toBe(true)
+    // The pick must run in an effect: picked during render, it would differ
+    // between the static HTML and the browser and fail hydration.
+    const effect = source.indexOf('useEffect(')
+    const pick = source.indexOf('pickPreview(')
+    expect(effect).toBeGreaterThan(-1)
+    expect(pick).toBeGreaterThan(effect)
+    expect(source.split('pickPreview(').length - 1).toBe(1)
+  })
+
+  it('no gallery source fetches anything', () => {
+    // The build reads the checked-in photo list (SPEC.md D23, I3).
+    const offenders = sourceFiles(join('app', 'gallery')).filter((file) =>
+      read(file).includes('fetch(')
+    )
+    expect(offenders).toEqual([])
+  })
+
+  it('writes the photo host in lib/gallery.ts only', () => {
+    const offenders = ['app', 'components', 'data', 'lib']
+      .flatMap((dir) => sourceFiles(dir))
+      .filter((file) => read(file).includes('raw.githubusercontent.com'))
+    expect(offenders).toEqual([join('lib', 'gallery.ts')])
+  })
+})

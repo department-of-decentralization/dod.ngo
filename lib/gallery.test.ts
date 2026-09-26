@@ -24,6 +24,7 @@
  */
 import { afterEach, describe, expect, it } from 'vitest'
 import galleries, { type Gallery } from '../data/galleries'
+import { events } from '../data/dodEvents'
 import {
   COMING_SOON,
   LICENSES,
@@ -117,7 +118,7 @@ describe('gallery registry (SPEC.md D22)', () => {
 
   it('each gallery names exactly one event in data/dodEvents.ts', () => {
     for (const gallery of galleries) {
-      expect(findEvent(gallery).title, gallery.slug).toBe(gallery.event)
+      expect(findEvent(gallery, events).title, gallery.slug).toBe(gallery.event)
     }
   })
 
@@ -131,7 +132,7 @@ describe('gallery registry (SPEC.md D22)', () => {
 
   it('links every gallery to its event', () => {
     for (const gallery of galleries) {
-      expect(findEvent(gallery).link?.url, gallery.slug).toMatch(/^https:\/\//)
+      expect(findEvent(gallery, events).link?.url, gallery.slug).toMatch(/^https:\/\//)
     }
   })
 
@@ -205,7 +206,7 @@ describe('formatGalleryDate', () => {
 
   it('shows the date of record for each of the seven galleries', () => {
     const shown = Object.fromEntries(
-      galleries.map((g) => [g.slug, formatGalleryDate(findEvent(g))])
+      galleries.map((g) => [g.slug, formatGalleryDate(findEvent(g, events))])
     )
     expect(shown).toEqual({
       'dweb-camp-2026': 'July 8-12, 2026',
@@ -326,8 +327,10 @@ describe('labels', () => {
   })
 
   it('writes a card meta line from the event date (SPEC.md D22, D24)', () => {
-    expect(cardMeta(pbv2)).toBe('June 2025 • 204 photos')
-    expect(cardMeta(findGallery(galleries, 'ethberlin-4')!)).toBe(`May 2024 • ${COMING_SOON}`)
+    expect(cardMeta(pbv2, events)).toBe('June 2025 • 204 photos')
+    expect(cardMeta(findGallery(galleries, 'ethberlin-4')!, events)).toBe(
+      `May 2024 • ${COMING_SOON}`
+    )
     expect(COMING_SOON).toBe('Photos coming soon')
   })
 

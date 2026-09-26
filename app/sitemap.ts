@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { allBlogs } from 'contentlayer/generated'
+import galleries from '@/data/galleries'
 import siteMetadata from '@/data/siteMetadata'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -12,7 +13,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: post.lastmod || post.date,
     }))
 
-  const routes = ['', 'blog', 'projects', 'tags'].map((route) => ({
+  // The gallery index and every gallery page, placeholders included (SPEC.md D30)
+  const galleryRoutes = ['gallery', ...galleries.map((gallery) => `gallery/${gallery.slug}`)]
+
+  const routes = ['', 'blog', 'projects', 'tags', ...galleryRoutes].map((route) => ({
     url: `${siteUrl}/${route}`,
     lastModified: new Date().toISOString().split('T')[0],
   }))

@@ -22,11 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { events as dodEvents } from '../data/dodEvents'
 import type { Gallery, GalleryPhotos, PhotoEntry, PhotoLicense } from '../data/galleries'
 
-/** One entry of `data/dodEvents.ts`. */
-export type DodEvent = (typeof dodEvents)[number]
+/**
+ * The fields of a `data/dodEvents.ts` entry that a gallery reads. Callers pass
+ * the event list in, so this module imports no data and stays cheap to bundle
+ * into a client component.
+ */
+export type DodEvent = {
+  /** Event title; a gallery names its event by it (`SPEC.md` D22). */
+  title: string
+  /** ISO date of the event, or of its first day. */
+  date: string
+  /** ISO date of the last day, for a multi-day event. */
+  endDate?: string
+  /** Whether only the year is known. */
+  yearOnly?: boolean
+  /** The event's own website. */
+  link?: { url: string; label: string }
+}
 
 /**
  * A source of uniformly distributed numbers in [0, 1). The page passes the
@@ -107,12 +121,12 @@ export const PREVIEW_LAYOUTS: Record<TileCount, PreviewLayout> = {
  * Find the entry in `data/dodEvents.ts` that a gallery names (`SPEC.md` D22).
  *
  * @param gallery - The gallery.
- * @param eventList - Events to search; defaults to `data/dodEvents.ts`.
+ * @param eventList - Events to search: `events` from `data/dodEvents.ts`.
  * @returns The one event whose title equals `gallery.event`.
  * @throws If no event, or more than one, carries that title. The build then
  *   fails rather than publish a gallery with no date, or with a guessed one.
  */
-export function findEvent(gallery: Gallery, eventList: readonly DodEvent[] = dodEvents): DodEvent {
+export function findEvent(gallery: Gallery, eventList: readonly DodEvent[]): DodEvent {
   const matches = eventList.filter((event) => event.title === gallery.event)
   if (matches.length !== 1) {
     throw new Error(
@@ -223,10 +237,10 @@ export function photoCountLabel(count: number): string {
  * that photos are coming (`SPEC.md` D22, D24).
  *
  * @param gallery - The gallery.
- * @param eventList - Events to read the date from; defaults to `data/dodEvents.ts`.
+ * @param eventList - Events to read the date from: `events` from `data/dodEvents.ts`.
  * @returns For example `June 2025 • 204 photos` or `May 2024 • Photos coming soon`.
  */
-export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[] = dodEvents): string {
+export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): string {
   const date = formatGalleryDate(findEvent(gallery, eventList))
   const photos = gallery.photos ? photoCountLabel(gallery.photos.list.length) : COMING_SOON
   return `${date} • ${photos}`

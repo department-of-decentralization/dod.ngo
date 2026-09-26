@@ -58,3 +58,23 @@ input:-webkit-autofill:focus {
   display: inline-block;
   vertical-align: middle;
 }
+
+/* Gallery tiles: the design's stripe pattern, shown until a photo loads and on
+   galleries without photos (SPEC.md D24, D25) */
+.bg-stripes {
+  background-color: theme('colors.butter.500');
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 7px,
+    theme('colors.butter.600') 7px 8px
+  );
+}
+
+.dark .bg-stripes {
+  background-color: theme('colors.gray.900');
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 7px,
+    theme('colors.gray.800') 7px 8px
+  );
+}
