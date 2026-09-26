@@ -3,7 +3,7 @@ import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
 import { Barlow, Merriweather } from 'next/font/google'
-import { SearchProvider, SearchConfig } from 'pliny/search'
+import { SearchProvider, SearchConfig } from 'pliny/search/index.js'
 import Menu from '@/components/Menu/Menu'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'

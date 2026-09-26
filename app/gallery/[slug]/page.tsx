@@ -40,8 +40,8 @@ import {
 import { genPageMetadata } from 'app/seo'
 import PhotoGrid from './PhotoGrid'
 
-/** Route parameters of a gallery page. */
-type Params = { params: { slug: string } }
+/** Route parameters of a gallery page; Next.js passes them as a promise. */
+type Params = { params: Promise<{ slug: string }> }
 
 /** Colour of every link on the page, as on the rest of the site. */
 const LINK = 'text-primary-500 hover:text-primary-600 dark:hover:text-primary-400'
@@ -65,8 +65,8 @@ export function generateStaticParams() {
  * @param params - Route parameters.
  * @returns The metadata.
  */
-export function generateMetadata({ params }: Params) {
-  const gallery = findGallery(galleries, params.slug)
+export async function generateMetadata({ params }: Params) {
+  const gallery = findGallery(galleries, (await params).slug)
   return genPageMetadata({ title: gallery ? gallery.title : 'Gallery' })
 }
 
@@ -76,8 +76,8 @@ export function generateMetadata({ params }: Params) {
  * to the neighbouring galleries (`SPEC.md` D22 to D28). A gallery without
  * photos says so instead (D24).
  */
-export default function GalleryPage({ params }: Params) {
-  const gallery = findGallery(galleries, params.slug)
+export default async function GalleryPage({ params }: Params) {
+  const gallery = findGallery(galleries, (await params).slug)
   if (!gallery) notFound()
 
   const event = findEvent(gallery, events)

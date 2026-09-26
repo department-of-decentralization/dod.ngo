@@ -25,8 +25,8 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { PREVIEW_LAYOUTS, pickPreview, thumbnailUrl, type Preview } from '@/lib/gallery'
+import { useMemo, useSyncExternalStore } from 'react'
+import { PREVIEW_LAYOUTS, pickPreview, thumbnailUrl } from '@/lib/gallery'
 
 /** Props of {@link GalleryPreview}. */
 type Props = {
@@ -35,6 +35,9 @@ type Props = {
   /** File names of the gallery's photos; empty for a gallery without photos. */
   names: string[]
 }
+
+/** Subscription for a value that never changes once the page has hydrated. */
+const subscribeToNothing = () => () => {}
 
 /**
  * A gallery card's preview: 3 to 5 tiles showing random photos of the gallery
@@ -46,11 +49,17 @@ type Props = {
  * gallery without photos keeps its tiles striped (`SPEC.md` D24).
  */
 export default function GalleryPreview({ repo, names }: Props) {
-  const [preview, setPreview] = useState<Preview<string> | null>(null)
-
-  useEffect(() => {
-    setPreview(pickPreview(names, Math.random))
-  }, [names])
+  // React renders the server snapshot, false, for the static HTML and for
+  // hydration, then renders again with true: nothing random reaches either.
+  const hydrated = useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false
+  )
+  const preview = useMemo(
+    () => (hydrated ? pickPreview(names, Math.random) : null),
+    [hydrated, names]
+  )
 
   if (!preview) return <div className="bg-stripes aspect-[3/2] rounded-md" />
 

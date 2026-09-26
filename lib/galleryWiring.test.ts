@@ -73,12 +73,13 @@ describe('gallery wiring (SPEC.md D23, D25)', () => {
   it('picks previews in a client component, after hydration', () => {
     const source = read(join('app', 'gallery', 'GalleryPreview.tsx'))
     expect(afterLeadingComments(source).startsWith("'use client'")).toBe(true)
-    // The pick must run in an effect: picked during render, it would differ
-    // between the static HTML and the browser and fail hydration.
-    const effect = source.indexOf('useEffect(')
-    const pick = source.indexOf('pickPreview(')
-    expect(effect).toBeGreaterThan(-1)
-    expect(pick).toBeGreaterThan(effect)
+    // The pick must wait for hydration: picked during the server render or the
+    // hydrating render, it would differ between the static HTML and the
+    // browser and fail hydration. The server snapshot, false, gates it.
+    expect(source).toMatch(
+      /useSyncExternalStore\(\s*subscribeToNothing,\s*\(\) => true,\s*\(\) => false\s*\)/
+    )
+    expect(source).toMatch(/hydrated \? pickPreview\(names, Math\.random\) : null/)
     expect(source.split('pickPreview(').length - 1).toBe(1)
   })
 

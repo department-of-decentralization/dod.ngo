@@ -44,8 +44,8 @@ const fromRoot = (dir: string) => fileURLToPath(new URL(`./${dir}`, import.meta.
  * from `~/.claude/CLAUDE.md`, measured since `SPEC.md` D32.
  */
 export default defineConfig({
-  // tsconfig.json says `jsx: preserve` because Next compiles JSX itself; under
-  // Vitest nothing else would, so compile it here with React's automatic runtime.
+  // tsconfig.json's `jsx` setting belongs to Next, which rewrites it on build;
+  // Vitest compiles JSX with React's automatic runtime regardless.
   oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: {

@@ -1,5 +1,6 @@
 'use client'
 
+import type { JSX } from 'react'
 import { events } from '@/data/dodEvents'
 import skippedBerlinMesh from '@/data/skippedBerlinMesh'
 import skippedDates from '@/data/skippedStammtisch'
