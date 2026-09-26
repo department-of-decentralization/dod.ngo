@@ -25,6 +25,7 @@
 import { describe, expect, it } from 'vitest'
 import services, { type Service } from '../data/services'
 import {
+  CLAIMS_BY_TIER,
   DEFAULT_TIMEOUT_MS,
   STATES_BY_TIER,
   type FetchLike,
@@ -116,9 +117,10 @@ describe('probeService, verified tier', () => {
     expect(result.httpStatus).toBe(503)
   })
 
-  it('reports down with no HTTP status when the request fails outright', async () => {
+  it('reports noAnswer, not down, when the request fails outright', async () => {
+    // A rejection is not evidence about the server (SPEC.md D20).
     const result = await probeService(fixture(), stubReject)
-    expect(result.status).toBe('down')
+    expect(result.status).toBe('noAnswer')
     expect(result.httpStatus).toBeUndefined()
   })
 
@@ -137,9 +139,9 @@ describe('probeService, opaque tier', () => {
     expect(result.status).toBe('reachable')
   })
 
-  it('reports unreachable when the request fails', async () => {
+  it('reports noAnswer when the request fails', async () => {
     const result = await probeService(opaque, stubReject)
-    expect(result.status).toBe('unreachable')
+    expect(result.status).toBe('noAnswer')
   })
 
   it('requests no-cors mode', async () => {
@@ -166,9 +168,17 @@ describe('probeService, opaque tier', () => {
 })
 
 describe('tier vocabularies stay disjoint', () => {
-  it('shares no state between the two tiers', () => {
-    const overlap = STATES_BY_TIER.verified.filter((s) => STATES_BY_TIER.opaque.includes(s))
+  it('shares no claim-making state between the two tiers', () => {
+    // noAnswer is shared by design; it makes no claim. The states that do
+    // assert something must stay disjoint, so an opaque probe can never
+    // produce `operational` or `down`.
+    const overlap = CLAIMS_BY_TIER.verified.filter((s) => CLAIMS_BY_TIER.opaque.includes(s))
     expect(overlap).toEqual([])
+  })
+
+  it('shares exactly one state, the one that claims nothing', () => {
+    const shared = STATES_BY_TIER.verified.filter((s) => STATES_BY_TIER.opaque.includes(s))
+    expect(shared).toEqual(['noAnswer'])
   })
 
   it('only ever produces a state its own tier permits', async () => {
@@ -201,7 +211,7 @@ describe('probeAllServices', () => {
       [fixture({ name: 'Fine' }), fixture({ name: 'Broken', probeUrl: 'https://broken.invalid' })],
       failing
     )
-    expect(results.map((r) => r.status)).toEqual(['operational', 'down'])
+    expect(results.map((r) => r.status)).toEqual(['operational', 'noAnswer'])
   })
 
   it('passes the timeout through and defaults to 8 seconds', async () => {
@@ -294,7 +304,7 @@ describe('probe timing', () => {
   it('measures elapsed time for a failed probe too', async () => {
     // "connection failed after 8 s" and "after 40 ms" are different outages.
     const result = await probeService(fixture(), stubReject, 8000, fakeClock(40))
-    expect(result.status).toBe('down')
+    expect(result.status).toBe('noAnswer')
     expect(result.ms).toBe(40)
   })
 
@@ -331,9 +341,12 @@ describe('describeEvidence', () => {
     expect(await evidenceFor('opaque', stubOk(200).fetch)).toBe('connection only · 140 ms')
   })
 
-  it('distinguishes a failed connection from a failed request', async () => {
-    expect(await evidenceFor('opaque', stubReject)).toBe('connection failed · 140 ms')
-    expect(await evidenceFor('verified', stubReject)).toBe('request failed · 140 ms')
+  it('names both possibilities for a rejection, on either tier', async () => {
+    // The probe cannot tell a blocked request from a dead host, so the line
+    // must not pick one (SPEC.md D20).
+    for (const tier of ['verified', 'opaque'] as const) {
+      expect(await evidenceFor(tier, stubReject)).toBe('blocked or unreachable · 140 ms')
+    }
   })
 
   it('says no answer when the probe ran out the clock', async () => {
@@ -344,5 +357,42 @@ describe('describeEvidence', () => {
     for (const code of [200, 404, 500]) {
       expect(await evidenceFor('opaque', stubOk(code).fetch)).not.toContain('HTTP')
     }
+  })
+})
+
+describe('a probe that got no answer claims nothing [regression 2026-09-26]', () => {
+  // Shipped defect: any rejected fetch became `down` (verified) or
+  // `unreachable` (opaque), both of which assert the service is unhealthy. A
+  // fetch also rejects when a content blocker, Firefox ETP or a DNS blocklist
+  // cancels the request, and when AbortSignal.timeout fires on a slow but
+  // healthy host. On 2026-09-26 the live page showed Down for potatomesh.net
+  // and meshint.potatomesh.net while both answered HTTP 200 with
+  // Access-Control-Allow-Origin: *.
+
+  it('does not report a verified service down when the request never completed', async () => {
+    const result = await probeService(fixture(), stubReject)
+    expect(result.status).toBe('noAnswer')
+  })
+
+  it('does not report an opaque service unreachable when the request never completed', async () => {
+    const result = await probeService(fixture({ tier: 'opaque' }), stubReject)
+    expect(result.status).toBe('noAnswer')
+  })
+
+  it('only reports down when it actually read a status code', async () => {
+    // `down` is a claim about the server, so it requires evidence from the
+    // server. No rejection, on either tier, may produce it.
+    for (const tier of ['verified', 'opaque'] as const) {
+      const result = await probeService(fixture({ tier }), stubReject)
+      expect(result.status).not.toBe('down')
+      expect(result.httpStatus).toBeUndefined()
+    }
+  })
+
+  it('still reports down when the server answered with a failing status', async () => {
+    // The fix must not cost us real outage detection.
+    const result = await probeService(fixture(), stubOk(503).fetch)
+    expect(result.status).toBe('down')
+    expect(result.httpStatus).toBe(503)
   })
 })

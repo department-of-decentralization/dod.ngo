@@ -45,8 +45,23 @@ const LABEL: Record<RowStatus, string> = {
   operational: 'Operational',
   reachable: 'Reachable',
   down: 'Down',
-  unreachable: 'Unreachable',
+  noAnswer: 'No answer',
   checking: 'Checking',
+}
+
+/**
+ * Dot appearance per state.
+ *
+ * Filled means the response was read; a ring means only the connection was
+ * observed. Amber means the check never completed, so nothing is claimed either
+ * way — a blocked request must not render as a red outage (`SPEC.md` D20).
+ */
+const DOT: Record<RowStatus, string> = {
+  operational: 'border-green-600 bg-green-600 dark:border-green-500 dark:bg-green-500',
+  reachable: 'border-green-600 bg-transparent dark:border-green-500',
+  down: 'border-red-600 bg-red-600 dark:border-red-500 dark:bg-red-500',
+  noAnswer: 'border-amber-500 bg-amber-500 dark:border-amber-400 dark:bg-amber-400',
+  checking: 'border-gray-400 bg-gray-400 animate-pulse dark:border-gray-500 dark:bg-gray-500',
 }
 
 /**
@@ -57,19 +72,10 @@ const LABEL: Record<RowStatus, string> = {
  * Operational and Reachable stay distinguishable without reading the label.
  */
 function StatusDot({ status, size }: { status: RowStatus; size: number }) {
-  const bad = status === 'down' || status === 'unreachable'
-  const pending = status === 'checking'
-  const hollow = status === 'reachable' || status === 'unreachable'
-  const color = pending
-    ? 'border-gray-400 bg-gray-400 dark:border-gray-500 dark:bg-gray-500'
-    : bad
-      ? 'border-red-600 dark:border-red-500'
-      : 'border-green-600 dark:border-green-500'
-  const fill = hollow ? '' : bad ? 'bg-red-600 dark:bg-red-500' : 'bg-green-600 dark:bg-green-500'
   return (
     <span
       aria-hidden
-      className={`mt-2 block flex-shrink-0 rounded-full border-2 ${color} ${pending ? 'animate-pulse' : fill} ${hollow ? 'bg-transparent' : ''}`}
+      className={`mt-2 block flex-shrink-0 rounded-full border-2 ${DOT[status]}`}
       style={{ width: size, height: size }}
     />
   )
@@ -111,10 +117,12 @@ export default function ServiceStatusTable() {
   }, [run])
 
   const answered = results.filter(Boolean).length
-  const failed = results.filter(
-    (r) => r && (r.status === 'down' || r.status === 'unreachable')
-  ) as ServiceStatusResult[]
+  const settled = results.filter(Boolean) as ServiceStatusResult[]
+  const failed = settled.filter((r) => r.status === 'down')
+  const unanswered = settled.filter((r) => r.status === 'noAnswer')
   const total = services.length
+  const stamp = `checked at ${checkedAt} · took ${formatDuration(took)}`
+  const names = (rows: ServiceStatusResult[]) => rows.map((r) => r.service.name).join(', ')
 
   let headline: string
   let meta = ''
@@ -125,8 +133,14 @@ export default function ServiceStatusTable() {
     summaryStatus = 'checking'
   } else if (failed.length) {
     headline = `${failed.length} of ${total} services not responding`
-    meta = `${failed.map((r) => r.service.name).join(', ')} · checked at ${checkedAt} · took ${formatDuration(took)}`
+    meta = `${names(failed)} · ${stamp}`
     summaryStatus = 'down'
+  } else if (unanswered.length) {
+    // Not an outage: these checks never completed, so they say nothing about
+    // the services (`SPEC.md` D20).
+    headline = `${unanswered.length} of ${total} checks did not complete`
+    meta = `${names(unanswered)} · ${stamp}`
+    summaryStatus = 'noAnswer'
   } else {
     headline = `All ${total} services responding`
     meta = `Checked at ${checkedAt} · took ${formatDuration(took)}`
@@ -279,13 +293,19 @@ export default function ServiceStatusTable() {
             aria-hidden
             className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-600 dark:bg-red-500"
           />
+          Down
+        </dt>
+        <dd className="m-0">service answered with an error</dd>
+        <dt className="flex items-center gap-x-1.5 font-medium text-gray-700 dark:text-gray-300">
           <span
             aria-hidden
-            className="h-2.5 w-2.5 flex-shrink-0 rounded-full border-2 border-red-600 dark:border-red-500"
+            className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-amber-500 dark:bg-amber-400"
           />
-          Down, Unreachable
+          No answer
         </dt>
-        <dd className="m-0">check failed</dd>
+        <dd className="m-0">
+          check did not complete, often a browser extension or network blocking it
+        </dd>
         <dt className="font-medium text-gray-700 dark:text-gray-300">Invite only</dt>
         <dd className="m-0">account issued by the DoD, no open signup</dd>
       </dl>
