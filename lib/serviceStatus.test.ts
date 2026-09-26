@@ -26,6 +26,9 @@ import { describe, expect, it } from 'vitest'
 import services, { type Service } from '../data/services'
 import {
   CLAIMS_BY_TIER,
+  type ServiceStatus,
+  type ServiceStatusResult,
+  summarizeResults,
   DEFAULT_TIMEOUT_MS,
   STATES_BY_TIER,
   type FetchLike,
@@ -302,7 +305,8 @@ describe('probe timing', () => {
   })
 
   it('measures elapsed time for a failed probe too', async () => {
-    // "connection failed after 8 s" and "after 40 ms" are different outages.
+    // A probe that died after 8 s and one that died after 40 ms read
+    // differently; the fast one is the signature of a blocker.
     const result = await probeService(fixture(), stubReject, 8000, fakeClock(40))
     expect(result.status).toBe('noAnswer')
     expect(result.ms).toBe(40)
@@ -394,5 +398,49 @@ describe('a probe that got no answer claims nothing [regression 2026-09-26]', ()
     const result = await probeService(fixture(), stubOk(503).fetch)
     expect(result.status).toBe('down')
     expect(result.httpStatus).toBe(503)
+  })
+})
+
+describe('summarizeResults', () => {
+  const settled = (tier: 'verified' | 'opaque', status: ServiceStatus, name: string) =>
+    ({ service: fixture({ tier, name }), status, ms: 100, timedOut: false }) as ServiceStatusResult
+
+  it('reports all clear when nothing failed', () => {
+    const s = summarizeResults(
+      [settled('verified', 'operational', 'A'), settled('opaque', 'reachable', 'B')],
+      9
+    )
+    expect(s.status).toBe('operational')
+    expect(s.headline).toBe('All 9 services responding')
+  })
+
+  it('counts both groups when a service is down AND a check did not run', () => {
+    // The shipped defect: an else-if chain reported only the `down` group, so
+    // an outage silently hid every blocked check (SPEC.md D20).
+    const s = summarizeResults(
+      [
+        settled('verified', 'down', 'Broken'),
+        settled('verified', 'noAnswer', 'Blocked One'),
+        settled('opaque', 'noAnswer', 'Blocked Two'),
+      ],
+      9
+    )
+    expect(s.headline).toBe('1 of 9 services returned an error, 2 could not be checked')
+    expect(s.failed.map((r) => r.service.name)).toEqual(['Broken'])
+    expect(s.unanswered.map((r) => r.service.name)).toEqual(['Blocked One', 'Blocked Two'])
+  })
+
+  it('does not turn the page red when nothing answered with an error', () => {
+    const s = summarizeResults([settled('verified', 'noAnswer', 'Blocked')], 9)
+    expect(s.status).toBe('noAnswer')
+    expect(s.headline).toBe('1 could not be checked')
+  })
+
+  it('stays red when anything did answer with an error', () => {
+    const s = summarizeResults(
+      [settled('verified', 'down', 'Broken'), settled('opaque', 'noAnswer', 'Blocked')],
+      9
+    )
+    expect(s.status).toBe('down')
   })
 })

@@ -142,8 +142,9 @@ export async function probeService(
 ): Promise<ServiceStatusResult> {
   const signal = AbortSignal.timeout(timeoutMs)
   const started = now()
-  // Elapsed time is reported for a failed probe too: "connection failed after
-  // 8 s" and "connection failed after 40 ms" describe different outages.
+  // Elapsed time is reported for a rejected probe too: a probe that died after
+  // 8 s and one that died after 40 ms look different to a reader, and the fast
+  // one is the signature of a blocker rather than a network timeout.
   const elapsed = () => Math.max(0, now() - started)
 
   if (service.tier === 'verified') {
@@ -227,4 +228,56 @@ export function describeEvidence(result: ServiceStatusResult): string {
   if (result.status === NO_CLAIM) return `blocked or unreachable \u00b7 ${took}`
   if (result.status === 'reachable') return `connection only \u00b7 ${took}`
   return `HTTP ${result.httpStatus} \u00b7 ${took}`
+}
+
+/** An aggregate verdict over every settled probe. */
+export type StatusSummary = {
+  /** Dot state for the summary bar. */
+  status: ServiceStatus
+  /** One line stating what happened, counting every group. */
+  headline: string
+  /** Services that answered with an error. */
+  failed: ServiceStatusResult[]
+  /** Services whose check never completed. */
+  unanswered: ServiceStatusResult[]
+}
+
+/**
+ * Summarise every settled probe into one verdict.
+ *
+ * Both failure groups are always reported. A `down` row and a `noAnswer` row
+ * say different things, and an outage must not hide the fact that other checks
+ * never ran (`SPEC.md` D20) — reporting only the louder group is the defect
+ * this function exists to prevent.
+ *
+ * The dot stays amber unless something actually answered with an error: a check
+ * that did not run is not an outage and must not turn the page red.
+ *
+ * @param settled - Results for probes that have finished; pass only settled ones.
+ * @param total - How many services exist in all, including unsettled probes.
+ * @returns The aggregate verdict.
+ */
+export function summarizeResults(settled: ServiceStatusResult[], total: number): StatusSummary {
+  const failed = settled.filter((r) => r.status === 'down')
+  const unanswered = settled.filter((r) => r.status === NO_CLAIM)
+
+  if (!failed.length && !unanswered.length) {
+    return {
+      status: 'operational',
+      headline: `All ${total} services responding`,
+      failed,
+      unanswered,
+    }
+  }
+
+  const parts: string[] = []
+  if (failed.length) parts.push(`${failed.length} of ${total} services returned an error`)
+  if (unanswered.length) parts.push(`${unanswered.length} could not be checked`)
+
+  return {
+    status: failed.length ? 'down' : NO_CLAIM,
+    headline: parts.join(', '),
+    failed,
+    unanswered,
+  }
 }

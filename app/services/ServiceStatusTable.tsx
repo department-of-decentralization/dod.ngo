@@ -32,6 +32,7 @@ import {
   describeEvidence,
   formatDuration,
   probeAllServices,
+  summarizeResults,
 } from '@/lib/serviceStatus'
 
 /** Where the page is in a check cycle. */
@@ -118,33 +119,30 @@ export default function ServiceStatusTable() {
 
   const answered = results.filter(Boolean).length
   const settled = results.filter(Boolean) as ServiceStatusResult[]
-  const failed = settled.filter((r) => r.status === 'down')
-  const unanswered = settled.filter((r) => r.status === 'noAnswer')
   const total = services.length
   const stamp = `checked at ${checkedAt} · took ${formatDuration(took)}`
   const names = (rows: ServiceStatusResult[]) => rows.map((r) => r.service.name).join(', ')
 
+  // Aggregation lives in lib/ so it can be unit tested; this component only
+  // renders what it returns (SPEC.md D6).
+  const summary = summarizeResults(settled, total)
   let headline: string
-  let meta = ''
+  let meta: string
   let summaryStatus: RowStatus
   if (phase === 'checking') {
     headline = `Checking ${total} services`
     meta = `${answered} of ${total} answered`
     summaryStatus = 'checking'
-  } else if (failed.length) {
-    headline = `${failed.length} of ${total} services not responding`
-    meta = `${names(failed)} · ${stamp}`
-    summaryStatus = 'down'
-  } else if (unanswered.length) {
-    // Not an outage: these checks never completed, so they say nothing about
-    // the services (`SPEC.md` D20).
-    headline = `${unanswered.length} of ${total} checks did not complete`
-    meta = `${names(unanswered)} · ${stamp}`
-    summaryStatus = 'noAnswer'
   } else {
-    headline = `All ${total} services responding`
-    meta = `Checked at ${checkedAt} · took ${formatDuration(took)}`
-    summaryStatus = 'operational'
+    headline = summary.headline
+    summaryStatus = summary.status
+    const detail = [
+      summary.failed.length ? names(summary.failed) : '',
+      summary.unanswered.length ? `not checked: ${names(summary.unanswered)}` : '',
+    ].filter(Boolean)
+    meta = detail.length
+      ? `${detail.join(` · `)} · ${stamp}`
+      : `Checked at ${checkedAt} · took ${formatDuration(took)}`
   }
 
   return (
@@ -252,7 +250,7 @@ export default function ServiceStatusTable() {
           <StatusDot status={summaryStatus} size={14} />
           <div className="min-w-0">
             <div
-              className={`text-xl font-semibold leading-7 ${failed.length ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}
+              className={`text-xl font-semibold leading-7 ${summaryStatus === 'down' ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}
             >
               {headline}
             </div>
