@@ -88,7 +88,7 @@ export default async function GalleryPage({ params }: Params) {
   return (
     <>
       <PageTitle>{gallery.title}</PageTitle>
-      <div className="mt-2 flex flex-wrap gap-x-2 text-base font-medium text-gray-500 dark:text-gray-400 md:mt-5">
+      <div className="mt-2 flex flex-wrap gap-x-2 text-base font-medium text-gray-500 md:mt-5 dark:text-gray-400">
         <span>{formatGalleryDate(event)}</span>
         {event.link && (
           <>
@@ -148,7 +148,7 @@ export default async function GalleryPage({ params }: Params) {
         <div className="flex justify-between gap-6 border-t border-gray-200 py-4 text-sm font-medium dark:border-gray-700">
           {previous && (
             <div>
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
                 Previous Gallery
               </h2>
               <div className={LINK}>
@@ -158,7 +158,7 @@ export default async function GalleryPage({ params }: Params) {
           )}
           {next && (
             <div className="ml-auto">
-              <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
                 Next Gallery
               </h2>
               <div className={LINK}>

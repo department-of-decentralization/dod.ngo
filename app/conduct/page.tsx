@@ -7,7 +7,7 @@ export default function Conduct() {
   return (
     <>
       <PageTitle>Code of Conduct</PageTitle>
-      <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
+      <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
         <p>
           We are a collective, and we want to bring people in the community together to exchange
           ideas, make new friends, and build things as an inclusive, welcoming, and safe community.

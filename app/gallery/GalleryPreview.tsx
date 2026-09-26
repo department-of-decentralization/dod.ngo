@@ -61,12 +61,12 @@ export default function GalleryPreview({ repo, names }: Props) {
     [hydrated, names]
   )
 
-  if (!preview) return <div className="bg-stripes aspect-[3/2] rounded-md" />
+  if (!preview) return <div className="bg-stripes aspect-3/2 rounded-md" />
 
   const layout = PREVIEW_LAYOUTS[preview.tiles]
   return (
     <div
-      className="grid aspect-[3/2] gap-1 overflow-hidden rounded-md"
+      className="grid aspect-3/2 gap-1 overflow-hidden rounded-md"
       style={{ gridTemplateColumns: layout.columns, gridTemplateRows: layout.rows }}
     >
       {layout.cells.map((cell, i) => {

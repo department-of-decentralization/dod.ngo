@@ -54,7 +54,7 @@ export default function GalleryIndex() {
                 repo={gallery.photos?.repo}
                 names={gallery.photos ? gallery.photos.list.map((photo) => photo.name) : []}
               />
-              <h2 className="mt-3 text-pretty text-2xl font-bold tracking-tight">
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-pretty">
                 {gallery.title}
               </h2>
               <div className="text-base font-medium text-gray-500 dark:text-gray-400">

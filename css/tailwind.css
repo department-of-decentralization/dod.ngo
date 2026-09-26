@@ -1,6 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@config '../tailwind.config.mjs';
+
+/*
+  With a JavaScript config (@config), Tailwind v4 inlines the theme's colours
+  into utilities and emits no --color-* variables, so plain CSS below reads
+  colours through theme(), which resolves at build time.
+*/
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: theme(colors.gray.200);
+  }
+}
 
 .task-list-item::before {
   @apply hidden;
@@ -62,20 +86,20 @@ input:-webkit-autofill:focus {
 /* Gallery tiles: the design's stripe pattern, shown until a photo loads and on
    galleries without photos (SPEC.md D24, D25) */
 .bg-stripes {
-  background-color: theme('colors.butter.500');
+  background-color: theme(colors.butter.500);
   background-image: repeating-linear-gradient(
     135deg,
     transparent 0 7px,
-    theme('colors.butter.600') 7px 8px
+    theme(colors.butter.600) 7px 8px
   );
 }
 
 .dark .bg-stripes {
-  background-color: theme('colors.gray.900');
+  background-color: theme(colors.gray.900);
   background-image: repeating-linear-gradient(
     135deg,
     transparent 0 7px,
-    theme('colors.gray.800') 7px 8px
+    theme(colors.gray.800) 7px 8px
   );
 }
 
@@ -86,8 +110,8 @@ input:-webkit-autofill:focus {
    photo. */
 .gallery-lightbox {
   --yarl__color_backdrop: rgb(3 7 18 / 0.96);
-  --yarl__color_button: theme('colors.gray.100');
-  --yarl__color_button_active: theme('colors.primary.400');
+  --yarl__color_button: theme(colors.gray.100);
+  --yarl__color_button_active: theme(colors.primary.400);
 }
 
 .gallery-lightbox .yarl__container {

@@ -99,6 +99,18 @@ describe('gallery wiring (SPEC.md D23, D25)', () => {
   })
 })
 
+describe('stylesheets under Tailwind 4 compatibility mode (SPEC.md D31)', () => {
+  it('read theme colours through theme(), never var(--color-*)', () => {
+    // With a JavaScript config loaded by @config, Tailwind emits no --color-*
+    // variables, so var(--color-...) in plain CSS resolves to nothing and the
+    // gallery's stripes and lightbox colours vanish, with no build error.
+    for (const file of [join('css', 'tailwind.css'), join('css', 'prism.css')]) {
+      expect(read(file), file).not.toContain('var(--color-')
+    }
+    expect(read(join('css', 'tailwind.css'))).toContain('theme(colors.butter.500)')
+  })
+})
+
 describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
   const page = read(join('app', 'gallery', '[slug]', 'page.tsx'))
   const grid = read(join('app', 'gallery', '[slug]', 'PhotoGrid.tsx'))

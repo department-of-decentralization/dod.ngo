@@ -1,9 +1,17 @@
 // @ts-check
-const { fontFamily } = require('tailwindcss/defaultTheme')
-const colors = require('tailwindcss/colors')
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
+import colors from 'tailwindcss/colors'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
-/** @type {import("tailwindcss/types").Config } */
-module.exports = {
+/**
+ * Tailwind theme, loaded from css/tailwind.css through `@config` (Tailwind v4
+ * compatibility mode; SPEC.md D31). An ES module, so the Tailwind v4 packages
+ * it imports type-check as the default exports they are.
+ *
+ * @type {import('tailwindcss').Config}
+ */
+export default {
   content: [
     './node_modules/pliny/**/*.js',
     './app/**/*.{js,ts,jsx,tsx}',
@@ -22,8 +30,8 @@ module.exports = {
         14: '3.5rem',
       },
       fontFamily: {
-        sans: ['var(--font-barlow)', ...fontFamily.sans],
-        serif: ['var(--font-merriweather)', ...fontFamily.serif],
+        sans: ['var(--font-barlow)', ...defaultTheme.fontFamily.sans],
+        serif: ['var(--font-merriweather)', ...defaultTheme.fontFamily.serif],
       },
       colors: {
         // primary: {
@@ -132,5 +140,5 @@ module.exports = {
       }),
     },
   },
-  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+  plugins: [forms, typography],
 }

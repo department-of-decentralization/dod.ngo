@@ -76,7 +76,7 @@ function StatusDot({ status, size }: { status: RowStatus; size: number }) {
   return (
     <span
       aria-hidden
-      className={`mt-2 block flex-shrink-0 rounded-full border-2 ${DOT[status]}`}
+      className={`mt-2 block shrink-0 rounded-full border-2 ${DOT[status]}`}
       style={{ width: size, height: size }}
     />
   )
@@ -166,7 +166,7 @@ export default function ServiceStatusTable() {
                   href={service.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="block aspect-[4/3] w-20 flex-shrink-0 overflow-hidden rounded border border-gray-300 hover:border-primary-500 dark:border-gray-600 sm:w-28"
+                  className="block aspect-4/3 w-20 shrink-0 overflow-hidden rounded-sm border border-gray-300 hover:border-primary-500 sm:w-28 dark:border-gray-600"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -184,7 +184,7 @@ export default function ServiceStatusTable() {
                       href={service.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-lg font-medium leading-7 text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
+                      className="text-lg leading-7 font-medium text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
                     >
                       {service.name}
                     </a>
@@ -196,7 +196,7 @@ export default function ServiceStatusTable() {
                     href={service.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="block max-w-full break-words font-mono text-sm leading-5 text-primary-500 underline underline-offset-2 hover:text-primary-600 dark:text-primary-400"
+                    className="block max-w-full font-mono text-sm leading-5 wrap-break-word text-primary-500 underline underline-offset-2 hover:text-primary-600 dark:text-primary-400"
                   >
                     {service.host}
                   </a>
@@ -214,23 +214,23 @@ export default function ServiceStatusTable() {
                       height="13"
                       fill="currentColor"
                       aria-hidden="true"
-                      className="mt-1 flex-shrink-0"
+                      className="mt-1 shrink-0"
                     >
                       <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
                     </svg>
-                    <span className="min-w-0 break-words">{service.repo}</span>
+                    <span className="min-w-0 wrap-break-word">{service.repo}</span>
                   </a>
                 </div>
               </div>
-              <div className="flex min-w-0 flex-shrink-0 gap-x-6">
-                <div className="w-24 flex-shrink-0 text-[15px] leading-7 text-gray-700 dark:text-gray-400">
+              <div className="flex min-w-0 shrink-0 gap-x-6">
+                <div className="w-24 shrink-0 text-[15px] leading-7 text-gray-700 dark:text-gray-400">
                   {service.access}
                 </div>
                 <div className="flex w-52 min-w-0 items-start gap-x-2.5">
                   <StatusDot status={status} size={10} />
                   <div className="min-w-0">
                     <div
-                      className={`text-base font-medium leading-7 ${result ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'}`}
+                      className={`text-base leading-7 font-medium ${result ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'}`}
                     >
                       {LABEL[status]}
                     </div>
@@ -250,11 +250,11 @@ export default function ServiceStatusTable() {
           <StatusDot status={summaryStatus} size={14} />
           <div className="min-w-0">
             <div
-              className={`text-xl font-semibold leading-7 ${summaryStatus === 'down' ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}
+              className={`text-xl leading-7 font-semibold ${summaryStatus === 'down' ? 'text-red-700 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}
             >
               {headline}
             </div>
-            <div className="mt-0.5 text-sm tabular-nums leading-5 text-gray-700 dark:text-gray-400">
+            <div className="mt-0.5 text-sm leading-5 text-gray-700 tabular-nums dark:text-gray-400">
               {meta}
             </div>
           </div>
@@ -263,7 +263,7 @@ export default function ServiceStatusTable() {
           type="button"
           onClick={() => void run()}
           disabled={phase === 'checking'}
-          className="flex-shrink-0 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold leading-5 text-gray-900 hover:bg-gray-100 disabled:cursor-default disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
+          className="shrink-0 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-semibold text-gray-900 hover:bg-gray-100 disabled:cursor-default disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
         >
           Run again
         </button>
@@ -273,7 +273,7 @@ export default function ServiceStatusTable() {
         <dt className="flex items-center gap-x-1.5 font-medium text-gray-700 dark:text-gray-300">
           <span
             aria-hidden
-            className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-green-600 dark:bg-green-500"
+            className="h-2.5 w-2.5 shrink-0 rounded-full bg-green-600 dark:bg-green-500"
           />
           Operational
         </dt>
@@ -281,7 +281,7 @@ export default function ServiceStatusTable() {
         <dt className="flex items-center gap-x-1.5 font-medium text-gray-700 dark:text-gray-300">
           <span
             aria-hidden
-            className="h-2.5 w-2.5 flex-shrink-0 rounded-full border-2 border-green-600 dark:border-green-500"
+            className="h-2.5 w-2.5 shrink-0 rounded-full border-2 border-green-600 dark:border-green-500"
           />
           Reachable
         </dt>
@@ -289,7 +289,7 @@ export default function ServiceStatusTable() {
         <dt className="flex items-center gap-x-1.5 font-medium text-gray-700 dark:text-gray-300">
           <span
             aria-hidden
-            className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-red-600 dark:bg-red-500"
+            className="h-2.5 w-2.5 shrink-0 rounded-full bg-red-600 dark:bg-red-500"
           />
           Down
         </dt>
@@ -297,7 +297,7 @@ export default function ServiceStatusTable() {
         <dt className="flex items-center gap-x-1.5 font-medium text-gray-700 dark:text-gray-300">
           <span
             aria-hidden
-            className="h-2.5 w-2.5 flex-shrink-0 rounded-full bg-amber-500 dark:bg-amber-400"
+            className="h-2.5 w-2.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400"
           />
           No answer
         </dt>

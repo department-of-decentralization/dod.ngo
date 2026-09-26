@@ -154,7 +154,7 @@ export default function PhotoGrid({ title, repo, photos }: Props) {
             </button>
           )
         })}
-        <div aria-hidden="true" className="h-0 grow-[1000000] basis-0" />
+        <div aria-hidden="true" className="h-0 grow-1000000 basis-0" />
       </div>
       <Lightbox
         className="gallery-lightbox"
@@ -199,7 +199,7 @@ export default function PhotoGrid({ title, repo, photos }: Props) {
           buttonZoom: () => null,
           controls: () => (
             <>
-              <div className="absolute left-6 top-0 flex h-16 items-center gap-2 text-sm font-medium text-gray-300">
+              <div className="absolute top-0 left-6 flex h-16 items-center gap-2 text-sm font-medium text-gray-300">
                 <span>{title}</span>{' '}
                 <span aria-hidden="true" className="text-gray-500">
                   •

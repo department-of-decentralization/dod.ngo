@@ -6,7 +6,7 @@ import footerNavLinks from '@/data/footerNavLinks'
 export default function Footer() {
   return (
     <footer>
-      <div className="flex flex-col items-center bg-butter-400 px-8 py-4 text-center dark:bg-gray-950 md:flex-row-reverse md:text-left">
+      <div className="flex flex-col items-center bg-butter-400 px-8 py-4 text-center md:flex-row-reverse md:text-left dark:bg-gray-950">
         {/* <div className="mb-3 flex space-x-4">
           <SocialIcon kind="mail" href={`mailto:${siteMetadata.email}`} size={6} />
           <SocialIcon kind="github" href={siteMetadata.github} size={6} />
@@ -31,7 +31,7 @@ export default function Footer() {
           </Link>
         </div> */}
         <div>
-          <div className="flex flex-col text-sm text-gray-500 dark:text-gray-400 md:flex-row md:space-x-4">
+          <div className="flex flex-col text-sm text-gray-500 md:flex-row md:space-x-4 dark:text-gray-400">
             {footerNavLinks.map((link, index) => (
               <>
                 {index > 0 && <div>{` • `}</div>}
@@ -63,11 +63,11 @@ export default function Footer() {
                       <>
                         {beforeChar}
                         <span className="relative md:mx-0.5">
-                          <span className="hidden text-primary-500 dark:text-primary-400 md:inline">
+                          <span className="hidden text-primary-500 md:inline dark:text-primary-400">
                             [
                           </span>
                           <span>{char}</span>
-                          <span className="hidden text-primary-500 dark:text-primary-400 md:inline">
+                          <span className="hidden text-primary-500 md:inline dark:text-primary-400">
                             ]
                           </span>
                         </span>
