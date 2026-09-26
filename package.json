@@ -8,6 +8,7 @@
     "build": "cross-env INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
     "serve": "next start",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts",
     "prepare": "husky"
@@ -52,6 +53,7 @@
     "@types/react": "^18.2.73",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
+    "@vitest/coverage-v8": "4.1.9",
     "cross-env": "^7.0.3",
     "eslint": "^8.45.0",
     "eslint-config-next": "14.2.3",

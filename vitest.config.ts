@@ -39,6 +39,9 @@ const fromRoot = (dir: string) => fileURLToPath(new URL(`./${dir}`, import.meta.
  * The aliases mirror `tsconfig.json` `paths`, so a wiring test can import a
  * real component (for example `app/hotkeys.tsx`) whose imports use `@/`.
  * Tests live in `lib/` only (`SPEC.md` D6).
+ *
+ * `yarn test:coverage` fails below 100% line coverage of `lib/`: the floor
+ * from `~/.claude/CLAUDE.md`, measured since `SPEC.md` D32.
  */
 export default defineConfig({
   // tsconfig.json says `jsx: preserve` because Next compiles JSX itself; under
@@ -55,5 +58,12 @@ export default defineConfig({
   },
   test: {
     include: ['lib/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['lib/**/*.ts'],
+      exclude: ['lib/**/*.test.ts'],
+      reporter: ['text'],
+      thresholds: { lines: 100 },
+    },
   },
 })

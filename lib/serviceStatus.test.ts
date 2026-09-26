@@ -443,4 +443,15 @@ describe('summarizeResults', () => {
     )
     expect(s.status).toBe('down')
   })
+
+  it('names only the errors when every check ran', () => {
+    // No "0 could not be checked" tail: an empty group is not reported.
+    const s = summarizeResults(
+      [settled('verified', 'down', 'Broken'), settled('opaque', 'reachable', 'Fine')],
+      9
+    )
+    expect(s.status).toBe('down')
+    expect(s.headline).toBe('1 of 9 services returned an error')
+    expect(s.unanswered).toEqual([])
+  })
 })
