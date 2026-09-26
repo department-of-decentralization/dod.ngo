@@ -15,13 +15,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/data/*": ["data/*"],
-      "@/layouts/*": ["layouts/*"],
-      "@/lib/*": ["lib/*"],
-      "@/css/*": ["css/*"],
+      "@/components/*": ["./components/*"],
+      "@/data/*": ["./data/*"],
+      "@/layouts/*": ["./layouts/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/css/*": ["./css/*"],
+      "app/*": ["./app/*"],
+      "css/*": ["./css/*"],
       "contentlayer/generated": ["./.contentlayer/generated"]
     },
     "plugins": [
@@ -35,6 +36,7 @@
     "next-env.d.ts",
     "**/*.js",
     "**/*.mjs",
+    "**/*.mts",
     "**/*.ts",
     "**/*.tsx",
     "**/*.json",

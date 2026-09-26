@@ -37,8 +37,10 @@ import globals from 'globals'
  * recommended rules, jsx-a11y's recommended rules and Prettier, with the same
  * rule overrides. `eslint-config-next` already registers the jsx-a11y plugin,
  * so only that plugin's recommended rules are added here.
+ *
+ * @type {import('eslint').Linter.Config[]}
  */
-export default [
+const config = [
   { ignores: ['node_modules/', '.next/', 'out/', '.contentlayer/', 'public/'] },
   js.configs.recommended,
   ...nextCoreWebVitals,
@@ -69,3 +71,5 @@ export default [
     },
   },
 ]
+
+export default config

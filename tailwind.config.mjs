@@ -11,7 +11,7 @@ import defaultTheme from 'tailwindcss/defaultTheme'
  *
  * @type {import('tailwindcss').Config}
  */
-export default {
+const config = {
   content: [
     './node_modules/pliny/**/*.js',
     './app/**/*.{js,ts,jsx,tsx}',
@@ -142,3 +142,5 @@ export default {
   },
   plugins: [forms, typography],
 }
+
+export default config
