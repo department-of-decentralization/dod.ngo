@@ -27,22 +27,42 @@ import type { Service, ServiceTier } from '../data/services'
 /**
  * A settled status for one service.
  *
- * The four states form two disjoint vocabularies, one per tier
+ * Three of these assert something about the service and are split by tier
  * (`SPEC.md` D10). A `verified` probe reads the response and reports
  * `operational` or `down`. An `opaque` probe cannot read anything and reports
- * only `reachable` or `unreachable`.
+ * only `reachable`.
  *
  * `operational` is therefore a strictly stronger claim than `reachable`, and an
  * opaque service must never produce it: a `mode: 'no-cors'` response resolves
  * identically on 200 and on 500, so reporting one as healthy would show a green
  * row during a total application failure that still terminates TLS.
+ *
+ * The fourth, `noAnswer`, asserts nothing and belongs to both tiers. A `fetch`
+ * rejects for reasons that say nothing about the server — a content blocker or
+ * extension cancelling the request, an ETP or DNS blocklist, the timeout firing
+ * on a slow but healthy host — so a rejection is not evidence of an outage
+ * (`SPEC.md` D20).
  */
-export type ServiceStatus = 'operational' | 'down' | 'reachable' | 'unreachable'
+export type ServiceStatus = 'operational' | 'down' | 'reachable' | 'noAnswer'
+
+/**
+ * The states that make a claim about the service, per tier.
+ *
+ * These stay disjoint: no opaque probe may produce `operational` or `down`, and
+ * no verified probe may produce `reachable`.
+ */
+export const CLAIMS_BY_TIER: Record<ServiceTier, readonly ServiceStatus[]> = {
+  verified: ['operational', 'down'],
+  opaque: ['reachable'],
+}
+
+/** The state that makes no claim. Reachable from either tier. */
+export const NO_CLAIM = 'noAnswer' as const
 
 /** The states a probe of the given tier is permitted to produce. */
 export const STATES_BY_TIER: Record<ServiceTier, readonly ServiceStatus[]> = {
-  verified: ['operational', 'down'],
-  opaque: ['reachable', 'unreachable'],
+  verified: [...CLAIMS_BY_TIER.verified, NO_CLAIM],
+  opaque: [...CLAIMS_BY_TIER.opaque, NO_CLAIM],
 }
 
 /** The result of probing one service. */
@@ -112,7 +132,7 @@ export function statusFromHttpCode(httpStatus: number): ServiceStatus {
  * @param timeoutMs - Abort the probe after this many milliseconds.
  * @param now - Clock used to measure round-trip time; injected for testability.
  * @returns The settled status. Never rejects: a failed probe is a result, not
- *   an error, because one unreachable service must not blank the whole page.
+ *   an error, because one failed probe must not blank the whole page.
  */
 export async function probeService(
   service: Service,
@@ -122,8 +142,9 @@ export async function probeService(
 ): Promise<ServiceStatusResult> {
   const signal = AbortSignal.timeout(timeoutMs)
   const started = now()
-  // Elapsed time is reported for a failed probe too: "connection failed after
-  // 8 s" and "connection failed after 40 ms" describe different outages.
+  // Elapsed time is reported for a rejected probe too: a probe that died after
+  // 8 s and one that died after 40 ms look different to a reader, and the fast
+  // one is the signature of a blocker rather than a network timeout.
   const elapsed = () => Math.max(0, now() - started)
 
   if (service.tier === 'verified') {
@@ -137,8 +158,10 @@ export async function probeService(
         timedOut: false,
       }
     } catch {
+      // Not `down`: nothing was read from the server, so nothing is known
+      // about it (`SPEC.md` D20).
       const ms = elapsed()
-      return { service, status: 'down', ms, timedOut: ms >= timeoutMs }
+      return { service, status: NO_CLAIM, ms, timedOut: ms >= timeoutMs }
     }
   }
 
@@ -149,7 +172,7 @@ export async function probeService(
     return { service, status: 'reachable', ms: elapsed(), timedOut: false }
   } catch {
     const ms = elapsed()
-    return { service, status: 'unreachable', ms, timedOut: ms >= timeoutMs }
+    return { service, status: NO_CLAIM, ms, timedOut: ms >= timeoutMs }
   }
 }
 
@@ -199,9 +222,62 @@ export function formatDuration(ms: number): string {
  */
 export function describeEvidence(result: ServiceStatusResult): string {
   const took = formatDuration(result.ms)
-  if (result.timedOut) return `no answer within ${formatDuration(result.ms)}`
+  if (result.timedOut) return `no answer within ${took}`
+  // A rejection cannot distinguish a blocked request from a dead host, so the
+  // line names both possibilities rather than picking one.
+  if (result.status === NO_CLAIM) return `blocked or unreachable \u00b7 ${took}`
   if (result.status === 'reachable') return `connection only \u00b7 ${took}`
-  if (result.status === 'unreachable') return `connection failed \u00b7 ${took}`
-  if (result.httpStatus) return `HTTP ${result.httpStatus} \u00b7 ${took}`
-  return `request failed \u00b7 ${took}`
+  return `HTTP ${result.httpStatus} \u00b7 ${took}`
+}
+
+/** An aggregate verdict over every settled probe. */
+export type StatusSummary = {
+  /** Dot state for the summary bar. */
+  status: ServiceStatus
+  /** One line stating what happened, counting every group. */
+  headline: string
+  /** Services that answered with an error. */
+  failed: ServiceStatusResult[]
+  /** Services whose check never completed. */
+  unanswered: ServiceStatusResult[]
+}
+
+/**
+ * Summarise every settled probe into one verdict.
+ *
+ * Both failure groups are always reported. A `down` row and a `noAnswer` row
+ * say different things, and an outage must not hide the fact that other checks
+ * never ran (`SPEC.md` D20) — reporting only the louder group is the defect
+ * this function exists to prevent.
+ *
+ * The dot stays amber unless something actually answered with an error: a check
+ * that did not run is not an outage and must not turn the page red.
+ *
+ * @param settled - Results for probes that have finished; pass only settled ones.
+ * @param total - How many services exist in all, including unsettled probes.
+ * @returns The aggregate verdict.
+ */
+export function summarizeResults(settled: ServiceStatusResult[], total: number): StatusSummary {
+  const failed = settled.filter((r) => r.status === 'down')
+  const unanswered = settled.filter((r) => r.status === NO_CLAIM)
+
+  if (!failed.length && !unanswered.length) {
+    return {
+      status: 'operational',
+      headline: `All ${total} services responding`,
+      failed,
+      unanswered,
+    }
+  }
+
+  const parts: string[] = []
+  if (failed.length) parts.push(`${failed.length} of ${total} services returned an error`)
+  if (unanswered.length) parts.push(`${unanswered.length} could not be checked`)
+
+  return {
+    status: failed.length ? 'down' : NO_CLAIM,
+    headline: parts.join(', '),
+    failed,
+    unanswered,
+  }
 }
