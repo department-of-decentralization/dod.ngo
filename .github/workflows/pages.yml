@@ -23,7 +23,8 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          # One Node version for CI, Netlify's deploy previews and local nvm
+          node-version-file: '.nvmrc'
           cache: yarn
       - id: configurepages
         uses: actions/configure-pages@v6
