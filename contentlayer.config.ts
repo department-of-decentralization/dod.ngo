@@ -1,4 +1,9 @@
-import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer2/source-files'
+import {
+  defineDocumentType,
+  ComputedFields,
+  makeSource,
+  contentDirExcludeDefault,
+} from 'contentlayer2/source-files'
 import { writeFileSync } from 'fs'
 import readingTime from 'reading-time'
 import { slug } from 'github-slugger'
@@ -157,6 +162,8 @@ export const Page = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'data',
+  // Gallery photo lists are data for app/gallery, not documents (SPEC.md D23)
+  contentDirExclude: [...contentDirExcludeDefault, 'galleries'],
   documentTypes: [Blog, Authors, Page],
   mdx: {
     cwd: process.cwd(),

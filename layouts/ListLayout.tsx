@@ -118,7 +118,9 @@ export default function ListLayout({
           <div className="flex flex-wrap">
             <div className="text-lg  font-medium uppercase">Tags</div>
             <div className="flex flex-wrap">
-              {sortedTags?.map((tag) => <Tag key={tag} text={tag} />)}
+              {sortedTags?.map((tag) => (
+                <Tag key={tag} text={tag} />
+              ))}
             </div>
           </div>
         </div>
@@ -142,7 +144,9 @@ export default function ListLayout({
                         </Link>
                       </h3>
                       <div className="flex flex-wrap">
-                        {tags?.map((tag) => <Tag key={tag} text={tag} />)}
+                        {tags?.map((tag) => (
+                          <Tag key={tag} text={tag} />
+                        ))}
                       </div>
                       <dl>
                         <dt className="sr-only">Published on</dt>

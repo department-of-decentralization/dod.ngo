@@ -144,13 +144,11 @@ export default function EventsList() {
     | { type: 'recurring'; key: string; date: Date; render: () => JSX.Element }
 
   const upcomingItems: UpcomingItem[] = [
-    ...upcomingEvents.map(
-      (event): UpcomingItem => ({
-        type: 'event',
-        date: new Date(event.date),
-        event,
-      })
-    ),
+    ...upcomingEvents.map((event): UpcomingItem => ({
+      type: 'event',
+      date: new Date(event.date),
+      event,
+    })),
     {
       type: 'recurring',
       key: 'stammtisch',
