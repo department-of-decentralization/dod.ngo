@@ -1,0 +1,343 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Department of Decentralization
+ * SPDX-License-Identifier: MIT
+ *
+ * MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+import { events as dodEvents } from '../data/dodEvents'
+import type { Gallery, GalleryPhotos, PhotoEntry, PhotoLicense } from '../data/galleries'
+
+/** One entry of `data/dodEvents.ts`. */
+export type DodEvent = (typeof dodEvents)[number]
+
+/**
+ * A source of uniformly distributed numbers in [0, 1). The page passes the
+ * browser's; tests pass a seeded one, so a pick is reproducible
+ * (`SPEC.md` D25, following D5 and D13).
+ */
+export type RandomFn = () => number
+
+/** Number of tiles a preview shows (`SPEC.md` D25). */
+export type TileCount = 3 | 4 | 5
+
+/** A preview: how many tiles to lay out, and the photos to fill them with. */
+export type Preview<T> = {
+  /** Tile count, which selects the layout. */
+  tiles: TileCount
+  /** Photos for the first tiles; any tile beyond them shows the stripe pattern. */
+  photos: T[]
+}
+
+/** One tile's place in a preview grid. */
+export type PreviewCell = { column: string; row: string }
+
+/** A preview grid: CSS track sizes, and each tile's column and row. */
+export type PreviewLayout = { columns: string; rows: string; cells: readonly PreviewCell[] }
+
+/** The only place the photo host is written (`SPEC.md` D23). */
+const PHOTO_HOST = 'https://raw.githubusercontent.com'
+
+/** Branch every photo repository serves its photos from (`SPEC.md` D23). */
+const PHOTO_BRANCH = 'main'
+
+/** Meta line of a gallery that has no photos yet (`SPEC.md` D24). */
+export const COMING_SOON = 'Photos coming soon'
+
+/** Display label and deed of every license a gallery's photos may carry. */
+export const LICENSES: Record<PhotoLicense, { label: string; href: string }> = {
+  'CC-BY-SA-4.0': {
+    label: 'CC BY-SA 4.0',
+    href: 'https://creativecommons.org/licenses/by-sa/4.0/',
+  },
+}
+
+/** The design's preview grids, one per tile count. */
+export const PREVIEW_LAYOUTS: Record<TileCount, PreviewLayout> = {
+  3: {
+    columns: '2fr 1fr',
+    rows: '1fr 1fr',
+    cells: [
+      { column: '1', row: '1 / span 2' },
+      { column: '2', row: '1' },
+      { column: '2', row: '2' },
+    ],
+  },
+  4: {
+    columns: '2fr 1fr',
+    rows: '1fr 1fr 1fr',
+    cells: [
+      { column: '1', row: '1 / span 3' },
+      { column: '2', row: '1' },
+      { column: '2', row: '2' },
+      { column: '2', row: '3' },
+    ],
+  },
+  5: {
+    columns: '1fr 1fr 1fr',
+    rows: '2fr 1fr',
+    cells: [
+      { column: '1 / span 2', row: '1' },
+      { column: '3', row: '1' },
+      { column: '1', row: '2' },
+      { column: '2', row: '2' },
+      { column: '3', row: '2' },
+    ],
+  },
+}
+
+/**
+ * Find the entry in `data/dodEvents.ts` that a gallery names (`SPEC.md` D22).
+ *
+ * @param gallery - The gallery.
+ * @param eventList - Events to search; defaults to `data/dodEvents.ts`.
+ * @returns The one event whose title equals `gallery.event`.
+ * @throws If no event, or more than one, carries that title. The build then
+ *   fails rather than publish a gallery with no date, or with a guessed one.
+ */
+export function findEvent(gallery: Gallery, eventList: readonly DodEvent[] = dodEvents): DodEvent {
+  const matches = eventList.filter((event) => event.title === gallery.event)
+  if (matches.length !== 1) {
+    throw new Error(
+      `Gallery "${gallery.slug}" names event "${gallery.event}", which matches ${matches.length} entries in data/dodEvents.ts`
+    )
+  }
+  return matches[0]
+}
+
+/**
+ * Month name of a date, read in UTC.
+ *
+ * @param date - The date.
+ * @returns The English month name, e.g. `June`.
+ */
+function monthName(date: Date): string {
+  return date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' })
+}
+
+/**
+ * Format an event's date for a gallery card or page (`SPEC.md` D22).
+ *
+ * Every part is read in UTC. The pages are rendered on the build machine, and
+ * a local-time reading would let its time zone move `2025-06-01` into May.
+ *
+ * @param event - The event's `date`, optional `endDate` and optional `yearOnly`.
+ * @returns `June 2025`, `July 8-12, 2026`, `June 30-July 2, 2026`,
+ *   `December 30, 2026 - January 2, 2027`, or `2018` for a year-only event.
+ */
+export function formatGalleryDate(event: Pick<DodEvent, 'date' | 'endDate' | 'yearOnly'>): string {
+  const start = new Date(event.date)
+  const year = start.getUTCFullYear()
+  if (event.yearOnly) return String(year)
+  if (!event.endDate) return `${monthName(start)} ${year}`
+
+  const end = new Date(event.endDate)
+  const endYear = end.getUTCFullYear()
+  if (endYear !== year) {
+    return `${monthName(start)} ${start.getUTCDate()}, ${year} - ${monthName(end)} ${end.getUTCDate()}, ${endYear}`
+  }
+  if (end.getUTCMonth() !== start.getUTCMonth()) {
+    return `${monthName(start)} ${start.getUTCDate()}-${monthName(end)} ${end.getUTCDate()}, ${year}`
+  }
+  return `${monthName(start)} ${start.getUTCDate()}-${end.getUTCDate()}, ${year}`
+}
+
+/**
+ * URL of a photo's thumbnail, shown in the grid and in previews (`SPEC.md` D23).
+ *
+ * @param photos - The gallery's photo source.
+ * @param entry - The photo.
+ * @returns The thumbnail URL, with the file name encoded.
+ */
+export function thumbnailUrl(
+  photos: Pick<GalleryPhotos, 'repo'>,
+  entry: Pick<PhotoEntry, 'name'>
+): string {
+  return `${PHOTO_HOST}/${photos.repo}/${PHOTO_BRANCH}/thumbnails/${encodeURIComponent(entry.name)}`
+}
+
+/**
+ * URL of a photo's original, shown in the lightbox (`SPEC.md` D23, D26).
+ *
+ * @param photos - The gallery's photo source.
+ * @param entry - The photo.
+ * @returns The original's URL, with the file name encoded.
+ */
+export function originalUrl(
+  photos: Pick<GalleryPhotos, 'repo'>,
+  entry: Pick<PhotoEntry, 'name'>
+): string {
+  return `${PHOTO_HOST}/${photos.repo}/${PHOTO_BRANCH}/${encodeURIComponent(entry.name)}`
+}
+
+/**
+ * Link to a gallery's photo repository, part of the license credit (`SPEC.md` D28).
+ *
+ * @param photos - The gallery's photo source.
+ * @returns The repository's GitHub URL.
+ */
+export function repoHref(photos: Pick<GalleryPhotos, 'repo'>): string {
+  return `https://github.com/${photos.repo}`
+}
+
+/**
+ * A photo's aspect ratio. The justified grid grows each tile by it
+ * (`SPEC.md` D26).
+ *
+ * @param entry - The photo.
+ * @returns Width divided by height.
+ */
+export function aspectRatio(entry: Pick<PhotoEntry, 'width' | 'height'>): number {
+  return entry.width / entry.height
+}
+
+/**
+ * Photo count as shown on a card and a gallery page.
+ *
+ * @param count - Number of photos.
+ * @returns `1 photo` or `204 photos`.
+ */
+export function photoCountLabel(count: number): string {
+  return `${count} ${count === 1 ? 'photo' : 'photos'}`
+}
+
+/**
+ * Meta line under a gallery card's title: its date, then its photo count or
+ * that photos are coming (`SPEC.md` D22, D24).
+ *
+ * @param gallery - The gallery.
+ * @param eventList - Events to read the date from; defaults to `data/dodEvents.ts`.
+ * @returns For example `June 2025 • 204 photos` or `May 2024 • Photos coming soon`.
+ */
+export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[] = dodEvents): string {
+  const date = formatGalleryDate(findEvent(gallery, eventList))
+  const photos = gallery.photos ? photoCountLabel(gallery.photos.list.length) : COMING_SOON
+  return `${date} • ${photos}`
+}
+
+/**
+ * Caption of the open lightbox slide (`SPEC.md` D26).
+ *
+ * @param title - Gallery title.
+ * @param n - 1-based number of the open photo.
+ * @param count - Photos in the gallery.
+ * @returns For example `Protocol Berg v2 • 12 / 204`.
+ */
+export function lightboxCaption(title: string, n: number, count: number): string {
+  return `${title} • ${n} / ${count}`
+}
+
+/**
+ * Accessible name of the grid button that opens a photo.
+ *
+ * @param n - 1-based photo number.
+ * @param count - Photos in the gallery.
+ * @returns For example `Open photo 12 of 204`.
+ */
+export function openPhotoLabel(n: number, count: number): string {
+  return `Open photo ${n} of ${count}`
+}
+
+/**
+ * Draw a preview's tile count: 3, 4 or 5, each equally likely (`SPEC.md` D25).
+ *
+ * @param random - Source of randomness.
+ * @returns The tile count.
+ */
+export function pickTileCount(random: RandomFn): TileCount {
+  return (3 + Math.min(2, Math.floor(random() * 3))) as TileCount
+}
+
+/**
+ * Draw a preview: a tile count, then that many distinct photos of the gallery
+ * (`SPEC.md` D25). A gallery with fewer photos, or none (a placeholder), fills
+ * the remaining tiles with the stripe pattern.
+ *
+ * @param list - The gallery's photos; empty for a placeholder.
+ * @param random - Source of randomness.
+ * @returns The preview.
+ */
+export function pickPreview<T>(list: readonly T[], random: RandomFn): Preview<T> {
+  const tiles = pickTileCount(random)
+  const count = Math.min(tiles, list.length)
+  const pool = [...list]
+  // Partial Fisher-Yates shuffle: the first `count` slots become a uniform sample.
+  for (let i = 0; i < count; i++) {
+    const j = i + Math.floor(random() * (pool.length - i))
+    ;[pool[i], pool[j]] = [pool[j], pool[i]]
+  }
+  return { tiles, photos: pool.slice(0, count) }
+}
+
+/**
+ * The photo a URL fragment opens (`SPEC.md` D27): `#12` opens photo 12.
+ *
+ * @param hash - `location.hash`, including its leading `#`.
+ * @param count - Photos in the gallery.
+ * @returns The 1-based photo number, or `null` when the fragment names no
+ *   photo of this gallery.
+ */
+export function photoFromHash(hash: string, count: number): number | null {
+  const match = /^#(\d+)$/.exec(hash)
+  if (!match) return null
+  const n = Number(match[1])
+  return n >= 1 && n <= count ? n : null
+}
+
+/**
+ * The URL fragment for an open photo (`SPEC.md` D27).
+ *
+ * @param n - 1-based photo number.
+ * @returns For example `#12`.
+ */
+export function hashForPhoto(n: number): string {
+  return `#${n}`
+}
+
+/**
+ * Look a gallery up by its slug.
+ *
+ * @param list - The registry, or any list of galleries.
+ * @param slug - The slug from the URL.
+ * @returns The gallery, or `null` if no gallery has that slug.
+ */
+export function findGallery<T extends { slug: string }>(
+  list: readonly T[],
+  slug: string
+): T | null {
+  return list.find((gallery) => gallery.slug === slug) ?? null
+}
+
+/**
+ * The galleries before and after one, in registry order: the targets of a
+ * gallery page's previous and next links.
+ *
+ * @param list - The registry.
+ * @param slug - The current gallery's slug.
+ * @returns The neighbours; `null` at either end, or both for an unknown slug.
+ */
+export function neighbours<T extends { slug: string }>(
+  list: readonly T[],
+  slug: string
+): { previous: T | null; next: T | null } {
+  const i = list.findIndex((gallery) => gallery.slug === slug)
+  if (i < 0) return { previous: null, next: null }
+  return { previous: list[i - 1] ?? null, next: list[i + 1] ?? null }
+}
