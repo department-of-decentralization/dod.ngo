@@ -48,6 +48,16 @@ export default function ButtonScript() {
                     return;
                 }
 
+                // Ignore keys meant for a focused control (SPEC.md D29): text typed
+                // into a form field, and type-ahead inside an open menu
+                const target = e.target;
+                if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) {
+                    return;
+                }
+                if (target && target.closest && target.closest('[role="menu"]')) {
+                    return;
+                }
+
                 const pressedKey = e.key.toLowerCase();
                 
                 // Find matching link in both header and footer links
