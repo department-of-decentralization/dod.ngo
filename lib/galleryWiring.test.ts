@@ -137,6 +137,22 @@ describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
     expect(grid).not.toContain('pushState(')
   })
 
+  it('closes the lightbox on a click anywhere on its backdrop', () => {
+    // The library closes on the slide; BackdropClose covers the padding
+    // around it and the gap between slides (SPEC.md D26).
+    expect(grid).toContain('controller={{ closeOnBackdropClick: true }}')
+    expect(grid).toMatch(/controls: \(\) => \(\s*<>\s*<BackdropClose \/>/)
+    expect(grid).toContain('subscribeSensors(EVENT_ON_POINTER_UP,')
+    expect(grid).toMatch(/isLightboxBackdrop\(target\.classList\)\) close\(\)/)
+    // The caption and the legend let clicks through to the backdrop.
+    expect(grid.match(/className="pointer-events-none absolute /g)).toHaveLength(2)
+  })
+
+  it('shows the placeholder text from COMING_SOON (SPEC.md D24)', () => {
+    expect(page).toContain('{`${COMING_SOON}.`}')
+    expect(page).not.toContain('Photos coming soon')
+  })
+
   it('reads the removal address from siteMetadata', () => {
     for (const source of [page, grid]) expect(source).not.toContain('hello@dod')
     expect(page).toContain('mailto:${siteMetadata.email}')

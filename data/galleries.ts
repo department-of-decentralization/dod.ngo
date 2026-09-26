@@ -22,6 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { newestFirst } from '../lib/gallery'
+import { events } from './dodEvents'
 import protocolV2Photos from './galleries/protocol-v2.json'
 
 /**
@@ -76,8 +78,8 @@ export type Gallery = {
 }
 
 /**
- * The single registry of event galleries (`SPEC.md` D22). Array order is page
- * order, and the order of the previous and next links on each gallery page.
+ * The single registry of event galleries (`SPEC.md` D22). It is written in
+ * page order, but the order comes from the events: see the default export.
  *
  * Importing the next gallery takes a photo repository in the D23 layout, a
  * verbatim copy of its `images.json` under `data/galleries/`, and a `photos`
@@ -97,11 +99,17 @@ const galleries: Gallery[] = [
       license: 'CC-BY-SA-4.0',
     },
   },
-  { slug: 'protocol-v1', title: 'Protocol Berg v1', event: 'Protocol Berg' },
   { slug: 'ethberlin-4', title: 'ETHBerlin 4', event: 'ETHBerlin 04 - Identity Crisis' },
+  { slug: 'protocol-v1', title: 'Protocol Berg v1', event: 'Protocol Berg' },
   { slug: 'ethberlin-3', title: 'ETHBerlin 3', event: 'ETHBerlin³ - to the power of 3' },
   { slug: 'ethberlin-2', title: 'ETHBerlin 2', event: 'ETHBerlin ZWEI' },
   { slug: 'ethberlin-1', title: 'ETHBerlin 1', event: 'ETHBerlin' },
 ]
 
-export default galleries
+/**
+ * The galleries in page order: newest event first, by the date of each
+ * gallery's entry in `data/dodEvents.ts` (`SPEC.md` D22). It is also the order
+ * of the previous and next links on each gallery page. A new gallery takes its
+ * place from its event, wherever it is added above.
+ */
+export default newestFirst(galleries, events)

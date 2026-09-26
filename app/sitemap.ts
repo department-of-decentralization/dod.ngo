@@ -3,7 +3,7 @@ import { allBlogs } from 'contentlayer/generated'
 import galleries from '@/data/galleries'
 import siteMetadata from '@/data/siteMetadata'
 
-// Metadata routes must be marked static to be exported (output: 'export')
+/** Metadata routes must be marked static to be exported (`output: 'export'`). */
 export const dynamic = 'force-static'
 
 export default function sitemap(): MetadataRoute.Sitemap {

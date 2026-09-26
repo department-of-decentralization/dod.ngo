@@ -26,12 +26,22 @@
 
 import Image from 'next/image'
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
-import Lightbox from 'yet-another-react-lightbox'
+import Lightbox, {
+  EVENT_ON_POINTER_CANCEL,
+  EVENT_ON_POINTER_DOWN,
+  EVENT_ON_POINTER_LEAVE,
+  EVENT_ON_POINTER_MOVE,
+  EVENT_ON_POINTER_UP,
+  cleanup,
+  useController,
+} from 'yet-another-react-lightbox'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 import {
   aspectRatio,
   hashForPhoto,
+  isDrag,
+  isLightboxBackdrop,
   openPhotoLabel,
   originalUrl,
   photoAlt,
@@ -41,6 +51,9 @@ import {
 
 /** One photo, as the grid and the lightbox need it. */
 type Photo = { name: string; width: number; height: number }
+
+/** A press on the open lightbox, followed until its release. */
+type Press = { pointerId: number; target: EventTarget; x: number; y: number; drag: boolean }
 
 /** Props of {@link PhotoGrid}. */
 type Props = {
@@ -81,6 +94,57 @@ function Key({ children }: { children: ReactNode }) {
 }
 
 /**
+ * Closes the lightbox on a click on its backdrop (`SPEC.md` D26).
+ *
+ * The library closes on a click on the slide only. The design frames the
+ * photo with padding that keeps it clear of the caption and the key legend,
+ * and a click there lands on the lightbox's container, or on its carousel
+ * between two slides. This closes on those as well: a press and a release by
+ * one pointer on the same backdrop element, with no drag and no second pointer
+ * in between.
+ *
+ * It listens through the library's own pointer sensors on the lightbox
+ * element, and adds no document or window listener.
+ *
+ * @returns Nothing visible.
+ */
+function BackdropClose() {
+  const { subscribeSensors, close } = useController()
+
+  useEffect(() => {
+    let press: Press | null = null
+    const forget = () => {
+      press = null
+    }
+    return cleanup(
+      subscribeSensors(EVENT_ON_POINTER_DOWN, (event) => {
+        // A second pointer turns the press into a pinch.
+        if (press) press.drag = true
+        else {
+          const { pointerId, target, clientX: x, clientY: y } = event
+          press = { pointerId, target, x, y, drag: false }
+        }
+      }),
+      subscribeSensors(EVENT_ON_POINTER_MOVE, (event) => {
+        if (press?.pointerId !== event.pointerId) return
+        if (isDrag(event.clientX - press.x, event.clientY - press.y)) press.drag = true
+      }),
+      subscribeSensors(EVENT_ON_POINTER_UP, (event) => {
+        if (press?.pointerId !== event.pointerId) return
+        const { target } = event
+        const click = !press.drag && target === press.target
+        press = null
+        if (click && target instanceof HTMLElement && isLightboxBackdrop(target.classList)) close()
+      }),
+      subscribeSensors(EVENT_ON_POINTER_CANCEL, forget),
+      subscribeSensors(EVENT_ON_POINTER_LEAVE, forget)
+    )
+  }, [subscribeSensors, close])
+
+  return null
+}
+
+/**
  * A gallery's photos: the design's justified grid of thumbnails, and a
  * lightbox showing the originals (`SPEC.md` D26).
  *
@@ -91,7 +155,9 @@ function Key({ children }: { children: ReactNode }) {
  *
  * The lightbox is `yet-another-react-lightbox`, configured as in protocol-v2.
  * It handles its keys on its own element and adds no document listener
- * (`SPEC.md` D19). The open photo is mirrored in the URL fragment (D27).
+ * (`SPEC.md` D19). A click anywhere on its backdrop closes it
+ * ({@link BackdropClose}). The open photo is mirrored in the URL fragment
+ * (D27).
  */
 export default function PhotoGrid({ title, repo, photos }: Props) {
   const count = photos.length
@@ -197,9 +263,11 @@ export default function PhotoGrid({ title, repo, photos }: Props) {
           // The design's toolbar has only the close button; zoom stays on
           // double click, pinch and ctrl+wheel.
           buttonZoom: () => null,
+          // Caption and legend let clicks through to the backdrop, which closes.
           controls: () => (
             <>
-              <div className="absolute top-0 left-6 flex h-16 items-center gap-2 text-sm font-medium text-gray-300">
+              <BackdropClose />
+              <div className="pointer-events-none absolute top-0 left-6 flex h-16 items-center gap-2 text-sm font-medium text-gray-300">
                 <span>{title}</span>{' '}
                 <span aria-hidden="true" className="text-gray-500">
                   •
@@ -208,7 +276,7 @@ export default function PhotoGrid({ title, repo, photos }: Props) {
                   {index + 1} / {count}
                 </span>
               </div>
-              <div className="absolute inset-x-0 bottom-0 hidden h-16 items-center justify-center gap-6 text-sm text-gray-400 md:flex">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-16 items-center justify-center gap-6 text-sm text-gray-400 md:flex">
                 <span>
                   <Key>&larr;</Key> previous
                 </span>

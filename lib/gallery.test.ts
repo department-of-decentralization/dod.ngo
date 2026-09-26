@@ -28,6 +28,7 @@ import { events } from '../data/dodEvents'
 import {
   COMING_SOON,
   LICENSES,
+  LIGHTBOX_BACKDROP_CLASSES,
   PREVIEW_LAYOUTS,
   type DodEvent,
   type RandomFn,
@@ -37,8 +38,10 @@ import {
   findGallery,
   formatGalleryDate,
   hashForPhoto,
-  lightboxCaption,
+  isDrag,
+  isLightboxBackdrop,
   neighbours,
+  newestFirst,
   openPhotoLabel,
   originalUrl,
   photoAlt,
@@ -96,12 +99,12 @@ const probe: Gallery = { slug: 'probe', title: 'Probe', event: 'Probe Event' }
 const event = (title: string) => ({ title, date: '2025-06-01', description: '' }) as DodEvent
 
 describe('gallery registry (SPEC.md D22)', () => {
-  it('lists the seven galleries in order', () => {
+  it('lists the seven galleries, newest event first', () => {
     expect(galleries.map((g) => g.slug)).toEqual([
       'dweb-camp-2026',
       'protocol-v2',
-      'protocol-v1',
       'ethberlin-4',
+      'protocol-v1',
       'ethberlin-3',
       'ethberlin-2',
       'ethberlin-1',
@@ -109,12 +112,17 @@ describe('gallery registry (SPEC.md D22)', () => {
     expect(galleries.map((g) => g.title)).toEqual([
       'DWeb Camp 2026',
       'Protocol Berg v2',
-      'Protocol Berg v1',
       'ETHBerlin 4',
+      'Protocol Berg v1',
       'ETHBerlin 3',
       'ETHBerlin 2',
       'ETHBerlin 1',
     ])
+  })
+
+  it('takes the page order from the event dates in data/dodEvents.ts', () => {
+    const dates = galleries.map((gallery) => findEvent(gallery, events).date)
+    expect(dates).toEqual([...dates].sort().reverse())
   })
 
   it('each gallery names exactly one event in data/dodEvents.ts', () => {
@@ -335,10 +343,41 @@ describe('labels', () => {
     expect(COMING_SOON).toBe('Photos coming soon')
   })
 
-  it('captions the lightbox and names the grid buttons', () => {
-    expect(lightboxCaption('Protocol Berg v2', 12, 204)).toBe('Protocol Berg v2 • 12 / 204')
+  it('names the grid buttons and the lightbox photos', () => {
     expect(openPhotoLabel(12, 204)).toBe('Open photo 12 of 204')
     expect(photoAlt('Protocol Berg v2', 12, 204)).toBe('Protocol Berg v2, photo 12 of 204')
+  })
+})
+
+describe('lightbox backdrop click (SPEC.md D26)', () => {
+  /**
+   * The class list of an element carrying the given classes.
+   *
+   * @param names - The element's classes.
+   * @returns An object answering `contains` as a DOMTokenList does.
+   */
+  const classes = (...names: string[]) => ({ contains: (name: string) => names.includes(name) })
+
+  it('treats the container and the carousel as backdrop', () => {
+    expect(LIGHTBOX_BACKDROP_CLASSES).toEqual(['yarl__container', 'yarl__carousel'])
+    expect(isLightboxBackdrop(classes('yarl__container', 'yarl__flex_center'))).toBe(true)
+    expect(isLightboxBackdrop(classes('yarl__carousel', 'yarl__carousel_with_slides'))).toBe(true)
+  })
+
+  it('leaves the photo, the slide and the controls to the library', () => {
+    expect(isLightboxBackdrop(classes('yarl__slide_image'))).toBe(false)
+    expect(isLightboxBackdrop(classes('yarl__slide'))).toBe(false)
+    expect(isLightboxBackdrop(classes('yarl__button', 'yarl__navigation_next'))).toBe(false)
+    expect(isLightboxBackdrop(classes())).toBe(false)
+  })
+
+  it('stops counting a press as a click past 30 pixels on either axis', () => {
+    expect(isDrag(0, 0)).toBe(false)
+    expect(isDrag(30, -30)).toBe(false)
+    expect(isDrag(31, 0)).toBe(true)
+    expect(isDrag(-31, 0)).toBe(true)
+    expect(isDrag(0, 31)).toBe(true)
+    expect(isDrag(0, -31)).toBe(true)
   })
 })
 
@@ -348,11 +387,71 @@ describe('gallery navigation', () => {
     expect(findGallery(galleries, 'nope')).toBeNull()
   })
 
-  it('links each gallery to its neighbours in registry order', () => {
+  it('links each gallery to its neighbours in page order', () => {
     const slugs = (n: ReturnType<typeof neighbours<Gallery>>) => [n.previous?.slug, n.next?.slug]
     expect(slugs(neighbours(galleries, 'dweb-camp-2026'))).toEqual([undefined, 'protocol-v2'])
-    expect(slugs(neighbours(galleries, 'protocol-v2'))).toEqual(['dweb-camp-2026', 'protocol-v1'])
+    expect(slugs(neighbours(galleries, 'protocol-v2'))).toEqual(['dweb-camp-2026', 'ethberlin-4'])
+    expect(slugs(neighbours(galleries, 'protocol-v1'))).toEqual(['ethberlin-4', 'ethberlin-3'])
     expect(slugs(neighbours(galleries, 'ethberlin-1'))).toEqual(['ethberlin-2', undefined])
     expect(neighbours(galleries, 'nope')).toEqual({ previous: null, next: null })
+  })
+})
+
+describe('page order (SPEC.md D22)', () => {
+  /**
+   * A gallery named after its event, for synthetic lists.
+   *
+   * @param title - The event title, also used as the slug.
+   * @returns The gallery.
+   */
+  const gallery = (title: string): Gallery => ({ slug: title, title, event: title })
+
+  /**
+   * An event on a given date, for synthetic lists.
+   *
+   * @param title - The event title.
+   * @param date - The event's ISO date.
+   * @returns The event.
+   */
+  const dated = (title: string, date: string) => ({ title, date }) as DodEvent
+
+  const list = [
+    gallery('2019'),
+    gallery('2024'),
+    gallery('2022-a'),
+    gallery('2026'),
+    gallery('2022-b'),
+  ]
+  const eventList = [
+    dated('2026', '2026-07-08'),
+    dated('2022-b', '2022-09-01'),
+    dated('2024', '2024-05-01'),
+    dated('2022-a', '2022-09-01'),
+    dated('2019', '2019-08-01'),
+  ]
+
+  it('puts the newest event first', () => {
+    expect(newestFirst(list, eventList).map((g) => g.slug)).toEqual([
+      '2026',
+      '2024',
+      '2022-a',
+      '2022-b',
+      '2019',
+    ])
+  })
+
+  it('keeps galleries on the same date in the order given', () => {
+    const swapped = [list[4], list[2]]
+    expect(newestFirst(swapped, eventList).map((g) => g.slug)).toEqual(['2022-b', '2022-a'])
+  })
+
+  it('returns a new array and leaves its input alone', () => {
+    const before = list.map((g) => g.slug)
+    expect(newestFirst(list, eventList)).not.toBe(list)
+    expect(list.map((g) => g.slug)).toEqual(before)
+  })
+
+  it('refuses a gallery whose event is not listed', () => {
+    expect(() => newestFirst([gallery('2026'), probe], eventList)).toThrow('matches 0 entries')
   })
 })

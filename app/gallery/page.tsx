@@ -30,11 +30,12 @@ import { cardMeta } from '@/lib/gallery'
 import { genPageMetadata } from 'app/seo'
 import GalleryPreview from './GalleryPreview'
 
+/** Page metadata: the title "Gallery" (`SPEC.md` D21). */
 export const metadata = genPageMetadata({ title: 'Gallery' })
 
 /**
- * Renders the gallery index at `/gallery`: one card per event gallery, in
- * registry order (`SPEC.md` D22).
+ * Renders the gallery index at `/gallery`: one card per event gallery, newest
+ * event first (`SPEC.md` D22).
  *
  * The page is static. Each card's preview is a client component that picks
  * its photos in the browser (`SPEC.md` D25).

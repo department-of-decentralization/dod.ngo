@@ -29,6 +29,7 @@ import { events } from '@/data/dodEvents'
 import galleries from '@/data/galleries'
 import siteMetadata from '@/data/siteMetadata'
 import {
+  COMING_SOON,
   LICENSES,
   findEvent,
   findGallery,
@@ -114,7 +115,7 @@ export default async function GalleryPage({ params }: Params) {
             photos={photos.list.map(({ name, width, height }) => ({ name, width, height }))}
           />
         ) : (
-          <p className="text-gray-700 dark:text-gray-300">Photos coming soon.</p>
+          <p className="text-gray-700 dark:text-gray-300">{`${COMING_SOON}.`}</p>
         )}
       </div>
 

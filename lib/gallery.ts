@@ -247,15 +247,40 @@ export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): stri
 }
 
 /**
- * Caption of the open lightbox slide (`SPEC.md` D26).
- *
- * @param title - Gallery title.
- * @param n - 1-based number of the open photo.
- * @param count - Photos in the gallery.
- * @returns For example `Protocol Berg v2 • 12 / 204`.
+ * Classes of the lightbox elements that show nothing but backdrop
+ * (`SPEC.md` D26): the container, whose padding keeps the photo clear of the
+ * caption and the key legend, and the carousel, which shows between two
+ * slides. The lightbox library closes on a click on the slide itself only.
  */
-export function lightboxCaption(title: string, n: number, count: number): string {
-  return `${title} • ${n} / ${count}`
+export const LIGHTBOX_BACKDROP_CLASSES = ['yarl__container', 'yarl__carousel'] as const
+
+/**
+ * Pointer travel, in pixels, past which a press on the lightbox is a drag
+ * rather than a click. It is the lightbox library's own swipe threshold.
+ */
+const CLICK_TRAVEL = 30
+
+/**
+ * Whether a click landed on the lightbox backdrop (`SPEC.md` D26).
+ *
+ * @param classList - Classes of the element the press and release landed on.
+ * @returns `true` for the lightbox's container or its carousel.
+ */
+export function isLightboxBackdrop(classList: { contains(token: string): boolean }): boolean {
+  return LIGHTBOX_BACKDROP_CLASSES.some((name) => classList.contains(name))
+}
+
+/**
+ * Whether a press on the lightbox has travelled too far to be a click
+ * (`SPEC.md` D26). A swipe to the next photo, or a pan across a zoomed one,
+ * may start on the backdrop, and must not close the lightbox.
+ *
+ * @param dx - Horizontal travel since the press, in pixels.
+ * @param dy - Vertical travel since the press, in pixels.
+ * @returns `true` once the press has moved more than 30 pixels along either axis.
+ */
+export function isDrag(dx: number, dy: number): boolean {
+  return Math.max(Math.abs(dx), Math.abs(dy)) > CLICK_TRAVEL
 }
 
 /**
@@ -339,6 +364,25 @@ export function hashForPhoto(n: number): string {
 }
 
 /**
+ * Put galleries in page order: newest event first, by the date of each
+ * gallery's entry in `data/dodEvents.ts` (`SPEC.md` D22). Galleries whose
+ * events share a date keep the order they were given in.
+ *
+ * @param list - The galleries.
+ * @param eventList - Events to read the dates from: `events` from `data/dodEvents.ts`.
+ * @returns A new array, newest event first.
+ * @throws If a gallery names no event, or more than one ({@link findEvent}).
+ */
+export function newestFirst<T extends Gallery>(
+  list: readonly T[],
+  eventList: readonly DodEvent[]
+): T[] {
+  const time = (gallery: T) => new Date(findEvent(gallery, eventList).date).getTime()
+  // Array.prototype.sort is stable, which keeps same-date galleries in order.
+  return [...list].sort((a, b) => time(b) - time(a))
+}
+
+/**
  * Look a gallery up by its slug.
  *
  * @param list - The registry, or any list of galleries.
@@ -353,10 +397,10 @@ export function findGallery<T extends { slug: string }>(
 }
 
 /**
- * The galleries before and after one, in registry order: the targets of a
+ * The galleries before and after one, in page order: the targets of a
  * gallery page's previous and next links.
  *
- * @param list - The registry.
+ * @param list - The galleries, in page order.
  * @param slug - The current gallery's slug.
  * @returns The neighbours; `null` at either end, or both for an unknown slug.
  */
