@@ -113,10 +113,10 @@ describe('gallery registry (SPEC.md D22)', () => {
       'DWeb Camp 2026',
       'Protocol Berg v2',
       'ETHBerlin 4',
-      'Protocol Berg v1',
+      'Protocol Berg',
       'ETHBerlin 3',
-      'ETHBerlin 2',
-      'ETHBerlin 1',
+      'ETHBerlin ZWEI',
+      'ETHBerlin',
     ])
   })
 
@@ -193,8 +193,8 @@ describe('formatGalleryDate', () => {
     else process.env.TZ = originalTz
   })
 
-  it('formats a single date as month and year', () => {
-    expect(formatGalleryDate({ date: '2025-06-01' })).toBe('June 2025')
+  it('formats a single date as month, day and year', () => {
+    expect(formatGalleryDate({ date: '2023-09-15' })).toBe('September 15, 2023')
   })
 
   it('formats a same-month range', () => {
@@ -221,7 +221,7 @@ describe('formatGalleryDate', () => {
     // West of UTC, 2025-06-01T00:00Z is still May 31 in local time.
     for (const zone of ['America/Los_Angeles', 'Pacific/Kiritimati', 'UTC']) {
       process.env.TZ = zone
-      expect(formatGalleryDate({ date: '2025-06-01' }), zone).toBe('June 2025')
+      expect(formatGalleryDate({ date: '2025-06-01' }), zone).toBe('June 1, 2025')
       expect(formatGalleryDate({ date: '2026-07-08', endDate: '2026-07-12' }), zone).toBe(
         'July 8-12, 2026'
       )
@@ -232,15 +232,16 @@ describe('formatGalleryDate', () => {
     const shown = Object.fromEntries(
       galleries.map((g) => [g.slug, formatGalleryDate(findEvent(g, events))])
     )
+    // The dates of record, supplied by the maintainer on 2026-09-27 and matching
+    // each event's own website (SPEC.md D22).
     expect(shown).toEqual({
       'dweb-camp-2026': 'July 8-12, 2026',
-      'protocol-v2': 'June 2025',
-      'protocol-v1': 'September 2023',
-      'ethberlin-4': 'May 2024',
-      'ethberlin-3': 'September 2022',
-      // Year-only entries in data/dodEvents.ts, shown as on /events.
-      'ethberlin-2': '2019',
-      'ethberlin-1': '2018',
+      'protocol-v2': 'June 12-13, 2025',
+      'ethberlin-4': 'May 24-26, 2024',
+      'protocol-v1': 'September 15, 2023',
+      'ethberlin-3': 'September 16-18, 2022',
+      'ethberlin-2': 'August 23-25, 2019',
+      'ethberlin-1': 'September 7-9, 2018',
     })
   })
 })
@@ -366,11 +367,13 @@ describe('labels', () => {
   })
 
   it('writes a card meta line from the event date (SPEC.md D22, D24)', () => {
-    expect(cardMeta(pbv2, events)).toBe('June 2025 • 204 photos')
+    expect(cardMeta(pbv2, events)).toBe('June 12-13, 2025 • 204 photos')
     expect(cardMeta(findGallery(galleries, 'protocol-v1')!, events)).toBe(
-      'September 2023 • 444 photos'
+      'September 15, 2023 • 444 photos'
     )
-    expect(cardMeta(findGallery(galleries, 'ethberlin-2')!, events)).toBe(`2019 • ${COMING_SOON}`)
+    expect(cardMeta(findGallery(galleries, 'ethberlin-2')!, events)).toBe(
+      `August 23-25, 2019 • ${COMING_SOON}`
+    )
     expect(COMING_SOON).toBe('Photos coming soon')
   })
 

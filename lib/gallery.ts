@@ -153,14 +153,14 @@ function monthName(date: Date): string {
  * a local-time reading would let its time zone move `2025-06-01` into May.
  *
  * @param event - The event's `date`, optional `endDate` and optional `yearOnly`.
- * @returns `June 2025`, `July 8-12, 2026`, `June 30-July 2, 2026`,
+ * @returns `September 15, 2023`, `July 8-12, 2026`, `June 30-July 2, 2026`,
  *   `December 30, 2026 - January 2, 2027`, or `2018` for a year-only event.
  */
 export function formatGalleryDate(event: Pick<DodEvent, 'date' | 'endDate' | 'yearOnly'>): string {
   const start = new Date(event.date)
   const year = start.getUTCFullYear()
   if (event.yearOnly) return String(year)
-  if (!event.endDate) return `${monthName(start)} ${year}`
+  if (!event.endDate) return `${monthName(start)} ${start.getUTCDate()}, ${year}`
 
   const end = new Date(event.endDate)
   const endYear = end.getUTCFullYear()
@@ -250,7 +250,8 @@ export function photoCountLabel(count: number): string {
  *
  * @param gallery - The gallery.
  * @param eventList - Events to read the date from: `events` from `data/dodEvents.ts`.
- * @returns For example `June 2025 • 204 photos` or `2019 • Photos coming soon`.
+ * @returns For example `June 12-13, 2025 • 204 photos` or
+ *   `August 23-25, 2019 • Photos coming soon`.
  */
 export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): string {
   const date = formatGalleryDate(findEvent(gallery, eventList))

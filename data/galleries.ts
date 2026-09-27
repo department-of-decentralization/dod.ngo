@@ -126,7 +126,7 @@ const galleries: Gallery[] = [
   },
   {
     slug: 'protocol-v1',
-    title: 'Protocol Berg v1',
+    title: 'Protocol Berg',
     event: 'Protocol Berg',
     photos: {
       repo: 'Department-of-Decentralization/pb23-photos',
@@ -146,8 +146,8 @@ const galleries: Gallery[] = [
       license: 'CC-BY-SA-4.0',
     },
   },
-  { slug: 'ethberlin-2', title: 'ETHBerlin 2', event: 'ETHBerlin ZWEI' },
-  { slug: 'ethberlin-1', title: 'ETHBerlin 1', event: 'ETHBerlin' },
+  { slug: 'ethberlin-2', title: 'ETHBerlin ZWEI', event: 'ETHBerlin ZWEI' },
+  { slug: 'ethberlin-1', title: 'ETHBerlin', event: 'ETHBerlin' },
 ]
 
 /**
