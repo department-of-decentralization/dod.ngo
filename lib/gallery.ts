@@ -249,10 +249,15 @@ export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): stri
 /**
  * Classes of the lightbox elements that show nothing but backdrop
  * (`SPEC.md` D26): the container, whose padding keeps the photo clear of the
- * caption and the key legend, and the carousel, which shows between two
- * slides. The lightbox library closes on a click on the slide itself only.
+ * caption and the key legend; the carousel, which shows between two slides;
+ * and the toolbar, whose padding rings the close button. The lightbox library
+ * closes on a click on the slide itself only.
  */
-export const LIGHTBOX_BACKDROP_CLASSES = ['yarl__container', 'yarl__carousel'] as const
+export const LIGHTBOX_BACKDROP_CLASSES = [
+  'yarl__container',
+  'yarl__carousel',
+  'yarl__toolbar',
+] as const
 
 /**
  * Pointer travel, in pixels, past which a press on the lightbox is a drag
@@ -264,7 +269,7 @@ const CLICK_TRAVEL = 30
  * Whether a click landed on the lightbox backdrop (`SPEC.md` D26).
  *
  * @param classList - Classes of the element the press and release landed on.
- * @returns `true` for the lightbox's container or its carousel.
+ * @returns `true` for the lightbox's container, carousel or toolbar.
  */
 export function isLightboxBackdrop(classList: { contains(token: string): boolean }): boolean {
   return LIGHTBOX_BACKDROP_CLASSES.some((name) => classList.contains(name))

@@ -175,7 +175,10 @@ describe('gallery registry (SPEC.md D22)', () => {
 describe('formatGalleryDate', () => {
   const originalTz = process.env.TZ
   afterEach(() => {
-    process.env.TZ = originalTz
+    // process.env stores strings: assigning undefined would leave TZ set to
+    // "undefined", which Node reads as UTC, not as the machine's zone.
+    if (originalTz === undefined) delete process.env.TZ
+    else process.env.TZ = originalTz
   })
 
   it('formats a single date as month and year', () => {
@@ -358,16 +361,24 @@ describe('lightbox backdrop click (SPEC.md D26)', () => {
    */
   const classes = (...names: string[]) => ({ contains: (name: string) => names.includes(name) })
 
-  it('treats the container and the carousel as backdrop', () => {
-    expect(LIGHTBOX_BACKDROP_CLASSES).toEqual(['yarl__container', 'yarl__carousel'])
+  it('treats the container, the carousel and the toolbar as backdrop', () => {
+    expect(LIGHTBOX_BACKDROP_CLASSES).toEqual([
+      'yarl__container',
+      'yarl__carousel',
+      'yarl__toolbar',
+    ])
     expect(isLightboxBackdrop(classes('yarl__container', 'yarl__flex_center'))).toBe(true)
     expect(isLightboxBackdrop(classes('yarl__carousel', 'yarl__carousel_with_slides'))).toBe(true)
+    // The ring of toolbar padding around the close button.
+    expect(isLightboxBackdrop(classes('yarl__toolbar'))).toBe(true)
   })
 
   it('leaves the photo, the slide and the controls to the library', () => {
     expect(isLightboxBackdrop(classes('yarl__slide_image'))).toBe(false)
     expect(isLightboxBackdrop(classes('yarl__slide'))).toBe(false)
     expect(isLightboxBackdrop(classes('yarl__button', 'yarl__navigation_next'))).toBe(false)
+    expect(isLightboxBackdrop(classes('yarl__button'))).toBe(false)
+    expect(isLightboxBackdrop(classes('yarl__icon'))).toBe(false)
     expect(isLightboxBackdrop(classes())).toBe(false)
   })
 
