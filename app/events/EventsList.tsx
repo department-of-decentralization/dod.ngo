@@ -1,5 +1,6 @@
 'use client'
 
+import type { JSX } from 'react'
 import { events } from '@/data/dodEvents'
 import skippedBerlinMesh from '@/data/skippedBerlinMesh'
 import skippedDates from '@/data/skippedStammtisch'
@@ -144,13 +145,11 @@ export default function EventsList() {
     | { type: 'recurring'; key: string; date: Date; render: () => JSX.Element }
 
   const upcomingItems: UpcomingItem[] = [
-    ...upcomingEvents.map(
-      (event): UpcomingItem => ({
-        type: 'event',
-        date: new Date(event.date),
-        event,
-      })
-    ),
+    ...upcomingEvents.map((event): UpcomingItem => ({
+      type: 'event',
+      date: new Date(event.date),
+      event,
+    })),
     {
       type: 'recurring',
       key: 'stammtisch',
@@ -186,7 +185,7 @@ export default function EventsList() {
   ].sort((a, b) => a.date.getTime() - b.date.getTime())
 
   return (
-    <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
+    <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
       <h3>Upcoming events:</h3>
       <div>
         <ul>

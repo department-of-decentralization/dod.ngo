@@ -4,6 +4,7 @@ name: GitHub Pages
 on:
   push:
     branches: main
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -12,22 +13,23 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
   cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          # One Node version for CI, Netlify's deploy previews and local nvm
+          node-version-file: '.nvmrc'
           cache: yarn
       - id: configurepages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Restore cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
@@ -39,12 +41,16 @@ jobs:
           EXPORT: 1
           UNOPTIMIZED: 1
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: ./out
+          # out/.well-known/matrix/* is the homeserver discovery for dod.ngo;
+          # since v4 the action drops dotfiles unless told otherwise
+          include-hidden-files: true
 
   # Deployment job
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -52,4 +58,4 @@ jobs:
     needs: build
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

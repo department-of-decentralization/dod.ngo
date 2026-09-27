@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <>
       <PageTitle>Department of Decentralization</PageTitle>
-      <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
+      <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
         <div>
           The Department of Decentralization is a collective of people from Berlin. The group
           assembled in 2018 to organize the{' '}

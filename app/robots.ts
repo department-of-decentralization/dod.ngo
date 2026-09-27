@@ -1,6 +1,9 @@
 import { MetadataRoute } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 
+/** Metadata routes must be marked static to be exported (`output: 'export'`). */
+export const dynamic = 'force-static'
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {

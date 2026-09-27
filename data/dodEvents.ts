@@ -73,7 +73,8 @@ export const events: Event[] = [
   },
   {
     title: 'Protocol Berg v2',
-    date: '2025-06-01',
+    date: '2025-06-12',
+    endDate: '2025-06-13',
     description: 'the decentralized protocol and infrastructure conference',
     link: {
       url: 'https://v2.protocol.berlin',
@@ -110,7 +111,8 @@ export const events: Event[] = [
   },
   {
     title: 'ETHBerlin 04 - Identity Crisis',
-    date: '2024-05-01',
+    date: '2024-05-24',
+    endDate: '2024-05-26',
     description: 'the hackathon returns in May 2024',
     link: {
       url: 'https://ethberlin.org',
@@ -129,7 +131,7 @@ export const events: Event[] = [
   },
   {
     title: 'Protocol Berg',
-    date: '2023-09-01',
+    date: '2023-09-15',
     description: 'the decentralized protocol and infrastructure conference',
     link: {
       url: 'https://v1.protocol.berlin',
@@ -138,7 +140,8 @@ export const events: Event[] = [
   },
   {
     title: 'ETHBerlin³ - to the power of 3',
-    date: '2022-09-01',
+    date: '2022-09-16',
+    endDate: '2022-09-18',
     description: 'hackathon, conference, and cultural festival, third edition',
     link: {
       url: 'https://2022.ethberlin.org',
@@ -210,8 +213,8 @@ export const events: Event[] = [
   },
   {
     title: 'ETHBerlin ZWEI',
-    date: '2019-08-01',
-    yearOnly: true,
+    date: '2019-08-23',
+    endDate: '2019-08-25',
     description: 'hackathon, conference, and cultural festival, second edition',
     link: {
       url: 'https://2019.ethberlin.org',
@@ -254,8 +257,8 @@ export const events: Event[] = [
   },
   {
     title: 'ETHBerlin',
-    date: '2018-09-01',
-    yearOnly: true,
+    date: '2018-09-07',
+    endDate: '2018-09-09',
     description:
       'Hackathon, conference, and the first event that ran almost entirely using decentralized applications',
     link: {

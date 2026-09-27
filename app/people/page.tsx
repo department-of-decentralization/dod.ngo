@@ -34,10 +34,14 @@ function PersonCard({ person }: { person: PersonData }) {
 }
 
 export default function PeoplePage() {
+  // The export renders this page once per build, so the order changes per
+  // deploy, not per render; react-hooks/purity assumes a page renders again.
+  /* eslint-disable react-hooks/purity */
   const currentMembers = peopleData
     .filter((person) => !person.isAlumni)
     .sort(() => Math.random() - 0.5)
   const alumni = peopleData.filter((person) => person.isAlumni).sort(() => Math.random() - 0.5)
+  /* eslint-enable react-hooks/purity */
 
   return (
     <div className="container mx-auto px-4 py-12">

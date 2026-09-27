@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import Image from '@/components/Image'
-import Bleed from 'pliny/ui/Bleed'
-import { CoreContent } from 'pliny/utils/contentlayer'
+import Bleed from 'pliny/ui/Bleed.js'
+import { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Authors, Blog } from 'contentlayer/generated'
 import Comments from '@/components/Comments'
 import Link from '@/components/Link'
@@ -54,19 +54,19 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
           {/* Banner image with gradient overlay and title */}
           {displayImage ? (
             <Bleed>
-              <div className="relative aspect-[2/1] min-h-64 w-full">
+              <div className="relative aspect-2/1 min-h-64 w-full">
                 <Image src={displayImage} alt={title} fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 text-center text-white">
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute right-0 bottom-0 left-0 px-6 pb-10 text-center text-white">
                   <dl className="mb-3">
                     <dt className="sr-only">Published on</dt>
-                    <dd className="text-sm font-medium leading-6 text-gray-300">
+                    <dd className="text-sm leading-6 font-medium text-gray-300">
                       <time dateTime={date}>
                         {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
                       </time>
                     </dd>
                   </dl>
-                  <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-lg sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
+                  <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-white drop-shadow-lg sm:text-4xl sm:leading-10 md:text-5xl md:leading-14">
                     {title}
                   </h1>
                 </div>
@@ -77,7 +77,7 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
               <dl className="space-y-10">
                 <div>
                   <dt className="sr-only">Published on</dt>
-                  <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
                     <time dateTime={date}>
                       {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
                     </time>
@@ -106,7 +106,7 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
                             className="h-10 w-10 rounded-full"
                           />
                         )}
-                        <dl className="whitespace-nowrap text-sm font-medium leading-5">
+                        <dl className="text-sm leading-5 font-medium whitespace-nowrap">
                           <dt className="sr-only">Name</dt>
                           <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
                           <dt className="sr-only">Bluesky</dt>
@@ -145,11 +145,11 @@ export default function PostMinimal({ content, authorDetails, next, prev, childr
           </div>
 
           <div className="prose max-w-none py-4 dark:prose-invert">{children}</div>
-          <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
+          <div className="pt-6 pb-6 text-sm text-gray-700 dark:text-gray-300">
             <Link href={editUrl(filePath)}>View on GitHub</Link>
           </div>
           {siteMetadata.comments && (
-            <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300" id="comment">
+            <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300" id="comment">
               <Comments slug={slug} />
             </div>
           )}

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { formatDate } from 'pliny/utils/formatDate'
-import { CoreContent } from 'pliny/utils/contentlayer'
+import { formatDate } from 'pliny/utils/formatDate.js'
+import { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
@@ -29,7 +29,7 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
   const nextPage = currentPage + 1 <= totalPages
 
   return (
-    <div className="space-y-2 pb-8 pt-6 md:space-y-5">
+    <div className="space-y-2 pt-6 pb-8 md:space-y-5">
       <nav className="flex justify-between">
         {!prevPage && (
           <button className="cursor-auto disabled:opacity-50" disabled={!prevPage}>
@@ -85,8 +85,8 @@ export default function ListLayout({
   return (
     <>
       <div className="mx-4 divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pb-8 pt-6 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+        <div className="space-y-2 pt-6 pb-8 md:space-y-5">
+          <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
             {title}
           </h1>
           <div className="relative max-w-lg">
@@ -101,7 +101,7 @@ export default function ListLayout({
               />
             </label>
             <svg
-              className="absolute right-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-300"
+              className="absolute top-3 right-3 h-5 w-5 text-gray-400 dark:text-gray-300"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -116,9 +116,11 @@ export default function ListLayout({
             </svg>
           </div>
           <div className="flex flex-wrap">
-            <div className="text-lg  font-medium uppercase">Tags</div>
+            <div className="text-lg font-medium uppercase">Tags</div>
             <div className="flex flex-wrap">
-              {sortedTags?.map((tag) => <Tag key={tag} text={tag} />)}
+              {sortedTags?.map((tag) => (
+                <Tag key={tag} text={tag} />
+              ))}
             </div>
           </div>
         </div>
@@ -129,24 +131,26 @@ export default function ListLayout({
             return (
               <li key={path} className="py-6">
                 <article className="mx-auto max-w-md space-y-2 lg:grid lg:max-w-none lg:grid-cols-4 lg:items-center lg:space-y-2">
-                  <div className="relative aspect-[16/9]">
+                  <div className="relative aspect-video">
                     {images?.[0] && (
                       <Image src={images[0]} alt={title} fill className="object-cover" />
                     )}
                   </div>
                   <div className="ml-4 space-y-3 lg:col-span-3">
                     <div>
-                      <h3 className="text-2xl font-bold leading-8 tracking-tight">
+                      <h3 className="text-2xl leading-8 font-bold tracking-tight">
                         <Link href={`/${path}`} className="text-gray-900 dark:text-gray-100">
                           {title}
                         </Link>
                       </h3>
                       <div className="flex flex-wrap">
-                        {tags?.map((tag) => <Tag key={tag} text={tag} />)}
+                        {tags?.map((tag) => (
+                          <Tag key={tag} text={tag} />
+                        ))}
                       </div>
                       <dl>
                         <dt className="sr-only">Published on</dt>
-                        <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                        <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
                           <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
                         </dd>
                       </dl>

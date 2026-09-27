@@ -37,6 +37,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Edit the layout in `app` or content in `data`. With live reloading, the pages auto-updates as you edit them.
 
+## Test
+
+```bash
+yarn test
+yarn test:coverage
+```
+
+`yarn test:coverage` fails below 100% line coverage of `lib/`.
+
 ## Adding blog posts
 
 You can write blog posts in Extended Markdown (`.mdx`) format nicely. Create a `.mdx` file under `data/blog`. The file name will be the slug of the post. E.g. if you create `my-blog-post.mdx` the post will be at `powdr.org/blog/my-blog.post.mdx`. Alternatively you can create a folder `/my-blog-post` and add an `my-blog-post/index.mdx`.

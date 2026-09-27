@@ -3,7 +3,7 @@ import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
 import { Barlow, Merriweather } from 'next/font/google'
-import { SearchProvider, SearchConfig } from 'pliny/search'
+import { SearchProvider, SearchConfig } from 'pliny/search/index.js'
 import Menu from '@/components/Menu/Menu'
 import SectionContainer from '@/components/SectionContainer'
 import Footer from '@/components/Footer'
@@ -108,9 +108,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
             <div className="flex min-h-screen flex-col md:flex-row">
               <Menu />
-              <div className="flex-grow overflow-y-auto md:ml-64">
+              <div className="grow overflow-y-auto md:ml-64">
                 <SectionContainer className="flex h-full flex-col">
-                  <main className="mx-4 my-12 flex-grow md:mx-12">{children}</main>
+                  <main className="mx-4 my-12 grow md:mx-12">{children}</main>
                   <Footer />
                 </SectionContainer>
               </div>

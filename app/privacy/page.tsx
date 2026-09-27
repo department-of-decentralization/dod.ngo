@@ -7,7 +7,7 @@ export default function Privacy() {
   return (
     <>
       <PageTitle>Privacy Policy</PageTitle>
-      <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
+      <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
         <p>
           We are delighted that you have chosen to visit our website or take part at one of our
           events. We take our data protection responsibilities with the utmost seriousness and we

@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Department of Decentralization
+# SPDX-License-Identifier: MIT
+
+# Verbatim copies of each photo repository's images.json (SPEC.md D23).
+# They must stay byte-identical to their source, so no formatter touches them.
+data/galleries/*.json

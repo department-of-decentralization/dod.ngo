@@ -7,7 +7,7 @@ export default function Impressum() {
   return (
     <>
       <PageTitle>Impressum</PageTitle>
-      <div className="prose max-w-none pb-8 pt-8 dark:prose-invert">
+      <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
         <p>
           Angaben gem&auml;&szlig; &sect; 5 TMG: Goerli Dezentral gGmbH, Mariannenstra&szlig;e 9-10,
           10999 Berlin

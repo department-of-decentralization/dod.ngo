@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: 2026 Department of Decentralization
+# SPDX-License-Identifier: MIT
+
+# Weekly update pull requests for npm packages and GitHub Actions. Each one runs
+# the build job in CI before it can be merged, and none deploys (SPEC.md D35).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    # A pull request takes the first group that matches. Packages that only
+    # work at matching versions share a group, majors included; everything
+    # else gets one pull request for its minor and patch updates, and one per
+    # major.
+    groups:
+      next:
+        patterns: ['next', 'eslint-config-next', '@next/*']
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+      vitest:
+        patterns: ['vitest', '@vitest/*']
+      minor-and-patch:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+    ignore:
+      # typescript-eslint supports TypeScript below 6.1 only (SPEC.md D31)
+      - dependency-name: typescript
+        versions: ['>=6.1.0']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
