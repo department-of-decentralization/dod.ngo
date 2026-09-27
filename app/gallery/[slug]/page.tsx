@@ -31,6 +31,7 @@ import siteMetadata from '@/data/siteMetadata'
 import {
   COMING_SOON,
   LICENSES,
+  PHOTOGRAPHER_UNKNOWN,
   findEvent,
   findGallery,
   formatGalleryDate,
@@ -124,9 +125,13 @@ export default async function GalleryPage({ params }: Params) {
         <div className="flex flex-col gap-1 border-t border-gray-200 py-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
           <p>
             Photos:{' '}
-            <Link href={photos.photographerHref} className={LINK}>
-              {photos.photographer}
-            </Link>{' '}
+            {photos.photographer && photos.photographerHref ? (
+              <Link href={photos.photographerHref} className={LINK}>
+                {photos.photographer}
+              </Link>
+            ) : (
+              (photos.photographer ?? PHOTOGRAPHER_UNKNOWN)
+            )}{' '}
             •{' '}
             <Link href={license.href} className={LINK}>
               {license.label}

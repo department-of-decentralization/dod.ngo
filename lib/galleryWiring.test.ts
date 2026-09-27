@@ -153,6 +153,11 @@ describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
     expect(page).not.toContain('Photos coming soon')
   })
 
+  it('says so in the credit when the photographer is not known (SPEC.md D28)', () => {
+    expect(page).toContain('(photos.photographer ?? PHOTOGRAPHER_UNKNOWN)')
+    expect(page).not.toContain('photographer unknown')
+  })
+
   it('reads the removal address from siteMetadata', () => {
     for (const source of [page, grid]) expect(source).not.toContain('hello@dod')
     expect(page).toContain('mailto:${siteMetadata.email}')

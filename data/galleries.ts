@@ -24,6 +24,7 @@
  */
 import { newestFirst } from '../lib/gallery'
 import { events } from './dodEvents'
+import ethberlin1Photos from './galleries/ethberlin-1.json'
 import ethberlin3Photos from './galleries/ethberlin-3.json'
 import ethberlin4Photos from './galleries/ethberlin-4.json'
 import protocolV1Photos from './galleries/protocol-v1.json'
@@ -62,10 +63,13 @@ export type GalleryPhotos = {
   dir?: string
   /** The photo list: a verbatim copy of the repository's `images.json`. */
   list: PhotoEntry[]
-  /** Photographer credited on the gallery page (`SPEC.md` D28). */
-  photographer: string
+  /**
+   * Photographer credited on the gallery page (`SPEC.md` D28). Omitted when
+   * nobody knows who took the photos; the credit then says so.
+   */
+  photographer?: string
   /** The photographer's website, linked from the credit. */
-  photographerHref: string
+  photographerHref?: string
   /** License of the photos. */
   license: PhotoLicense
 }
@@ -85,7 +89,7 @@ export type Gallery = {
   photos?: GalleryPhotos
 }
 
-/** The photographer of every gallery with photos so far (`SPEC.md` D28). */
+/** The photographer of every gallery with photos but ETHBerlin (`SPEC.md` D28). */
 const ANTON_TAL = {
   photographer: 'Anton Tal',
   photographerHref: 'https://www.antontal.com/',
@@ -147,7 +151,18 @@ const galleries: Gallery[] = [
     },
   },
   { slug: 'ethberlin-2', title: 'ETHBerlin ZWEI', event: 'ETHBerlin ZWEI' },
-  { slug: 'ethberlin-1', title: 'ETHBerlin', event: 'ETHBerlin' },
+  {
+    slug: 'ethberlin-1',
+    title: 'ETHBerlin',
+    event: 'ETHBerlin',
+    photos: {
+      repo: 'Department-of-Decentralization/ethberlin-1-photos',
+      list: ethberlin1Photos,
+      // Nobody knows who took these; the maintainer licenses them as the
+      // others are (SPEC.md D28).
+      license: 'CC-BY-SA-4.0',
+    },
+  },
 ]
 
 /**

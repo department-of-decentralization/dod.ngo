@@ -75,6 +75,9 @@ const PHOTO_BRANCH = 'main'
 /** Meta line of a gallery that has no photos yet (`SPEC.md` D24). */
 export const COMING_SOON = 'Photos coming soon'
 
+/** The credit's name for photos whose photographer nobody knows (`SPEC.md` D28). */
+export const PHOTOGRAPHER_UNKNOWN = 'photographer unknown'
+
 /** Display label and deed of every license a gallery's photos may carry. */
 export const LICENSES: Record<PhotoLicense, { label: string; href: string }> = {
   'CC-BY-SA-4.0': {

@@ -29,6 +29,7 @@ import {
   COMING_SOON,
   LICENSES,
   LIGHTBOX_BACKDROP_CLASSES,
+  PHOTOGRAPHER_UNKNOWN,
   PREVIEW_LAYOUTS,
   type DodEvent,
   type RandomFn,
@@ -145,7 +146,7 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('imports photos for four galleries (SPEC.md D23)', () => {
+  it('imports photos for five galleries (SPEC.md D23)', () => {
     const counts = galleries
       .filter((g) => g.photos)
       .map((g) => [g.slug, g.photos!.list.length] as const)
@@ -154,6 +155,7 @@ describe('gallery registry (SPEC.md D22)', () => {
       ['ethberlin-4', 88],
       ['protocol-v1', 444],
       ['ethberlin-3', 238],
+      ['ethberlin-1', 237],
     ])
   })
 
@@ -169,18 +171,29 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('credits a photographer and a known license wherever there are photos (SPEC.md D28)', () => {
+  it('names a repository and a known license wherever there are photos (SPEC.md D28)', () => {
     for (const gallery of galleries.filter((g) => g.photos)) {
       const photos = gallery.photos!
-      expect(photos.repo).toMatch(/^[\w.-]+\/[\w.-]+$/)
-      expect(photos.photographer).not.toBe('')
-      expect(photos.photographerHref).toMatch(/^https:\/\//)
-      expect(LICENSES[photos.license]).toBeDefined()
-      // Anton Tal took every photo imported so far, all under CC BY-SA 4.0.
-      expect(photos.photographer, gallery.slug).toBe('Anton Tal')
-      expect(photos.photographerHref, gallery.slug).toBe('https://www.antontal.com/')
+      expect(photos.repo, gallery.slug).toMatch(/^[\w.-]+\/[\w.-]+$/)
+      expect(LICENSES[photos.license], gallery.slug).toBeDefined()
       expect(photos.license, gallery.slug).toBe('CC-BY-SA-4.0')
     }
+  })
+
+  it('credits Anton Tal for his four galleries and nobody for ETHBerlin (SPEC.md D28)', () => {
+    const credits = galleries
+      .filter((g) => g.photos)
+      .map((g) => [g.slug, g.photos!.photographer, g.photos!.photographerHref] as const)
+    const anton = ['Anton Tal', 'https://www.antontal.com/'] as const
+    expect(credits).toEqual([
+      ['protocol-v2', ...anton],
+      ['ethberlin-4', ...anton],
+      ['protocol-v1', ...anton],
+      ['ethberlin-3', ...anton],
+      // The photographer of ETHBerlin's photos is not known.
+      ['ethberlin-1', undefined, undefined],
+    ])
+    expect(PHOTOGRAPHER_UNKNOWN).toBe('photographer unknown')
   })
 })
 
@@ -370,6 +383,9 @@ describe('labels', () => {
     expect(cardMeta(pbv2, events)).toBe('June 12-13, 2025 • 204 photos')
     expect(cardMeta(findGallery(galleries, 'protocol-v1')!, events)).toBe(
       'September 15, 2023 • 444 photos'
+    )
+    expect(cardMeta(findGallery(galleries, 'ethberlin-1')!, events)).toBe(
+      'September 7-9, 2018 • 237 photos'
     )
     expect(cardMeta(findGallery(galleries, 'ethberlin-2')!, events)).toBe(
       `August 23-25, 2019 • ${COMING_SOON}`
