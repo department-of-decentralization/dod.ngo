@@ -22,7 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { Gallery, GalleryPhotos, PhotoEntry, PhotoLicense } from '../data/galleries'
+import type {
+  Gallery,
+  GalleryPhotos,
+  PhotoEntry,
+  PhotoLicense,
+  Photographer,
+} from '../data/galleries'
 
 /**
  * The fields of a `data/dodEvents.ts` entry that a gallery reads. Callers pass
@@ -86,12 +92,48 @@ export const PHOTOGRAPHER_UNKNOWN = 'photographer unknown'
  *   known; {@link PHOTOGRAPHER_UNKNOWN} and no link when nobody is named. A
  *   website without a name is dropped: there is no name to link.
  */
-export function photographerCredit(
-  photos: Pick<GalleryPhotos, 'photographer' | 'photographerHref'>
-): { name: string; href?: string } {
+export function photographerCredit(photos: Photographer): { name: string; href?: string } {
   if (!photos.photographer) return { name: PHOTOGRAPHER_UNKNOWN }
   if (!photos.photographerHref) return { name: photos.photographer }
   return { name: photos.photographer, href: photos.photographerHref }
+}
+
+/** One photographer in a gallery's credit (`SPEC.md` D28, D39). */
+export type PhotoCredit = {
+  /** The photographer's name, or {@link PHOTOGRAPHER_UNKNOWN}. */
+  name: string
+  /** The photographer's website, when a named photographer has one. */
+  href?: string
+  /** The part of the gallery the photographer took, when it is credited by part. */
+  label?: string
+}
+
+/**
+ * Whom a gallery's credit names, for which photos (`SPEC.md` D28, D39).
+ *
+ * @param photos - The gallery's photo source.
+ * @returns One credit, as {@link photographerCredit} gives it, for a gallery
+ *   without parts; one per part, in the order of `parts`, each carrying the
+ *   part's label, for a gallery with parts.
+ * @throws If a gallery with parts names a photographer of its own, or if one
+ *   of its photos belongs to no part or to more than one. The build then fails
+ *   rather than publish a photo with a wrong credit, or with none.
+ */
+export function photoCredits(
+  photos: Pick<GalleryPhotos, 'repo' | 'list' | 'parts' | 'photographer' | 'photographerHref'>
+): PhotoCredit[] {
+  const { parts } = photos
+  if (!parts) return [photographerCredit(photos)]
+  if (photos.photographer || photos.photographerHref) {
+    throw new Error(`${photos.repo} is credited by part and names a photographer of its own`)
+  }
+  for (const photo of photos.list) {
+    const count = parts.filter((part) => photo.name.startsWith(part.prefix)).length
+    if (count !== 1) {
+      throw new Error(`Photo "${photo.name}" of ${photos.repo} belongs to ${count} parts`)
+    }
+  }
+  return parts.map((part) => ({ ...photographerCredit(part), label: part.label }))
 }
 
 /** Display label and deed of every license a gallery's photos may carry. */

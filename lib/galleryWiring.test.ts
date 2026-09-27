@@ -153,11 +153,15 @@ describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
     expect(page).not.toContain('Photos coming soon')
   })
 
-  it('takes the photographer credit from photographerCredit (SPEC.md D28)', () => {
+  it('takes the credit from photoCredits (SPEC.md D28, D39)', () => {
     // lib/gallery.test.ts covers the credit's cases; the page only renders it.
-    expect(page).toContain('photographerCredit(photos)')
+    expect(page).toContain('photoCredits(photos)')
+    expect(page).not.toContain('photographerCredit(')
     expect(page).not.toContain('photographer unknown')
     expect(page).not.toContain('photos.photographer')
+    expect(page).not.toContain('photos.parts')
+    // Each part's label follows its photographer, in parentheses.
+    expect(page).toContain('{credit.label && ` (${credit.label})`}')
   })
 
   it('reads the removal address from siteMetadata', () => {

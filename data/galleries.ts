@@ -25,6 +25,7 @@
 import { newestFirst } from '../lib/gallery'
 import { events } from './dodEvents'
 import ethberlin1Photos from './galleries/ethberlin-1.json'
+import ethberlin2Photos from './galleries/ethberlin-2.json'
 import ethberlin3Photos from './galleries/ethberlin-3.json'
 import ethberlin4Photos from './galleries/ethberlin-4.json'
 import protocolV1Photos from './galleries/protocol-v1.json'
@@ -48,8 +49,30 @@ export type PhotoEntry = {
 /** License of a gallery's photos, as an SPDX identifier. */
 export type PhotoLicense = 'CC-BY-SA-4.0'
 
+/** Who took a gallery's photos, or one part of them (`SPEC.md` D28, D39). */
+export type Photographer = {
+  /**
+   * Photographer credited on the gallery page (`SPEC.md` D28). Omitted when
+   * nobody knows who took the photos; the credit then says so.
+   */
+  photographer?: string
+  /** The photographer's website, linked from the credit. */
+  photographerHref?: string
+}
+
+/**
+ * The photos of a gallery whose names start with `prefix`, credited on their
+ * own (`SPEC.md` D39).
+ */
+export type PhotoPart = Photographer & {
+  /** Shown after the part's photographer in the credit, in parentheses. */
+  label: string
+  /** File-name prefix shared by the part's photos. */
+  prefix: string
+}
+
 /** Where a gallery's photos live, and whom and what the page credits. */
-export type GalleryPhotos = {
+export type GalleryPhotos = Photographer & {
   /**
    * Photo repository on GitHub, as `owner/name`. It keeps originals at its
    * root or in `dir`, one thumbnail per original under `thumbnails/` beside
@@ -64,12 +87,11 @@ export type GalleryPhotos = {
   /** The photo list: a verbatim copy of the repository's `images.json`. */
   list: PhotoEntry[]
   /**
-   * Photographer credited on the gallery page (`SPEC.md` D28). Omitted when
-   * nobody knows who took the photos; the credit then says so.
+   * The credit by part, when more than one photographer took the photos
+   * (`SPEC.md` D39). Every photo belongs to exactly one part, and a gallery
+   * with parts names no photographer of its own.
    */
-  photographer?: string
-  /** The photographer's website, linked from the credit. */
-  photographerHref?: string
+  parts?: PhotoPart[]
   /** License of the photos. */
   license: PhotoLicense
 }
@@ -89,11 +111,14 @@ export type Gallery = {
   photos?: GalleryPhotos
 }
 
-/** The photographer of every gallery with photos but ETHBerlin (`SPEC.md` D28). */
+/**
+ * The photographer of every gallery with photos but ETHBerlin, and of ETHBerlin
+ * ZWEI's conference photos (`SPEC.md` D28, D39).
+ */
 const ANTON_TAL = {
   photographer: 'Anton Tal',
   photographerHref: 'https://www.antontal.com/',
-} satisfies Pick<GalleryPhotos, 'photographer' | 'photographerHref'>
+} satisfies Photographer
 
 /**
  * The single registry of event galleries (`SPEC.md` D22). It is written in
@@ -150,7 +175,23 @@ const galleries: Gallery[] = [
       license: 'CC-BY-SA-4.0',
     },
   },
-  { slug: 'ethberlin-2', title: 'ETHBerlin ZWEI', event: 'ETHBerlin ZWEI' },
+  {
+    slug: 'ethberlin-2',
+    title: 'ETHBerlin ZWEI',
+    event: 'ETHBerlin ZWEI',
+    photos: {
+      repo: 'Department-of-Decentralization/ethberlin-2-photos',
+      list: ethberlin2Photos,
+      // Anton Tal took the conference photos; nobody knows who took the
+      // weekend's. The prefixes are the photo repository's file names
+      // (SPEC.md D39).
+      parts: [
+        { label: 'conference', prefix: 'conference-', ...ANTON_TAL },
+        { label: 'weekend', prefix: 'weekend-' },
+      ],
+      license: 'CC-BY-SA-4.0',
+    },
+  },
   {
     slug: 'ethberlin-1',
     title: 'ETHBerlin',

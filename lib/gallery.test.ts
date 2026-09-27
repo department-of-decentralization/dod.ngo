@@ -47,6 +47,7 @@ import {
   originalUrl,
   photoAlt,
   photoCountLabel,
+  photoCredits,
   photoFromHash,
   photographerCredit,
   pickPreview,
@@ -147,7 +148,7 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('imports photos for five galleries (SPEC.md D23)', () => {
+  it('imports photos for six galleries (SPEC.md D23, D38)', () => {
     const counts = galleries
       .filter((g) => g.photos)
       .map((g) => [g.slug, g.photos!.list.length] as const)
@@ -156,6 +157,7 @@ describe('gallery registry (SPEC.md D22)', () => {
       ['ethberlin-4', 88],
       ['protocol-v1', 444],
       ['ethberlin-3', 238],
+      ['ethberlin-2', 270],
       ['ethberlin-1', 237],
     ])
   })
@@ -181,20 +183,43 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('credits Anton Tal for his four galleries and nobody for ETHBerlin (SPEC.md D28)', () => {
+  it("credits each gallery's photographers (SPEC.md D28, D39)", () => {
+    // photoCredits also throws on a gallery that breaks D39's rules.
     const credits = galleries
       .filter((g) => g.photos)
-      .map((g) => [g.slug, g.photos!.photographer, g.photos!.photographerHref] as const)
-    const anton = ['Anton Tal', 'https://www.antontal.com/'] as const
+      .map((g) => [g.slug, photoCredits(g.photos!)] as const)
+    const anton = { name: 'Anton Tal', href: 'https://www.antontal.com/' }
     expect(credits).toEqual([
-      ['protocol-v2', ...anton],
-      ['ethberlin-4', ...anton],
-      ['protocol-v1', ...anton],
-      ['ethberlin-3', ...anton],
+      ['protocol-v2', [anton]],
+      ['ethberlin-4', [anton]],
+      ['protocol-v1', [anton]],
+      ['ethberlin-3', [anton]],
+      // Anton Tal took the conference photos; nobody knows who took the weekend's.
+      [
+        'ethberlin-2',
+        [
+          { ...anton, label: 'conference' },
+          { name: PHOTOGRAPHER_UNKNOWN, label: 'weekend' },
+        ],
+      ],
       // The photographer of ETHBerlin's photos is not known.
-      ['ethberlin-1', undefined, undefined],
+      ['ethberlin-1', [{ name: PHOTOGRAPHER_UNKNOWN }]],
     ])
     expect(PHOTOGRAPHER_UNKNOWN).toBe('photographer unknown')
+  })
+
+  it("splits ETHBerlin ZWEI's credit into its conference and weekend photos (SPEC.md D39)", () => {
+    const photos = findGallery(galleries, 'ethberlin-2')!.photos!
+    // The parts carry the photographers; the gallery names none of its own.
+    expect(photos.photographer).toBeUndefined()
+    expect(photos.photographerHref).toBeUndefined()
+    const count = (prefix: string) => photos.list.filter((p) => p.name.startsWith(prefix)).length
+    expect(photos.parts!.map((part) => [part.label, part.prefix, count(part.prefix)])).toEqual([
+      ['conference', 'conference-', 150],
+      ['weekend', 'weekend-', 120],
+    ])
+    // Every photo falls in exactly one part: photoCredits would throw otherwise.
+    expect(() => photoCredits(photos)).not.toThrow()
   })
 })
 
@@ -218,6 +243,60 @@ describe('photographerCredit (SPEC.md D28)', () => {
     expect(photographerCredit({ photographerHref: 'https://example.org/' })).toEqual({
       name: PHOTOGRAPHER_UNKNOWN,
     })
+  })
+})
+
+describe('photoCredits (SPEC.md D39)', () => {
+  const repo = 'owner/photos'
+  const list = ['a-1.jpg', 'a-2.jpg', 'b-1.jpg'].map((name, i) => ({
+    filenumber: i + 1,
+    name,
+    width: 3,
+    height: 2,
+  }))
+  const jane = { photographer: 'Jane Doe', photographerHref: 'https://example.org/' }
+
+  it('credits a gallery without parts as photographerCredit does', () => {
+    expect(photoCredits({ repo, list, ...jane })).toEqual([
+      { name: 'Jane Doe', href: 'https://example.org/' },
+    ])
+    expect(photoCredits({ repo, list })).toEqual([{ name: PHOTOGRAPHER_UNKNOWN }])
+  })
+
+  it('credits each part in the order of parts, with its label', () => {
+    const parts = [
+      { label: 'first', prefix: 'a-', ...jane },
+      { label: 'second', prefix: 'b-' },
+    ]
+    expect(photoCredits({ repo, list, parts })).toEqual([
+      { name: 'Jane Doe', href: 'https://example.org/', label: 'first' },
+      { name: PHOTOGRAPHER_UNKNOWN, label: 'second' },
+    ])
+  })
+
+  it('refuses a photo that belongs to no part, or to more than one', () => {
+    expect(() => photoCredits({ repo, list, parts: [{ label: 'a', prefix: 'a-' }] })).toThrow(
+      'Photo "b-1.jpg" of owner/photos belongs to 0 parts'
+    )
+    const overlapping = [
+      { label: 'all', prefix: '' },
+      { label: 'a', prefix: 'a-' },
+    ]
+    expect(() => photoCredits({ repo, list, parts: overlapping })).toThrow(
+      'Photo "a-1.jpg" of owner/photos belongs to 2 parts'
+    )
+  })
+
+  it('refuses a photographer for the whole gallery beside parts', () => {
+    const parts = [{ label: 'all', prefix: '' }]
+    for (const photographer of [
+      { photographer: 'Jane Doe' },
+      { photographerHref: jane.photographerHref },
+    ]) {
+      expect(() => photoCredits({ repo, list, parts, ...photographer })).toThrow(
+        'owner/photos is credited by part and names a photographer of its own'
+      )
+    }
   })
 })
 
@@ -412,7 +491,10 @@ describe('labels', () => {
       'September 7-9, 2018 • 237 photos'
     )
     expect(cardMeta(findGallery(galleries, 'ethberlin-2')!, events)).toBe(
-      `August 23-25, 2019 • ${COMING_SOON}`
+      'August 23-25, 2019 • 270 photos'
+    )
+    expect(cardMeta(findGallery(galleries, 'dweb-camp-2026')!, events)).toBe(
+      `July 8-12, 2026 • ${COMING_SOON}`
     )
     expect(COMING_SOON).toBe('Photos coming soon')
   })
