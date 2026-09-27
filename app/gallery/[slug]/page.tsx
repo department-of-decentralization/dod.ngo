@@ -31,12 +31,12 @@ import siteMetadata from '@/data/siteMetadata'
 import {
   COMING_SOON,
   LICENSES,
-  PHOTOGRAPHER_UNKNOWN,
   findEvent,
   findGallery,
   formatGalleryDate,
   neighbours,
   photoCountLabel,
+  photographerCredit,
   repoHref,
 } from '@/lib/gallery'
 import { genPageMetadata } from 'app/seo'
@@ -86,6 +86,7 @@ export default async function GalleryPage({ params }: Params) {
   const { previous, next } = neighbours(galleries, gallery.slug)
   const photos = gallery.photos
   const license = photos ? LICENSES[photos.license] : null
+  const credit = photos ? photographerCredit(photos) : null
 
   return (
     <>
@@ -121,16 +122,16 @@ export default async function GalleryPage({ params }: Params) {
         )}
       </div>
 
-      {photos && license && (
+      {photos && license && credit && (
         <div className="flex flex-col gap-1 border-t border-gray-200 py-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
           <p>
             Photos:{' '}
-            {photos.photographer && photos.photographerHref ? (
-              <Link href={photos.photographerHref} className={LINK}>
-                {photos.photographer}
+            {credit.href ? (
+              <Link href={credit.href} className={LINK}>
+                {credit.name}
               </Link>
             ) : (
-              (photos.photographer ?? PHOTOGRAPHER_UNKNOWN)
+              credit.name
             )}{' '}
             •{' '}
             <Link href={license.href} className={LINK}>

@@ -48,6 +48,7 @@ import {
   photoAlt,
   photoCountLabel,
   photoFromHash,
+  photographerCredit,
   pickPreview,
   pickTileCount,
   repoHref,
@@ -194,6 +195,29 @@ describe('gallery registry (SPEC.md D22)', () => {
       ['ethberlin-1', undefined, undefined],
     ])
     expect(PHOTOGRAPHER_UNKNOWN).toBe('photographer unknown')
+  })
+})
+
+describe('photographerCredit (SPEC.md D28)', () => {
+  it('links a named photographer to their website', () => {
+    expect(photographerCredit(pbv2.photos)).toEqual({
+      name: 'Anton Tal',
+      href: 'https://www.antontal.com/',
+    })
+  })
+
+  it('shows a named photographer without a website unlinked', () => {
+    expect(photographerCredit({ photographer: 'Jane Doe' })).toEqual({ name: 'Jane Doe' })
+  })
+
+  it('says the photographer is unknown when nobody is named, and links nothing', () => {
+    expect(photographerCredit(findGallery(galleries, 'ethberlin-1')!.photos!)).toEqual({
+      name: PHOTOGRAPHER_UNKNOWN,
+    })
+    // A website without a name has nothing to link from.
+    expect(photographerCredit({ photographerHref: 'https://example.org/' })).toEqual({
+      name: PHOTOGRAPHER_UNKNOWN,
+    })
   })
 })
 

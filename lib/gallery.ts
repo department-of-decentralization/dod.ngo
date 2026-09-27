@@ -78,6 +78,22 @@ export const COMING_SOON = 'Photos coming soon'
 /** The credit's name for photos whose photographer nobody knows (`SPEC.md` D28). */
 export const PHOTOGRAPHER_UNKNOWN = 'photographer unknown'
 
+/**
+ * What a gallery's credit shows for its photographer (`SPEC.md` D28).
+ *
+ * @param photos - The gallery's photo source.
+ * @returns The photographer's name, with their website as `href` when one is
+ *   known; {@link PHOTOGRAPHER_UNKNOWN} and no link when nobody is named. A
+ *   website without a name is dropped: there is no name to link.
+ */
+export function photographerCredit(
+  photos: Pick<GalleryPhotos, 'photographer' | 'photographerHref'>
+): { name: string; href?: string } {
+  if (!photos.photographer) return { name: PHOTOGRAPHER_UNKNOWN }
+  if (!photos.photographerHref) return { name: photos.photographer }
+  return { name: photos.photographer, href: photos.photographerHref }
+}
+
 /** Display label and deed of every license a gallery's photos may carry. */
 export const LICENSES: Record<PhotoLicense, { label: string; href: string }> = {
   'CC-BY-SA-4.0': {
