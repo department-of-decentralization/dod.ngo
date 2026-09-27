@@ -82,7 +82,7 @@ function sequence(...values: number[]): RandomFn {
   return () => values[i++ % values.length]
 }
 
-/** The Protocol Berg v2 gallery, the one with photos. */
+/** The Protocol Berg v2 gallery, the first gallery with photos. */
 const pbv2 = findGallery(galleries, 'protocol-v2') as Gallery & {
   photos: NonNullable<Gallery['photos']>
 }
@@ -145,17 +145,27 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('imports photos for protocol-v2 only (SPEC.md D23)', () => {
-    expect(galleries.filter((g) => g.photos).map((g) => g.slug)).toEqual(['protocol-v2'])
-    expect(pbv2.photos.list).toHaveLength(204)
+  it('imports photos for four galleries (SPEC.md D23)', () => {
+    const counts = galleries
+      .filter((g) => g.photos)
+      .map((g) => [g.slug, g.photos!.list.length] as const)
+    expect(counts).toEqual([
+      ['protocol-v2', 204],
+      ['ethberlin-4', 88],
+      ['protocol-v1', 444],
+      ['ethberlin-3', 238],
+    ])
   })
 
   it('lists every photo once, with a positive size', () => {
-    const names = pbv2.photos.list.map((p) => p.name)
-    expect(new Set(names).size).toBe(names.length)
-    for (const photo of pbv2.photos.list) {
-      expect(photo.width, photo.name).toBeGreaterThan(0)
-      expect(photo.height, photo.name).toBeGreaterThan(0)
+    for (const gallery of galleries.filter((g) => g.photos)) {
+      const list = gallery.photos!.list
+      const names = list.map((p) => p.name)
+      expect(new Set(names).size, gallery.slug).toBe(names.length)
+      for (const photo of list) {
+        expect(photo.width, `${gallery.slug} ${photo.name}`).toBeGreaterThan(0)
+        expect(photo.height, `${gallery.slug} ${photo.name}`).toBeGreaterThan(0)
+      }
     }
   })
 
@@ -166,9 +176,11 @@ describe('gallery registry (SPEC.md D22)', () => {
       expect(photos.photographer).not.toBe('')
       expect(photos.photographerHref).toMatch(/^https:\/\//)
       expect(LICENSES[photos.license]).toBeDefined()
+      // Anton Tal took every photo imported so far, all under CC BY-SA 4.0.
+      expect(photos.photographer, gallery.slug).toBe('Anton Tal')
+      expect(photos.photographerHref, gallery.slug).toBe('https://www.antontal.com/')
+      expect(photos.license, gallery.slug).toBe('CC-BY-SA-4.0')
     }
-    expect(pbv2.photos.photographer).toBe('Anton Tal')
-    expect(pbv2.photos.license).toBe('CC-BY-SA-4.0')
   })
 })
 
@@ -316,6 +328,21 @@ describe('photo URLs (SPEC.md D23)', () => {
     )
   })
 
+  it('builds URLs inside the folder a repository keeps its photos in', () => {
+    const eth4 = findGallery(galleries, 'ethberlin-4')!.photos!
+    expect(eth4.dir).toBe('images')
+    expect(thumbnailUrl(eth4, eth4.list[0])).toBe(
+      'https://raw.githubusercontent.com/Department-of-Decentralization/ethberlin-4-photos/main/images/thumbnails/IMG-1000.jpg'
+    )
+    expect(originalUrl(eth4, eth4.list[0])).toBe(
+      'https://raw.githubusercontent.com/Department-of-Decentralization/ethberlin-4-photos/main/images/IMG-1000.jpg'
+    )
+    // Each folder name is encoded on its own; the separators stay.
+    expect(thumbnailUrl({ repo: 'o/r', dir: 'a b/c' }, { name: 'x.jpg' })).toBe(
+      'https://raw.githubusercontent.com/o/r/main/a%20b/c/thumbnails/x.jpg'
+    )
+  })
+
   it('links the photo repository and the license deed (SPEC.md D28)', () => {
     expect(repoHref(pbv2.photos)).toBe(
       'https://github.com/Department-of-Decentralization/pbv2-photos'
@@ -340,9 +367,10 @@ describe('labels', () => {
 
   it('writes a card meta line from the event date (SPEC.md D22, D24)', () => {
     expect(cardMeta(pbv2, events)).toBe('June 2025 • 204 photos')
-    expect(cardMeta(findGallery(galleries, 'ethberlin-4')!, events)).toBe(
-      `May 2024 • ${COMING_SOON}`
+    expect(cardMeta(findGallery(galleries, 'protocol-v1')!, events)).toBe(
+      'September 2023 • 444 photos'
     )
+    expect(cardMeta(findGallery(galleries, 'ethberlin-2')!, events)).toBe(`2019 • ${COMING_SOON}`)
     expect(COMING_SOON).toBe('Photos coming soon')
   })
 

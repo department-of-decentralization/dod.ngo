@@ -61,6 +61,8 @@ type Props = {
   title: string
   /** Photo repository as `owner/name` (`SPEC.md` D23). */
   repo: string
+  /** Folder in the repository holding the photos, if not its root (`SPEC.md` D23). */
+  dir?: string
   /** The gallery's photos, in list order. */
   photos: Photo[]
 }
@@ -159,7 +161,7 @@ function BackdropClose() {
  * ({@link BackdropClose}). The open photo is mirrored in the URL fragment
  * (D27).
  */
-export default function PhotoGrid({ title, repo, photos }: Props) {
+export default function PhotoGrid({ title, repo, dir, photos }: Props) {
   const count = photos.length
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState(0)
@@ -180,12 +182,12 @@ export default function PhotoGrid({ title, repo, photos }: Props) {
   const slides = useMemo(
     () =>
       photos.map((photo, i) => ({
-        src: originalUrl({ repo }, photo),
+        src: originalUrl({ repo, dir }, photo),
         width: photo.width,
         height: photo.height,
         alt: photoAlt(title, i + 1, count),
       })),
-    [photos, repo, title, count]
+    [photos, repo, dir, title, count]
   )
 
   return (
@@ -210,7 +212,7 @@ export default function PhotoGrid({ title, repo, photos }: Props) {
               }}
             >
               <Image
-                src={thumbnailUrl({ repo }, photo)}
+                src={thumbnailUrl({ repo, dir }, photo)}
                 alt=""
                 fill
                 unoptimized

@@ -174,6 +174,18 @@ export function formatGalleryDate(event: Pick<DodEvent, 'date' | 'endDate' | 'ye
 }
 
 /**
+ * URL of the folder holding a gallery's originals, with a trailing slash
+ * (`SPEC.md` D23): the repository's root, or its `dir` when it has one.
+ *
+ * @param photos - The gallery's photo source.
+ * @returns The folder's URL, each path segment encoded.
+ */
+function photoFolder(photos: Pick<GalleryPhotos, 'repo' | 'dir'>): string {
+  const dir = photos.dir ? `${photos.dir.split('/').map(encodeURIComponent).join('/')}/` : ''
+  return `${PHOTO_HOST}/${photos.repo}/${PHOTO_BRANCH}/${dir}`
+}
+
+/**
  * URL of a photo's thumbnail, shown in the grid and in previews (`SPEC.md` D23).
  *
  * @param photos - The gallery's photo source.
@@ -181,10 +193,10 @@ export function formatGalleryDate(event: Pick<DodEvent, 'date' | 'endDate' | 'ye
  * @returns The thumbnail URL, with the file name encoded.
  */
 export function thumbnailUrl(
-  photos: Pick<GalleryPhotos, 'repo'>,
+  photos: Pick<GalleryPhotos, 'repo' | 'dir'>,
   entry: Pick<PhotoEntry, 'name'>
 ): string {
-  return `${PHOTO_HOST}/${photos.repo}/${PHOTO_BRANCH}/thumbnails/${encodeURIComponent(entry.name)}`
+  return `${photoFolder(photos)}thumbnails/${encodeURIComponent(entry.name)}`
 }
 
 /**
@@ -195,10 +207,10 @@ export function thumbnailUrl(
  * @returns The original's URL, with the file name encoded.
  */
 export function originalUrl(
-  photos: Pick<GalleryPhotos, 'repo'>,
+  photos: Pick<GalleryPhotos, 'repo' | 'dir'>,
   entry: Pick<PhotoEntry, 'name'>
 ): string {
-  return `${PHOTO_HOST}/${photos.repo}/${PHOTO_BRANCH}/${encodeURIComponent(entry.name)}`
+  return `${photoFolder(photos)}${encodeURIComponent(entry.name)}`
 }
 
 /**
@@ -238,7 +250,7 @@ export function photoCountLabel(count: number): string {
  *
  * @param gallery - The gallery.
  * @param eventList - Events to read the date from: `events` from `data/dodEvents.ts`.
- * @returns For example `June 2025 • 204 photos` or `May 2024 • Photos coming soon`.
+ * @returns For example `June 2025 • 204 photos` or `2019 • Photos coming soon`.
  */
 export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): string {
   const date = formatGalleryDate(findEvent(gallery, eventList))

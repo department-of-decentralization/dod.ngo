@@ -112,6 +112,7 @@ export default async function GalleryPage({ params }: Params) {
           <PhotoGrid
             title={gallery.title}
             repo={photos.repo}
+            dir={photos.dir}
             photos={photos.list.map(({ name, width, height }) => ({ name, width, height }))}
           />
         ) : (

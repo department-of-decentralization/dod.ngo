@@ -32,6 +32,8 @@ import { PREVIEW_LAYOUTS, pickPreview, thumbnailUrl } from '@/lib/gallery'
 type Props = {
   /** Photo repository as `owner/name`; omitted for a gallery without photos. */
   repo?: string
+  /** Folder in the repository holding the photos, if not its root (`SPEC.md` D23). */
+  dir?: string
   /** File names of the gallery's photos; empty for a gallery without photos. */
   names: string[]
 }
@@ -48,7 +50,7 @@ const subscribeToNothing = () => () => {}
  * static HTML carries no random state and no thumbnail is requested twice. A
  * gallery without photos keeps its tiles striped (`SPEC.md` D24).
  */
-export default function GalleryPreview({ repo, names }: Props) {
+export default function GalleryPreview({ repo, dir, names }: Props) {
   // React renders the server snapshot, false, for the static HTML and for
   // hydration, then renders again with true: nothing random reaches either.
   const hydrated = useSyncExternalStore(
@@ -79,7 +81,7 @@ export default function GalleryPreview({ repo, names }: Props) {
           >
             {repo && name && (
               <Image
-                src={thumbnailUrl({ repo }, { name })}
+                src={thumbnailUrl({ repo, dir }, { name })}
                 alt=""
                 fill
                 unoptimized

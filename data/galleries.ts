@@ -24,6 +24,9 @@
  */
 import { newestFirst } from '../lib/gallery'
 import { events } from './dodEvents'
+import ethberlin3Photos from './galleries/ethberlin-3.json'
+import ethberlin4Photos from './galleries/ethberlin-4.json'
+import protocolV1Photos from './galleries/protocol-v1.json'
 import protocolV2Photos from './galleries/protocol-v2.json'
 
 /**
@@ -48,10 +51,15 @@ export type PhotoLicense = 'CC-BY-SA-4.0'
 export type GalleryPhotos = {
   /**
    * Photo repository on GitHub, as `owner/name`. It keeps originals at its
-   * root, one thumbnail per original under `thumbnails/`, and `images.json`
-   * (`SPEC.md` D23).
+   * root or in `dir`, one thumbnail per original under `thumbnails/` beside
+   * them, and `images.json` at its root (`SPEC.md` D23).
    */
   repo: string
+  /**
+   * Folder that holds the originals, with `thumbnails/` inside it, when the
+   * repository keeps them there rather than at its root (`SPEC.md` D23).
+   */
+  dir?: string
   /** The photo list: a verbatim copy of the repository's `images.json`. */
   list: PhotoEntry[]
   /** Photographer credited on the gallery page (`SPEC.md` D28). */
@@ -77,6 +85,12 @@ export type Gallery = {
   photos?: GalleryPhotos
 }
 
+/** The photographer of every gallery with photos so far (`SPEC.md` D28). */
+const ANTON_TAL = {
+  photographer: 'Anton Tal',
+  photographerHref: 'https://www.antontal.com/',
+} satisfies Pick<GalleryPhotos, 'photographer' | 'photographerHref'>
+
 /**
  * The single registry of event galleries (`SPEC.md` D22). It is written in
  * page order, but the order comes from the events: see the default export.
@@ -94,14 +108,44 @@ const galleries: Gallery[] = [
     photos: {
       repo: 'Department-of-Decentralization/pbv2-photos',
       list: protocolV2Photos,
-      photographer: 'Anton Tal',
-      photographerHref: 'https://www.antontal.com/',
+      ...ANTON_TAL,
       license: 'CC-BY-SA-4.0',
     },
   },
-  { slug: 'ethberlin-4', title: 'ETHBerlin 4', event: 'ETHBerlin 04 - Identity Crisis' },
-  { slug: 'protocol-v1', title: 'Protocol Berg v1', event: 'Protocol Berg' },
-  { slug: 'ethberlin-3', title: 'ETHBerlin 3', event: 'ETHBerlin³ - to the power of 3' },
+  {
+    slug: 'ethberlin-4',
+    title: 'ETHBerlin 4',
+    event: 'ETHBerlin 04 - Identity Crisis',
+    photos: {
+      repo: 'Department-of-Decentralization/ethberlin-4-photos',
+      dir: 'images',
+      list: ethberlin4Photos,
+      ...ANTON_TAL,
+      license: 'CC-BY-SA-4.0',
+    },
+  },
+  {
+    slug: 'protocol-v1',
+    title: 'Protocol Berg v1',
+    event: 'Protocol Berg',
+    photos: {
+      repo: 'Department-of-Decentralization/pb23-photos',
+      list: protocolV1Photos,
+      ...ANTON_TAL,
+      license: 'CC-BY-SA-4.0',
+    },
+  },
+  {
+    slug: 'ethberlin-3',
+    title: 'ETHBerlin 3',
+    event: 'ETHBerlin³ - to the power of 3',
+    photos: {
+      repo: 'Department-of-Decentralization/3-photos',
+      list: ethberlin3Photos,
+      ...ANTON_TAL,
+      license: 'CC-BY-SA-4.0',
+    },
+  },
   { slug: 'ethberlin-2', title: 'ETHBerlin 2', event: 'ETHBerlin ZWEI' },
   { slug: 'ethberlin-1', title: 'ETHBerlin 1', event: 'ETHBerlin' },
 ]

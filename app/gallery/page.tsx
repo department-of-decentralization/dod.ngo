@@ -53,6 +53,7 @@ export default function GalleryIndex() {
             >
               <GalleryPreview
                 repo={gallery.photos?.repo}
+                dir={gallery.photos?.dir}
                 names={gallery.photos ? gallery.photos.list.map((photo) => photo.name) : []}
               />
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-pretty">
