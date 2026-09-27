@@ -23,6 +23,7 @@
  * SOFTWARE.
  */
 import { notFound } from 'next/navigation'
+import { Fragment } from 'react'
 import Link from '@/components/Link'
 import PageTitle from '@/components/PageTitle'
 import { events } from '@/data/dodEvents'
@@ -36,7 +37,7 @@ import {
   formatGalleryDate,
   neighbours,
   photoCountLabel,
-  photographerCredit,
+  photoCredits,
   repoHref,
 } from '@/lib/gallery'
 import { genPageMetadata } from 'app/seo'
@@ -75,7 +76,7 @@ export async function generateMetadata({ params }: Params) {
 /**
  * Renders one gallery at `/gallery/<slug>`: its event's date and link, the
  * photo grid with its lightbox, the photographer and license credit, and links
- * to the neighbouring galleries (`SPEC.md` D22 to D28). A gallery without
+ * to the neighbouring galleries (`SPEC.md` D22 to D28, D39). A gallery without
  * photos says so instead (D24).
  */
 export default async function GalleryPage({ params }: Params) {
@@ -86,7 +87,7 @@ export default async function GalleryPage({ params }: Params) {
   const { previous, next } = neighbours(galleries, gallery.slug)
   const photos = gallery.photos
   const license = photos ? LICENSES[photos.license] : null
-  const credit = photos ? photographerCredit(photos) : null
+  const credits = photos ? photoCredits(photos) : null
 
   return (
     <>
@@ -122,17 +123,23 @@ export default async function GalleryPage({ params }: Params) {
         )}
       </div>
 
-      {photos && license && credit && (
+      {photos && license && credits && (
         <div className="flex flex-col gap-1 border-t border-gray-200 py-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
           <p>
             Photos:{' '}
-            {credit.href ? (
-              <Link href={credit.href} className={LINK}>
-                {credit.name}
-              </Link>
-            ) : (
-              credit.name
-            )}{' '}
+            {credits.map((credit, i) => (
+              <Fragment key={i}>
+                {i > 0 && ', '}
+                {credit.href ? (
+                  <Link href={credit.href} className={LINK}>
+                    {credit.name}
+                  </Link>
+                ) : (
+                  credit.name
+                )}
+                {credit.label && ` (${credit.label})`}
+              </Fragment>
+            ))}{' '}
             •{' '}
             <Link href={license.href} className={LINK}>
               {license.label}
