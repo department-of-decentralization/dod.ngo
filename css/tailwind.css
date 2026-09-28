@@ -83,8 +83,8 @@ input:-webkit-autofill:focus {
   vertical-align: middle;
 }
 
-/* Gallery tiles: the design's stripe pattern, shown until a photo loads and on
-   galleries without photos (SPEC.md D24, D25) */
+/* Gallery tiles: the design's stripe pattern, shown until a photo loads
+   (SPEC.md D25) */
 .bg-stripes {
   background-color: theme(colors.butter.500);
   background-image: repeating-linear-gradient(

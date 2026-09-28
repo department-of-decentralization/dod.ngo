@@ -78,9 +78,6 @@ const PHOTO_HOST = 'https://raw.githubusercontent.com'
 /** Branch every photo repository serves its photos from (`SPEC.md` D23). */
 const PHOTO_BRANCH = 'main'
 
-/** Meta line of a gallery that has no photos yet (`SPEC.md` D24). */
-export const COMING_SOON = 'Photos coming soon'
-
 /** The credit's name for photos whose photographer nobody knows (`SPEC.md` D28). */
 export const PHOTOGRAPHER_UNKNOWN = 'photographer unknown'
 
@@ -181,13 +178,16 @@ export const PREVIEW_LAYOUTS: Record<TileCount, PreviewLayout> = {
 /**
  * Find the entry in `data/dodEvents.ts` that a gallery names (`SPEC.md` D22).
  *
- * @param gallery - The gallery.
+ * @param gallery - The gallery's slug and event title.
  * @param eventList - Events to search: `events` from `data/dodEvents.ts`.
  * @returns The one event whose title equals `gallery.event`.
  * @throws If no event, or more than one, carries that title. The build then
  *   fails rather than publish a gallery with no date, or with a guessed one.
  */
-export function findEvent(gallery: Gallery, eventList: readonly DodEvent[]): DodEvent {
+export function findEvent(
+  gallery: Pick<Gallery, 'slug' | 'event'>,
+  eventList: readonly DodEvent[]
+): DodEvent {
   const matches = eventList.filter((event) => event.title === gallery.event)
   if (matches.length !== 1) {
     throw new Error(
@@ -306,18 +306,16 @@ export function photoCountLabel(count: number): string {
 }
 
 /**
- * Meta line under a gallery card's title: its date, then its photo count or
- * that photos are coming (`SPEC.md` D22, D24).
+ * Meta line under a gallery card's title: its date, then its photo count
+ * (`SPEC.md` D22).
  *
  * @param gallery - The gallery.
  * @param eventList - Events to read the date from: `events` from `data/dodEvents.ts`.
- * @returns For example `June 12-13, 2025 • 204 photos` or
- *   `August 23-25, 2019 • Photos coming soon`.
+ * @returns For example `June 12-13, 2025 • 204 photos`.
  */
 export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): string {
   const date = formatGalleryDate(findEvent(gallery, eventList))
-  const photos = gallery.photos ? photoCountLabel(gallery.photos.list.length) : COMING_SOON
-  return `${date} • ${photos}`
+  return `${date} • ${photoCountLabel(gallery.photos.list.length)}`
 }
 
 /**
@@ -398,10 +396,10 @@ export function pickTileCount(random: RandomFn): TileCount {
 
 /**
  * Draw a preview: a tile count, then that many distinct photos of the gallery
- * (`SPEC.md` D25). A gallery with fewer photos, or none (a placeholder), fills
- * the remaining tiles with the stripe pattern.
+ * (`SPEC.md` D25). A gallery with fewer photos than tiles fills the remaining
+ * tiles with the stripe pattern.
  *
- * @param list - The gallery's photos; empty for a placeholder.
+ * @param list - The gallery's photos.
  * @param random - Source of randomness.
  * @returns The preview.
  */
@@ -447,12 +445,12 @@ export function hashForPhoto(n: number): string {
  * gallery's entry in `data/dodEvents.ts` (`SPEC.md` D22). Galleries whose
  * events share a date keep the order they were given in.
  *
- * @param list - The galleries.
+ * @param list - The galleries, or anything carrying their slug and event title.
  * @param eventList - Events to read the dates from: `events` from `data/dodEvents.ts`.
  * @returns A new array, newest event first.
  * @throws If a gallery names no event, or more than one ({@link findEvent}).
  */
-export function newestFirst<T extends Gallery>(
+export function newestFirst<T extends Pick<Gallery, 'slug' | 'event'>>(
   list: readonly T[],
   eventList: readonly DodEvent[]
 ): T[] {

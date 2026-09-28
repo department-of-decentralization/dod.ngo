@@ -52,9 +52,9 @@ export default function GalleryIndex() {
               className="block text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
             >
               <GalleryPreview
-                repo={gallery.photos?.repo}
-                dir={gallery.photos?.dir}
-                names={gallery.photos ? gallery.photos.list.map((photo) => photo.name) : []}
+                repo={gallery.photos.repo}
+                dir={gallery.photos.dir}
+                names={gallery.photos.list.map((photo) => photo.name)}
               />
               <h2 className="mt-3 text-2xl font-bold tracking-tight text-pretty">
                 {gallery.title}

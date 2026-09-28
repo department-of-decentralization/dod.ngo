@@ -148,9 +148,14 @@ describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
     expect(grid.match(/className="pointer-events-none absolute /g)).toHaveLength(2)
   })
 
-  it('shows the placeholder text from COMING_SOON (SPEC.md D24)', () => {
-    expect(page).toContain('{`${COMING_SOON}.`}')
-    expect(page).not.toContain('Photos coming soon')
+  it('renders every gallery with its grid and credit (SPEC.md D41)', () => {
+    // Every gallery has photos, so neither page branches on them.
+    const index = read(join('app', 'gallery', 'page.tsx'))
+    for (const source of [page, index]) {
+      expect(source).not.toMatch(/photos\?\.|photos \?|photos &&/)
+    }
+    expect(page).toMatch(/<div className="py-8">\s*<PhotoGrid\b/)
+    expect(page).toContain('photoCredits(photos)')
   })
 
   it('takes the credit from photoCredits (SPEC.md D28, D39)', () => {

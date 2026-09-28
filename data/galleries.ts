@@ -24,6 +24,7 @@
  */
 import { newestFirst } from '../lib/gallery'
 import { events } from './dodEvents'
+import dwebCamp2026Photos from './galleries/dweb-camp-2026.json'
 import ethberlin1Photos from './galleries/ethberlin-1.json'
 import ethberlin2Photos from './galleries/ethberlin-2.json'
 import ethberlin3Photos from './galleries/ethberlin-3.json'
@@ -107,13 +108,16 @@ export type Gallery = {
    * date and event link are read from that entry, never copied here.
    */
   event: string
-  /** The photos. Omitted while the gallery is a placeholder (`SPEC.md` D24). */
-  photos?: GalleryPhotos
+  /**
+   * The photos. Every gallery has them: an event gets a gallery once its
+   * photos are in a photo repository (`SPEC.md` D23, D41).
+   */
+  photos: GalleryPhotos
 }
 
 /**
- * The photographer of every gallery with photos but ETHBerlin, and of ETHBerlin
- * ZWEI's conference photos (`SPEC.md` D28, D39).
+ * The photographer of every gallery but ETHBerlin and ETHBerlin ZWEI, and of
+ * ETHBerlin ZWEI's conference photos (`SPEC.md` D28, D39).
  */
 const ANTON_TAL = {
   photographer: 'Anton Tal',
@@ -124,12 +128,22 @@ const ANTON_TAL = {
  * The single registry of event galleries (`SPEC.md` D22). It is written in
  * page order, but the order comes from the events: see the default export.
  *
- * Importing the next gallery takes a photo repository in the D23 layout, a
- * verbatim copy of its `images.json` under `data/galleries/`, and a `photos`
- * entry here. No code.
+ * Adding the next gallery takes a photo repository in the D23 layout, a
+ * verbatim copy of its `images.json` under `data/galleries/`, and an entry
+ * here with its `photos` (`SPEC.md` D41). No code.
  */
 const galleries: Gallery[] = [
-  { slug: 'dweb-camp-2026', title: 'DWeb Camp 2026', event: 'DWeb Camp 2026' },
+  {
+    slug: 'dweb-camp-2026',
+    title: 'DWeb Camp 2026',
+    event: 'DWeb Camp 2026',
+    photos: {
+      repo: 'Department-of-Decentralization/dweb-camp-photos',
+      list: dwebCamp2026Photos,
+      ...ANTON_TAL,
+      license: 'CC-BY-SA-4.0',
+    },
+  },
   {
     slug: 'protocol-v2',
     title: 'Protocol Berg v2',
