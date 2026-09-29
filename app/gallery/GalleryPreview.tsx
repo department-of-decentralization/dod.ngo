@@ -30,11 +30,11 @@ import { PREVIEW_LAYOUTS, pickPreview, thumbnailUrl } from '@/lib/gallery'
 
 /** Props of {@link GalleryPreview}. */
 type Props = {
-  /** Photo repository as `owner/name`; omitted for a gallery without photos. */
-  repo?: string
+  /** Photo repository as `owner/name`. */
+  repo: string
   /** Folder in the repository holding the photos, if not its root (`SPEC.md` D23). */
   dir?: string
-  /** File names of the gallery's photos; empty for a gallery without photos. */
+  /** File names of the gallery's photos. */
   names: string[]
 }
 
@@ -47,8 +47,7 @@ const subscribeToNothing = () => () => {}
  *
  * The pick happens in the browser after hydration, on every page load. Until
  * then, and without JavaScript, the card shows the stripe pattern, so the
- * static HTML carries no random state and no thumbnail is requested twice. A
- * gallery without photos keeps its tiles striped (`SPEC.md` D24).
+ * static HTML carries no random state and no thumbnail is requested twice.
  */
 export default function GalleryPreview({ repo, dir, names }: Props) {
   // React renders the server snapshot, false, for the static HTML and for
@@ -79,7 +78,7 @@ export default function GalleryPreview({ repo, dir, names }: Props) {
             className="bg-stripes relative min-h-0 min-w-0"
             style={{ gridColumn: cell.column, gridRow: cell.row }}
           >
-            {repo && name && (
+            {name && (
               <Image
                 src={thumbnailUrl({ repo, dir }, { name })}
                 alt=""

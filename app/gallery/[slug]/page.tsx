@@ -30,7 +30,6 @@ import { events } from '@/data/dodEvents'
 import galleries from '@/data/galleries'
 import siteMetadata from '@/data/siteMetadata'
 import {
-  COMING_SOON,
   LICENSES,
   findEvent,
   findGallery,
@@ -53,8 +52,7 @@ const LINK = 'text-primary-500 hover:text-primary-600 dark:hover:text-primary-40
 export const dynamicParams = false
 
 /**
- * Prebuild one page per gallery in the registry, placeholders included
- * (`SPEC.md` D22, D24).
+ * Prebuild one page per gallery in the registry (`SPEC.md` D22).
  *
  * @returns One parameter set per gallery.
  */
@@ -76,8 +74,8 @@ export async function generateMetadata({ params }: Params) {
 /**
  * Renders one gallery at `/gallery/<slug>`: its event's date and link, the
  * photo grid with its lightbox, the photographer and license credit, and links
- * to the neighbouring galleries (`SPEC.md` D22 to D28, D39). A gallery without
- * photos says so instead (D24).
+ * to the neighbouring galleries (`SPEC.md` D22, D23, D25 to D28, D39). Every
+ * gallery has photos (D41).
  */
 export default async function GalleryPage({ params }: Params) {
   const gallery = findGallery(galleries, (await params).slug)
@@ -86,8 +84,8 @@ export default async function GalleryPage({ params }: Params) {
   const event = findEvent(gallery, events)
   const { previous, next } = neighbours(galleries, gallery.slug)
   const photos = gallery.photos
-  const license = photos ? LICENSES[photos.license] : null
-  const credits = photos ? photoCredits(photos) : null
+  const license = LICENSES[photos.license]
+  const credits = photoCredits(photos)
 
   return (
     <>
@@ -102,62 +100,52 @@ export default async function GalleryPage({ params }: Params) {
             </Link>
           </>
         )}
-        {photos && (
-          <>
-            <span aria-hidden="true">•</span>
-            <span>{photoCountLabel(photos.list.length)}</span>
-          </>
-        )}
+        <span aria-hidden="true">•</span>
+        <span>{photoCountLabel(photos.list.length)}</span>
       </div>
 
       <div className="py-8">
-        {photos ? (
-          <PhotoGrid
-            title={gallery.title}
-            repo={photos.repo}
-            dir={photos.dir}
-            photos={photos.list.map(({ name, width, height }) => ({ name, width, height }))}
-          />
-        ) : (
-          <p className="text-gray-700 dark:text-gray-300">{`${COMING_SOON}.`}</p>
-        )}
+        <PhotoGrid
+          title={gallery.title}
+          repo={photos.repo}
+          dir={photos.dir}
+          photos={photos.list.map(({ name, width, height }) => ({ name, width, height }))}
+        />
       </div>
 
-      {photos && license && credits && (
-        <div className="flex flex-col gap-1 border-t border-gray-200 py-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
-          <p>
-            Photos:{' '}
-            {credits.map((credit, i) => (
-              <Fragment key={i}>
-                {i > 0 && ', '}
-                {credit.href ? (
-                  <Link href={credit.href} className={LINK}>
-                    {credit.name}
-                  </Link>
-                ) : (
-                  credit.name
-                )}
-                {credit.label && ` (${credit.label})`}
-              </Fragment>
-            ))}{' '}
-            •{' '}
-            <Link href={license.href} className={LINK}>
-              {license.label}
-            </Link>{' '}
-            •{' '}
-            <Link href={repoHref(photos)} className={LINK}>
-              Source
-            </Link>
-          </p>
-          <p>
-            To request removal of a photo, email{' '}
-            <a href={`mailto:${siteMetadata.email}`} className={LINK}>
-              {siteMetadata.email}
-            </a>
-            .
-          </p>
-        </div>
-      )}
+      <div className="flex flex-col gap-1 border-t border-gray-200 py-6 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300">
+        <p>
+          Photos:{' '}
+          {credits.map((credit, i) => (
+            <Fragment key={i}>
+              {i > 0 && ', '}
+              {credit.href ? (
+                <Link href={credit.href} className={LINK}>
+                  {credit.name}
+                </Link>
+              ) : (
+                credit.name
+              )}
+              {credit.label && ` (${credit.label})`}
+            </Fragment>
+          ))}{' '}
+          •{' '}
+          <Link href={license.href} className={LINK}>
+            {license.label}
+          </Link>{' '}
+          •{' '}
+          <Link href={repoHref(photos)} className={LINK}>
+            Source
+          </Link>
+        </p>
+        <p>
+          To request removal of a photo, email{' '}
+          <a href={`mailto:${siteMetadata.email}`} className={LINK}>
+            {siteMetadata.email}
+          </a>
+          .
+        </p>
+      </div>
 
       {(previous || next) && (
         <div className="flex justify-between gap-6 border-t border-gray-200 py-4 text-sm font-medium dark:border-gray-700">

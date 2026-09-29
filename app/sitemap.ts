@@ -16,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: post.lastmod || post.date,
     }))
 
-  // The gallery index and every gallery page, placeholders included (SPEC.md D30)
+  // The gallery index and every gallery page (SPEC.md D30)
   const galleryRoutes = ['gallery', ...galleries.map((gallery) => `gallery/${gallery.slug}`)]
 
   const routes = ['', 'blog', 'projects', 'tags', ...galleryRoutes].map((route) => ({

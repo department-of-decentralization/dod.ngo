@@ -26,7 +26,6 @@ import { afterEach, describe, expect, it } from 'vitest'
 import galleries, { type Gallery } from '../data/galleries'
 import { events } from '../data/dodEvents'
 import {
-  COMING_SOON,
   LICENSES,
   LIGHTBOX_BACKDROP_CLASSES,
   PHOTOGRAPHER_UNKNOWN,
@@ -85,13 +84,14 @@ function sequence(...values: number[]): RandomFn {
   return () => values[i++ % values.length]
 }
 
-/** The Protocol Berg v2 gallery, the first gallery with photos. */
-const pbv2 = findGallery(galleries, 'protocol-v2') as Gallery & {
-  photos: NonNullable<Gallery['photos']>
-}
+/** The Protocol Berg v2 gallery, the first one imported (`SPEC.md` D23). */
+const pbv2 = findGallery(galleries, 'protocol-v2')!
+
+/** A gallery without its photos: all that event lookups and page order read. */
+type GalleryStub = Pick<Gallery, 'slug' | 'title' | 'event'>
 
 /** A stand-in gallery for lookups against synthetic event lists. */
-const probe: Gallery = { slug: 'probe', title: 'Probe', event: 'Probe Event' }
+const probe: GalleryStub = { slug: 'probe', title: 'Probe', event: 'Probe Event' }
 
 /**
  * A minimal event for synthetic event lists.
@@ -148,11 +148,10 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('imports photos for six galleries (SPEC.md D23, D38)', () => {
-    const counts = galleries
-      .filter((g) => g.photos)
-      .map((g) => [g.slug, g.photos!.list.length] as const)
+  it('imports photos for all seven galleries (SPEC.md D23, D38, D40)', () => {
+    const counts = galleries.map((g) => [g.slug, g.photos.list.length] as const)
     expect(counts).toEqual([
+      ['dweb-camp-2026', 367],
       ['protocol-v2', 204],
       ['ethberlin-4', 88],
       ['protocol-v1', 444],
@@ -162,9 +161,16 @@ describe('gallery registry (SPEC.md D22)', () => {
     ])
   })
 
+  it('every gallery has photos (SPEC.md D41)', () => {
+    // An event gets a gallery once its photos are in a photo repository.
+    for (const gallery of galleries) {
+      expect(gallery.photos.list.length, gallery.slug).toBeGreaterThan(0)
+    }
+  })
+
   it('lists every photo once, with a positive size', () => {
-    for (const gallery of galleries.filter((g) => g.photos)) {
-      const list = gallery.photos!.list
+    for (const gallery of galleries) {
+      const list = gallery.photos.list
       const names = list.map((p) => p.name)
       expect(new Set(names).size, gallery.slug).toBe(names.length)
       for (const photo of list) {
@@ -174,9 +180,9 @@ describe('gallery registry (SPEC.md D22)', () => {
     }
   })
 
-  it('names a repository and a known license wherever there are photos (SPEC.md D28)', () => {
-    for (const gallery of galleries.filter((g) => g.photos)) {
-      const photos = gallery.photos!
+  it('names a repository and a known license for every gallery (SPEC.md D28)', () => {
+    for (const gallery of galleries) {
+      const photos = gallery.photos
       expect(photos.repo, gallery.slug).toMatch(/^[\w.-]+\/[\w.-]+$/)
       expect(LICENSES[photos.license], gallery.slug).toBeDefined()
       expect(photos.license, gallery.slug).toBe('CC-BY-SA-4.0')
@@ -185,11 +191,10 @@ describe('gallery registry (SPEC.md D22)', () => {
 
   it("credits each gallery's photographers (SPEC.md D28, D39)", () => {
     // photoCredits also throws on a gallery that breaks D39's rules.
-    const credits = galleries
-      .filter((g) => g.photos)
-      .map((g) => [g.slug, photoCredits(g.photos!)] as const)
+    const credits = galleries.map((g) => [g.slug, photoCredits(g.photos)] as const)
     const anton = { name: 'Anton Tal', href: 'https://www.antontal.com/' }
     expect(credits).toEqual([
+      ['dweb-camp-2026', [anton]],
       ['protocol-v2', [anton]],
       ['ethberlin-4', [anton]],
       ['protocol-v1', [anton]],
@@ -209,7 +214,7 @@ describe('gallery registry (SPEC.md D22)', () => {
   })
 
   it("splits ETHBerlin ZWEI's credit into its conference and weekend photos (SPEC.md D39)", () => {
-    const photos = findGallery(galleries, 'ethberlin-2')!.photos!
+    const photos = findGallery(galleries, 'ethberlin-2')!.photos
     // The parts carry the photographers; the gallery names none of its own.
     expect(photos.photographer).toBeUndefined()
     expect(photos.photographerHref).toBeUndefined()
@@ -236,7 +241,7 @@ describe('photographerCredit (SPEC.md D28)', () => {
   })
 
   it('says the photographer is unknown when nobody is named, and links nothing', () => {
-    expect(photographerCredit(findGallery(galleries, 'ethberlin-1')!.photos!)).toEqual({
+    expect(photographerCredit(findGallery(galleries, 'ethberlin-1')!.photos)).toEqual({
       name: PHOTOGRAPHER_UNKNOWN,
     })
     // A website without a name has nothing to link from.
@@ -403,12 +408,8 @@ describe('pickPreview', () => {
     const { tiles, photos } = pickPreview(['only', 'two'], sequence(0.99, 0))
     expect(tiles).toBe(5)
     expect(photos.sort()).toEqual(['only', 'two'])
-  })
-
-  it('gives a placeholder a tile count and no photos (SPEC.md D24)', () => {
-    const { tiles, photos } = pickPreview([], seeded(7))
-    expect([3, 4, 5]).toContain(tiles)
-    expect(photos).toEqual([])
+    // With no photos at all, every tile keeps the stripe pattern.
+    expect(pickPreview([], seeded(7)).photos).toEqual([])
   })
 
   it('has a layout cell for every tile', () => {
@@ -446,7 +447,7 @@ describe('photo URLs (SPEC.md D23)', () => {
   })
 
   it('builds URLs inside the folder a repository keeps its photos in', () => {
-    const eth4 = findGallery(galleries, 'ethberlin-4')!.photos!
+    const eth4 = findGallery(galleries, 'ethberlin-4')!.photos
     expect(eth4.dir).toBe('images')
     expect(thumbnailUrl(eth4, eth4.list[0])).toBe(
       'https://raw.githubusercontent.com/Department-of-Decentralization/ethberlin-4-photos/main/images/thumbnails/IMG-1000.jpg'
@@ -482,7 +483,7 @@ describe('labels', () => {
     expect(photoCountLabel(1)).toBe('1 photo')
   })
 
-  it('writes a card meta line from the event date (SPEC.md D22, D24)', () => {
+  it('writes a card meta line from the event date (SPEC.md D22)', () => {
     expect(cardMeta(pbv2, events)).toBe('June 12-13, 2025 • 204 photos')
     expect(cardMeta(findGallery(galleries, 'protocol-v1')!, events)).toBe(
       'September 15, 2023 • 444 photos'
@@ -494,9 +495,8 @@ describe('labels', () => {
       'August 23-25, 2019 • 270 photos'
     )
     expect(cardMeta(findGallery(galleries, 'dweb-camp-2026')!, events)).toBe(
-      `July 8-12, 2026 • ${COMING_SOON}`
+      'July 8-12, 2026 • 367 photos'
     )
-    expect(COMING_SOON).toBe('Photos coming soon')
   })
 
   it('names the grid buttons and the lightbox photos', () => {
@@ -566,9 +566,9 @@ describe('page order (SPEC.md D22)', () => {
    * A gallery named after its event, for synthetic lists.
    *
    * @param title - The event title, also used as the slug.
-   * @returns The gallery.
+   * @returns The gallery, without photos: page order reads none.
    */
-  const gallery = (title: string): Gallery => ({ slug: title, title, event: title })
+  const gallery = (title: string): GalleryStub => ({ slug: title, title, event: title })
 
   /**
    * An event on a given date, for synthetic lists.
