@@ -151,7 +151,7 @@ describe('gallery registry (SPEC.md D22)', () => {
   it('imports photos for all seven galleries (SPEC.md D23, D38, D40)', () => {
     const counts = galleries.map((g) => [g.slug, g.photos.list.length] as const)
     expect(counts).toEqual([
-      ['dweb-camp-2026', 372],
+      ['dweb-camp-2026', 367],
       ['protocol-v2', 204],
       ['ethberlin-4', 88],
       ['protocol-v1', 444],
@@ -495,7 +495,7 @@ describe('labels', () => {
       'August 23-25, 2019 • 270 photos'
     )
     expect(cardMeta(findGallery(galleries, 'dweb-camp-2026')!, events)).toBe(
-      'July 8-12, 2026 • 372 photos'
+      'July 8-12, 2026 • 367 photos'
     )
   })
 
