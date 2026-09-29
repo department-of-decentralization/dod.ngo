@@ -20,6 +20,9 @@ export default function NextStammtisch() {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
+        // The day in Berlin, where it happens: east of UTC+3 the 21:00 UTC
+        // instant is already Thursday (SPEC.md K3, D49).
+        timeZone: 'Europe/Berlin',
       })}
     </span>
   )

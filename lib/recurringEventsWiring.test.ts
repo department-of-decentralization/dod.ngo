@@ -91,14 +91,7 @@ describe('recurring series are wired to the right week of month (regression)', (
     })
   })
 
-  it('app/NextBerlinMeshMeetup.tsx uses the 3rd Wednesday and the Chaos Mesh skip list', () => {
-    expectSeriesWiring(readSource('app/NextBerlinMeshMeetup.tsx'), 'getNextMonthlyWeekdayDate({', {
-      weekOfMonth: BERLIN_MESH_WEEK,
-      data: BERLIN_MESH_DATA,
-    })
-  })
-
-  it('app/events/EventsList.tsx agrees with both components', () => {
+  it('app/events/EventsList.tsx wires both series, the Chaos Mesh only there (SPEC.md D49)', () => {
     const source = readSource('app/events/EventsList.tsx')
 
     expectSeriesWiring(source, 'const nextStammtischDate = getNextMonthlyWeekdayDate({', {

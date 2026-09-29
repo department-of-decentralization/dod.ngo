@@ -1,130 +1,108 @@
 'use client'
 
-import type { JSX } from 'react'
+import type { ReactNode } from 'react'
 import { events } from '@/data/dodEvents'
 import skippedBerlinMesh from '@/data/skippedBerlinMesh'
 import skippedDates from '@/data/skippedStammtisch'
+import {
+  type UpcomingDate,
+  groupByYear,
+  isUpcoming,
+  meetupDate,
+  monthlyCadence,
+  pastDate,
+  sentenceCase,
+  upcomingDate,
+} from '@/lib/eventDates'
 import { getNextMonthlyWeekdayDate } from '@/lib/recurringEvents'
-import NextBerlinMeshMeetup from 'app/NextBerlinMeshMeetup'
-import NextStammtisch from 'app/NextStammtisch'
 
+/** One entry of `data/dodEvents.ts`. */
+type EventEntry = (typeof events)[number]
+
+/** A link in a row, coloured as the prose colours its links (design review #3). */
+const LINK =
+  'font-medium text-primary-600 underline hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300'
+
+/** A row: the date column, then the event, above a butter hairline (#11). */
+const ROW =
+  'grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-b border-butter-600 py-4 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-6 dark:border-gray-700'
+
+/** An event's title. */
+const TITLE = 'text-lg leading-7 font-semibold text-gray-900 dark:text-gray-100'
+
+/** An event's description. */
+const DESCRIPTION = 'mt-0.5 text-base leading-6 text-gray-700 dark:text-gray-300'
+
+/**
+ * An event's description, starting with a capital letter, with its text link
+ * if it has one.
+ *
+ * @param event - The event.
+ * @returns The description.
+ */
+function describe(event: EventEntry): ReactNode {
+  const text = sentenceCase(event.description)
+  if (!event.textLink) return text
+  const { text: linkText, url } = event.textLink
+  const [before, ...after] = text.split(linkText)
+  if (after.length === 0) return text
+  return (
+    <>
+      {before}
+      <a href={url} target="_blank" rel="noreferrer" className={LINK}>
+        {linkText}
+      </a>
+      {after.join(linkText)}
+    </>
+  )
+}
+
+/**
+ * The date column of an upcoming row: the weekday over the day.
+ *
+ * @param props - The date to show.
+ * @returns The column.
+ */
+function UpcomingDateColumn({ date }: { date: UpcomingDate }) {
+  return (
+    <div data-date>
+      <div className="text-[13px] leading-5 font-semibold tracking-[0.06em] text-gray-600 uppercase dark:text-gray-400">
+        {date.weekday}
+      </div>
+      <div className="text-xl leading-7 font-bold text-gray-900 dark:text-gray-100">{date.day}</div>
+    </div>
+  )
+}
+
+/**
+ * The link under an event's description, on its own line.
+ *
+ * @param props - The event.
+ * @returns The link, or nothing.
+ */
+function EventLink({ event }: { event: EventEntry }) {
+  if (!event.link) return null
+  return (
+    <a
+      href={event.link.url}
+      target="_blank"
+      rel="noreferrer"
+      className={`mt-1 inline-block text-[15px] leading-[22px] ${LINK}`}
+    >
+      {event.link.label}
+    </a>
+  )
+}
+
+/**
+ * The events page's lists: what comes next, the meetups included, and every
+ * past event by year (SPEC.md, Bugfix: Design Review, #11). Dates are read so
+ * that no time zone moves them (`lib/eventDates.ts`, SPEC.md I1).
+ */
 export default function EventsList() {
   const now = new Date()
-  const upcomingEvents = events.filter((event) => new Date(event.date) > now)
-
-  const pastEvents = events
-    .filter((event) => new Date(event.date) <= now)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-  const formatEventDate = (event: (typeof events)[number], mode: 'upcoming' | 'past') => {
-    const startDate = new Date(event.date)
-
-    if (event.yearOnly) {
-      return startDate.getFullYear()
-    }
-
-    if (event.endDate) {
-      const endDate = new Date(event.endDate)
-      const sameYear = startDate.getFullYear() === endDate.getFullYear()
-      const sameMonth = startDate.getMonth() === endDate.getMonth() && sameYear
-
-      if (sameMonth) {
-        const month = startDate.toLocaleDateString('en-US', { month: 'long' })
-        const year = startDate.getFullYear()
-        const startDay = startDate.getDate()
-        const endDay = endDate.getDate()
-        return `${month} ${startDay}-${endDay}, ${year}`
-      }
-
-      if (sameYear) {
-        const startMonthDay = startDate.toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-        })
-        const endMonthDay = endDate.toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-        })
-        return `${startMonthDay}-${endMonthDay}, ${startDate.getFullYear()}`
-      }
-
-      const startFull = startDate.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      })
-      const endFull = endDate.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      })
-      return `${startFull} - ${endFull}`
-    }
-
-    return mode === 'upcoming'
-      ? startDate.toLocaleDateString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-        })
-      : startDate.toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' })
-  }
-
-  const renderEventDescription = (event: (typeof events)[number]) => {
-    if (!event.textLink) {
-      return event.description
-    }
-
-    const { text, url } = event.textLink
-    const [before, ...afterParts] = event.description.split(text)
-
-    if (afterParts.length === 0) {
-      return event.description
-    }
-
-    return (
-      <>
-        {before}
-        <a href={url} target="_blank" rel="noreferrer">
-          {text}
-        </a>
-        {afterParts.join(text)}
-      </>
-    )
-  }
-
-  const renderUpcomingEvent = (event: (typeof events)[number]) => (
-    <li key={`${event.title}-${event.date}`}>
-      <strong>
-        {event.title} ({formatEventDate(event, 'upcoming')}):
-      </strong>{' '}
-      {renderEventDescription(event)}
-      {event.link && (
-        <>
-          :{' '}
-          <a href={event.link.url} target="_blank" rel="noreferrer">
-            {event.link.label}
-          </a>
-        </>
-      )}
-    </li>
-  )
-  const renderPastEvent = (event: (typeof events)[number]) => (
-    <li key={`${event.title}-${event.date}`}>
-      <strong>
-        {event.title} ({formatEventDate(event, 'past')}):
-      </strong>{' '}
-      {renderEventDescription(event)}
-      {event.link && (
-        <>
-          :{' '}
-          <a href={event.link.url} target="_blank" rel="noreferrer">
-            {event.link.label}
-          </a>
-        </>
-      )}
-    </li>
-  )
+  const upcomingEvents = events.filter((event) => isUpcoming(event, now))
+  const pastEvents = events.filter((event) => !isUpcoming(event, now))
 
   const nextStammtischDate = getNextMonthlyWeekdayDate({
     weekday: 3,
@@ -140,64 +118,122 @@ export default function EventsList() {
     skipMonths: skippedBerlinMesh.skippedDates,
   })
 
-  type UpcomingItem =
-    | { type: 'event'; date: Date; event: (typeof events)[number] }
-    | { type: 'recurring'; key: string; date: Date; render: () => JSX.Element }
+  const cbase = (
+    <a href="https://c-base.org" target="_blank" rel="noopener noreferrer" className={LINK}>
+      c-base
+    </a>
+  )
 
-  const upcomingItems: UpcomingItem[] = [
-    ...upcomingEvents.map((event): UpcomingItem => ({
-      type: 'event',
-      date: new Date(event.date),
-      event,
+  const upcomingItems: { key: string; date: Date; row: ReactNode }[] = [
+    ...upcomingEvents.map((event) => ({
+      key: `${event.title}-${event.date}`,
+      date: new Date(`${event.date}T00:00:00Z`),
+      row: (
+        <>
+          <UpcomingDateColumn date={upcomingDate(event)} />
+          <div>
+            <div data-title className={TITLE}>
+              {event.title}
+            </div>
+            <div data-description className={DESCRIPTION}>
+              {describe(event)}
+            </div>
+            <EventLink event={event} />
+          </div>
+        </>
+      ),
     })),
     {
-      type: 'recurring',
       key: 'stammtisch',
       date: nextStammtischDate,
-      render: () => (
-        <li key="stammtisch">
-          Next <strong>DoD Stammtisch</strong> (informal meetup) at{' '}
-          <a href="https://c-base.org" target="_blank" rel="noopener noreferrer">
-            c-base
-          </a>
-          : <NextStammtisch /> at 19:00 Berlin time.
-        </li>
+      row: (
+        <>
+          <UpcomingDateColumn date={meetupDate(nextStammtischDate)} />
+          <div>
+            <div data-title className={TITLE}>
+              DoD Stammtisch
+            </div>
+            <div data-description className={DESCRIPTION}>
+              Informal meetup at {cbase}, 19:00 Berlin time · {monthlyCadence(nextStammtischDate)}
+            </div>
+          </div>
+        </>
       ),
-    } as UpcomingItem,
+    },
     {
-      type: 'recurring',
       key: 'berlin-mesh',
       date: nextBerlinMeshDate,
-      render: () => (
-        <li key="berlin-mesh">
-          Next{' '}
-          <a href="https://chaosmesh.net/" target="_blank" rel="noopener noreferrer">
-            <strong>Berlin Chaos Mesh</strong>
-          </a>{' '}
-          meetup (Meshtastic/Meshcore/Reticulum) at{' '}
-          <a href="https://c-base.org" target="_blank" rel="noopener noreferrer">
-            c-base
-          </a>
-          : <NextBerlinMeshMeetup /> at 19:00 Berlin time.
-        </li>
+      row: (
+        <>
+          <UpcomingDateColumn date={meetupDate(nextBerlinMeshDate)} />
+          <div>
+            <div data-title className={TITLE}>
+              <a
+                href="https://chaosmesh.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-butter-600 underline-offset-[3px] hover:text-primary-700 dark:decoration-gray-600 dark:hover:text-primary-300"
+              >
+                Berlin Chaos Mesh
+              </a>
+            </div>
+            <div data-description className={DESCRIPTION}>
+              Meshtastic/Meshcore/Reticulum meetup at {cbase}, 19:00 Berlin time ·{' '}
+              {monthlyCadence(nextBerlinMeshDate)}
+            </div>
+          </div>
+        </>
       ),
-    } as UpcomingItem,
+    },
   ].sort((a, b) => a.date.getTime() - b.date.getTime())
 
   return (
-    <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
-      <h3>Upcoming events:</h3>
-      <div>
+    <div className="pt-8 pb-8">
+      <section className="max-w-[52rem]">
+        <h2 className="border-b border-butter-600 pb-3 text-2xl leading-8 font-bold tracking-tight text-gray-900 dark:border-gray-700 dark:text-gray-100">
+          Upcoming
+        </h2>
         <ul>
-          {upcomingItems.map((item) =>
-            item.type === 'event' ? renderUpcomingEvent(item.event) : item.render()
-          )}
+          {upcomingItems.map((item) => (
+            <li key={item.key} className={ROW}>
+              {item.row}
+            </li>
+          ))}
         </ul>
-      </div>
-      <h3>Past events:</h3>
-      <div>
-        <ul>{pastEvents.map(renderPastEvent)}</ul>
-      </div>
+      </section>
+      <section className="mt-12 max-w-[52rem]">
+        <h2 className="text-2xl leading-8 font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          Past
+        </h2>
+        {groupByYear(pastEvents).map((group) => (
+          <div key={group.year}>
+            <h3 className="mt-4 border-b border-butter-600 py-2 text-sm leading-5 font-semibold tracking-[0.06em] text-gray-600 dark:border-gray-700 dark:text-gray-400">
+              {group.year}
+            </h3>
+            <ul>
+              {group.events.map((event) => (
+                <li key={`${event.title}-${event.date}`} className={ROW}>
+                  <div
+                    data-date
+                    className="text-base leading-7 font-semibold text-gray-900 dark:text-gray-100"
+                  >
+                    {pastDate(event)}
+                  </div>
+                  <div>
+                    <div data-title className={TITLE}>
+                      {event.title}
+                    </div>
+                    <div data-description className={DESCRIPTION}>
+                      {describe(event)}
+                    </div>
+                    <EventLink event={event} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
     </div>
   )
 }

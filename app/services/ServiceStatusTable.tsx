@@ -196,7 +196,7 @@ export default function ServiceStatusTable() {
                     href={service.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="block max-w-full font-mono text-sm leading-5 wrap-break-word text-primary-500 underline underline-offset-2 hover:text-primary-600 dark:text-primary-400"
+                    className="block max-w-full font-mono text-sm leading-5 wrap-break-word text-primary-600 underline underline-offset-2 hover:text-primary-700 dark:text-primary-400"
                   >
                     {service.host}
                   </a>

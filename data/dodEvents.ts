@@ -3,6 +3,7 @@ interface Event {
   date: string // ISO date string
   endDate?: string // Optional ISO end date for multi-day events
   yearOnly?: boolean // Flag to indicate if the event only has year specified
+  monthOnly?: boolean // Only the month is known; the day of `date` is a placeholder
   description: string
   textLink?: {
     text: string
@@ -57,13 +58,14 @@ export const events: Event[] = [
     description:
       'unconference to help co-creating DWeb Camp and meetup afterward to get inspired and connected',
     link: {
-      url: 'https://blog.archive.org/2026/04/02/how-dweb-camp-is-being-built-in-berlin/',
+      url: 'https://dwebcamp.org/berlin-2026/',
       label: 'dwebcamp.org/berlin-2026',
     },
   },
   {
-    title: 'Criticial Decentralization Cluster',
+    title: 'Critical Decentralization Cluster',
     date: '2025-12-01',
+    monthOnly: true,
     description:
       'the #39c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
@@ -82,8 +84,9 @@ export const events: Event[] = [
     },
   },
   {
-    title: 'Criticial Decentralization Cluster',
+    title: 'Critical Decentralization Cluster',
     date: '2024-12-01',
+    monthOnly: true,
     description:
       'the #38c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
@@ -94,6 +97,7 @@ export const events: Event[] = [
   {
     title: 'Ethereum Berlin Meetup',
     date: '2024-10-01',
+    monthOnly: true,
     description: 'Road to DEVCON VII SEA Bangkok.',
     link: {
       url: 'https://www.meetup.com/berlin-ethereum-meetup/events/303919363',
@@ -103,6 +107,7 @@ export const events: Event[] = [
   {
     title: 'Ethereum Berlin Meetup',
     date: '2024-08-01',
+    monthOnly: true,
     description: '10 years Ethereum Berlin Meetup.',
     link: {
       url: 'https://www.meetup.com/berlin-ethereum-meetup/events/302923436',
@@ -120,8 +125,9 @@ export const events: Event[] = [
     },
   },
   {
-    title: 'Criticial Decentralization Cluster',
+    title: 'Critical Decentralization Cluster',
     date: '2023-12-01',
+    monthOnly: true,
     description:
       'the #37c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
@@ -203,7 +209,7 @@ export const events: Event[] = [
     title: 'Crypto grows on trees',
     date: '2019-10-01',
     yearOnly: true,
-    description: 'an art exhibition at the Ethereum Devcon 4 in Osaka.',
+    description: 'an art exhibition at the Ethereum Devcon 5 in Osaka.',
   },
   {
     title: 'Ecosystem Job-Openings',

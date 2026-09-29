@@ -23,8 +23,9 @@
  * SOFTWARE.
  */
 import { runInNewContext } from 'vm'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import ButtonScript from '../app/hotkeys'
+import { SHORTCUTS_KEY, SHORTCUTS_OFF } from './shortcuts'
 
 /**
  * `app/hotkeys.tsx` installs the nav hotkeys through an inline script string
@@ -49,26 +50,49 @@ type Modifiers = Partial<Record<'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey', b
 /** An element outside any menu, as `document.body` looks to the handler. */
 const BODY: FakeTarget = { tagName: 'BODY', closest: () => null }
 
+/** A stand-in for `localStorage`; with `broken` set, every read throws. */
+type FakeStorage = {
+  items: Map<string, string>
+  broken: boolean
+  getItem(key: string): string | null
+}
+
 /**
  * Load the emitted hotkey script into a fresh context.
  *
- * @returns A function that dispatches one keydown to the installed handler and
- *   returns the path it navigated to, or `null` if the page stayed put.
+ * @returns `press`, which dispatches one keydown to the handler the script
+ *   registered and returns the path it navigated to, or `null` if the page
+ *   stayed put; the `storage` the script reads the shortcuts choice from; and
+ *   the `script` itself.
  */
 function loadHotkeys() {
   const script: string = ButtonScript().props.dangerouslySetInnerHTML.__html
-  const document: { onkeydown: ((event: object) => void) | null } = { onkeydown: null }
-  const window = { location: { href: '' } }
+  let handler: ((event: object) => void) | null = null
+  const document = {
+    addEventListener: (type: string, listener: (event: object) => void) => {
+      if (type === 'keydown') handler = listener
+    },
+  }
+  const storage: FakeStorage = {
+    items: new Map(),
+    broken: false,
+    getItem(key) {
+      if (this.broken) throw new Error('blocked')
+      return this.items.get(key) ?? null
+    },
+  }
+  const window = { location: { href: '' }, localStorage: storage }
   runInNewContext(script, { document, window })
 
-  return (key: string, target: FakeTarget = BODY, modifiers: Modifiers = {}) => {
+  const press = (key: string, target: FakeTarget = BODY, modifiers: Modifiers = {}) => {
     window.location.href = ''
-    document.onkeydown?.({ key, target, ...modifiers })
+    handler?.({ key, target, ...modifiers })
     return window.location.href || null
   }
+  return { press, storage, script }
 }
 
-const press = loadHotkeys()
+const { press, storage, script } = loadHotkeys()
 
 /**
  * The keyspace of record (`SPEC.md` D8, D21), written out rather than read
@@ -136,5 +160,37 @@ describe('keys meant for a focused control fire no nav hotkey [regression 2026-0
 
   it('still navigates from a control outside any menu', () => {
     expect(press('d', { tagName: 'A', closest: () => null })).toBe('/donate')
+  })
+})
+
+describe('the shortcuts can be turned off (SPEC.md D44) [regression 2026-09-29]', () => {
+  afterEach(() => {
+    storage.items.clear()
+    storage.broken = false
+  })
+
+  it('listens with addEventListener and assigns no document.onkeydown', () => {
+    // An assignment would replace any other keydown handler (SPEC.md D19).
+    expect(script).toContain("document.addEventListener('keydown', checkKey)")
+    expect(script).not.toContain('document.onkeydown')
+  })
+
+  it('navigates nowhere while the visitor has turned them off', () => {
+    storage.items.set(SHORTCUTS_KEY, SHORTCUTS_OFF)
+    for (const key of Object.keys(KEYSPACE)) {
+      expect(press(key), `key ${key}`).toBeNull()
+    }
+  })
+
+  it('navigates again once they are back on', () => {
+    storage.items.set(SHORTCUTS_KEY, SHORTCUTS_OFF)
+    expect(press('e')).toBeNull()
+    storage.items.delete(SHORTCUTS_KEY)
+    expect(press('e')).toBe('/events')
+  })
+
+  it('counts a storage it cannot read as on', () => {
+    storage.broken = true
+    expect(press('e')).toBe('/events')
   })
 })
