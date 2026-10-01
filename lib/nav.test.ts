@@ -23,6 +23,7 @@
  * SOFTWARE.
  */
 import { describe, expect, it } from 'vitest'
+import headerNavLinks from '../data/headerNavLinks'
 import { isCurrentPath } from './nav'
 
 describe('isCurrentPath (design review #6, #10)', () => {
@@ -46,5 +47,20 @@ describe('isCurrentPath (design review #6, #10)', () => {
     expect(isCurrentPath('/events/', '/events')).toBe(true)
     expect(isCurrentPath('/gallery/protocol-v2/', '/gallery')).toBe(true)
     expect(isCurrentPath(null, '/events')).toBe(false)
+  })
+})
+
+describe('the main menu (maintainer feedback on PR #80, 2026-10-01)', () => {
+  it('lists Events, Gallery, Blog, People, Contact, Services and Donate, in that order', () => {
+    expect(headerNavLinks.map((link) => link.href)).toEqual([
+      '/',
+      '/events',
+      '/gallery',
+      '/blog',
+      '/people',
+      '/contact',
+      '/services',
+      '/donate',
+    ])
   })
 })
