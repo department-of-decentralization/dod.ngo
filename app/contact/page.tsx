@@ -12,7 +12,7 @@ export default function Contact() {
         <h2>Away from Keyboard</h2>
         <p>
           Our public, in-person <span className="font-medium">Stammtisch</span> happens every 2nd
-          Wednesday at the{' '}
+          Wednesday of the month at the{' '}
           <a href="https://c-base.org/" target="_blank" rel="noreferrer">
             c-base
           </a>{' '}

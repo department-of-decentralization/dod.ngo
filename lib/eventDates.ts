@@ -193,12 +193,13 @@ export function groupByYear<T extends Pick<EventDay, 'date'>>(
  * Deriving it from the date keeps the schedule defined once (`SPEC.md` I2).
  *
  * @param instant - An occurrence of the meetup.
- * @returns For example `every 2nd Wednesday`.
+ * @returns For example `every 2nd Wednesday of the month`: "every 2nd
+ *   Wednesday" alone reads as every other week.
  */
 export function monthlyCadence(instant: Date): string {
   const nth = Math.ceil(Number(part(instant, BERLIN, { day: 'numeric' })) / 7)
   const suffix = ['st', 'nd', 'rd'][nth - 1] ?? 'th'
-  return `every ${nth}${suffix} ${part(instant, BERLIN, { weekday: 'long' })}`
+  return `every ${nth}${suffix} ${part(instant, BERLIN, { weekday: 'long' })} of the month`
 }
 
 /**

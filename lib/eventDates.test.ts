@@ -143,12 +143,22 @@ describe('an event shows its own day in every time zone [regression 2026-09-29]'
 })
 
 describe('the rows of /events', () => {
-  it("names a monthly meetup's cadence from its occurrence", () => {
-    expect(monthlyCadence(new Date('2026-10-07T21:00:00Z'))).toBe('every 1st Wednesday')
-    expect(monthlyCadence(new Date('2026-10-14T21:00:00Z'))).toBe('every 2nd Wednesday')
-    expect(monthlyCadence(new Date('2026-10-21T21:00:00Z'))).toBe('every 3rd Wednesday')
-    expect(monthlyCadence(new Date('2026-10-28T21:00:00Z'))).toBe('every 4th Wednesday')
-    expect(monthlyCadence(new Date('2026-09-30T21:00:00Z'))).toBe('every 5th Wednesday')
+  it("names a monthly meetup's cadence from its occurrence, of the month", () => {
+    expect(monthlyCadence(new Date('2026-10-07T21:00:00Z'))).toBe(
+      'every 1st Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-10-14T21:00:00Z'))).toBe(
+      'every 2nd Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-10-21T21:00:00Z'))).toBe(
+      'every 3rd Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-10-28T21:00:00Z'))).toBe(
+      'every 4th Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-09-30T21:00:00Z'))).toBe(
+      'every 5th Wednesday of the month'
+    )
   })
 
   it('starts a description with a capital letter', () => {
@@ -165,18 +175,52 @@ describe('the rows of /events', () => {
 })
 
 describe('data/dodEvents.ts marks how precisely each date is known (design review #11)', () => {
-  it('marks the five events whose day is not known', () => {
+  it('marks the two events whose day is not known', () => {
     const monthOnly = events.filter((e) => e.monthOnly).map((e) => `${e.date} ${e.title}`)
     expect(monthOnly).toEqual([
-      '2025-12-01 Critical Decentralization Cluster',
-      '2024-12-01 Critical Decentralization Cluster',
       '2024-10-01 Ethereum Berlin Meetup',
       '2024-08-01 Ethereum Berlin Meetup',
-      '2023-12-01 Critical Decentralization Cluster',
+    ])
+  })
+
+  it('marks the seven events whose month is not known', () => {
+    const yearOnly = events.filter((e) => e.yearOnly).map((e) => `${e.date.slice(0, 4)} ${e.title}`)
+    expect(yearOnly).toEqual([
+      '2022 Merkle Root (Round Table)',
+      '2022 StrikeDAO',
+      '2021 Wanderer above the Sea of FUD',
+      '2019 Crypto grows on trees',
+      '2019 Ecosystem Job-Openings',
+      '2019 There is no such thing as Blockchain Art',
+      '2019 Blockstars Education Program',
     ])
   })
 
   it('never marks a date both month-only and year-only', () => {
     expect(events.filter((e) => e.monthOnly && e.yearOnly)).toEqual([])
+  })
+})
+
+describe('data/dodEvents.ts carries the dates the maintainer gave [regression 2026-10-01]', () => {
+  const dated = (title: string) =>
+    events
+      .filter((e) => e.title === title)
+      .map((e) => [e.date, e.endDate ?? null, !!e.monthOnly, !!e.yearOnly])
+
+  it('runs the Critical Decentralization Cluster December 27 to 30', () => {
+    expect(dated('Critical Decentralization Cluster')).toEqual([
+      ['2025-12-27', '2025-12-30', false, false],
+      ['2024-12-27', '2024-12-30', false, false],
+      ['2023-12-27', '2023-12-30', false, false],
+    ])
+  })
+
+  it('dates TwoPointFive, ETHParis 2, the Goerli Testnet and GörliCon 0 to the day', () => {
+    expect(dated('TwoPointFive - The Talk Show')).toEqual([['2020-11-19', null, false, false]])
+    expect(dated('ETHParis 2 - The Un-Hackathon')).toEqual([
+      ['2020-03-06', '2020-03-08', false, false],
+    ])
+    expect(dated('Goerli Testnet')).toEqual([['2019-01-31', null, false, false]])
+    expect(dated('GörliCon 0')).toEqual([['2019-01-31', null, false, false]])
   })
 })

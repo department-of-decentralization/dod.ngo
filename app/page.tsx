@@ -13,6 +13,10 @@ const LINK =
 /** A figure's caption: upright, 14 px, gray-600, 12 px below its media (#15). */
 const CAPTION = 'mt-3 text-sm text-gray-600 dark:text-gray-400'
 
+/** A call to action below the copy: Donate and Next events (#8, SPEC.md D45). */
+const CTA =
+  'text-base font-semibold text-primary-600 hover:text-primary-700 md:text-lg dark:text-primary-400 dark:hover:text-primary-300'
+
 /**
  * Renders the Department of Decentralization homepage content.
  */
@@ -40,12 +44,12 @@ export default function Page() {
           distraction-free experience by not hosting sponsors, paid talks, or any other commercial
           components. Our collective entirely runs on donations.
         </p>
-        <p className="not-prose mt-4">
-          <Link
-            href="/donate"
-            className="text-base font-semibold text-primary-600 hover:text-primary-700 md:text-lg dark:text-primary-400 dark:hover:text-primary-300"
-          >
+        <p className="not-prose mt-4 flex flex-wrap gap-x-6 gap-y-2">
+          <Link href="/donate" className={CTA}>
             Donate →
+          </Link>
+          <Link href="/events" className={CTA}>
+            Next events →
           </Link>
         </p>
         <figure className="not-prose mt-9 md:mt-16">

@@ -11,9 +11,6 @@ const TEXT = 'text-base leading-7 text-gray-700 dark:text-gray-300'
 /** A section heading: h2 under the page's h1 (SPEC.md, Bugfix: Design Review, #12). */
 const HEADING = 'text-xl leading-7 font-bold tracking-tight text-gray-900 dark:text-gray-100'
 
-/** A value mentioned in running text, in monospace that wraps. */
-const INLINE_VALUE = 'font-mono text-[13px] [overflow-wrap:anywhere]'
-
 /**
  * One payment detail: its label, its value in wrapping monospace, and a Copy
  * button (#12).
@@ -69,12 +66,6 @@ export default function Donate() {
           <Detail label="Ethereum mainnet" value="ethberlin.eth" />
           <Detail label="Other EVM chains" value="0xd22dC63e2388AE8226b5CAA0341fc0c1294b6B40" />
         </Details>
-        <p className="mt-3 text-sm leading-[22px] text-gray-600 dark:text-gray-400">
-          Our old, secondary account is: <span className={INLINE_VALUE}>dezent.eth</span>; on other
-          EVM chains:{' '}
-          <span className={INLINE_VALUE}>0x59cc3Fc56B8B2988F259EC1E6f3446907130f728</span>; do not
-          use if possible.
-        </p>
         <h2 className={`mt-8 mb-1 ${HEADING}`}>Fiat</h2>
         <p className={`mb-3 ${TEXT}`}>Wire (SEPA) donations:</p>
         <Details>
