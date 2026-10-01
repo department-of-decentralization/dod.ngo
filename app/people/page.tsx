@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import PageTitle from '@/components/PageTitle'
 import SocialIcon from '@/components/social-icons'
 import { peopleData, PersonData } from './peopleData'
 
@@ -44,26 +45,27 @@ export default function PeoplePage() {
   /* eslint-enable react-hooks/purity */
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="mb-12 text-center text-4xl font-bold">Collective Members</h1>
+    <>
+      <PageTitle>Collective Members</PageTitle>
+      <div className="pt-8 pb-8">
+        <section className="mb-16">
+          <h2 className="mb-8 text-2xl font-semibold">Office</h2>
+          <div className="flex flex-wrap gap-8">
+            {currentMembers.map((person) => (
+              <PersonCard key={person.name} person={person} />
+            ))}
+          </div>
+        </section>
 
-      <section className="mb-16">
-        <h2 className="mb-8 text-2xl font-semibold">Office</h2>
-        <div className="flex flex-wrap gap-8">
-          {currentMembers.map((person) => (
-            <PersonCard key={person.name} person={person} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="mb-8 text-2xl font-semibold">Alumni</h2>
-        <div className="flex flex-wrap gap-8">
-          {alumni.map((person) => (
-            <PersonCard key={person.name} person={person} />
-          ))}
-        </div>
-      </section>
-    </div>
+        <section>
+          <h2 className="mb-8 text-2xl font-semibold">Alumni</h2>
+          <div className="flex flex-wrap gap-8">
+            {alumni.map((person) => (
+              <PersonCard key={person.name} person={person} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </>
   )
 }

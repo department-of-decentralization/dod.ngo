@@ -3,6 +3,7 @@ interface Event {
   date: string // ISO date string
   endDate?: string // Optional ISO end date for multi-day events
   yearOnly?: boolean // Flag to indicate if the event only has year specified
+  monthOnly?: boolean // Only the month is known; the day of `date` is a placeholder
   description: string
   textLink?: {
     text: string
@@ -57,13 +58,14 @@ export const events: Event[] = [
     description:
       'unconference to help co-creating DWeb Camp and meetup afterward to get inspired and connected',
     link: {
-      url: 'https://blog.archive.org/2026/04/02/how-dweb-camp-is-being-built-in-berlin/',
+      url: 'https://dwebcamp.org/berlin-2026/',
       label: 'dwebcamp.org/berlin-2026',
     },
   },
   {
-    title: 'Criticial Decentralization Cluster',
-    date: '2025-12-01',
+    title: 'Critical Decentralization Cluster',
+    date: '2025-12-27',
+    endDate: '2025-12-30',
     description:
       'the #39c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
@@ -82,8 +84,9 @@ export const events: Event[] = [
     },
   },
   {
-    title: 'Criticial Decentralization Cluster',
-    date: '2024-12-01',
+    title: 'Critical Decentralization Cluster',
+    date: '2024-12-27',
+    endDate: '2024-12-30',
     description:
       'the #38c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
@@ -94,6 +97,7 @@ export const events: Event[] = [
   {
     title: 'Ethereum Berlin Meetup',
     date: '2024-10-01',
+    monthOnly: true,
     description: 'Road to DEVCON VII SEA Bangkok.',
     link: {
       url: 'https://www.meetup.com/berlin-ethereum-meetup/events/303919363',
@@ -103,6 +107,7 @@ export const events: Event[] = [
   {
     title: 'Ethereum Berlin Meetup',
     date: '2024-08-01',
+    monthOnly: true,
     description: '10 years Ethereum Berlin Meetup.',
     link: {
       url: 'https://www.meetup.com/berlin-ethereum-meetup/events/302923436',
@@ -120,8 +125,9 @@ export const events: Event[] = [
     },
   },
   {
-    title: 'Criticial Decentralization Cluster',
-    date: '2023-12-01',
+    title: 'Critical Decentralization Cluster',
+    date: '2023-12-27',
+    endDate: '2023-12-30',
     description:
       'the #37c3 assembly in collaboration with the Social Distortion Protocol, the RIAT Institute, and Swiss Cryptoeconomics',
     link: {
@@ -179,8 +185,7 @@ export const events: Event[] = [
   },
   {
     title: 'TwoPointFive - The Talk Show',
-    date: '2020-06-01',
-    yearOnly: true,
+    date: '2020-11-19',
     description:
       'TwoPointFive was a white-label virtual conference. No shill, no sponsors, from the community for the community and truly in it for the tech',
     link: {
@@ -190,8 +195,8 @@ export const events: Event[] = [
   },
   {
     title: 'ETHParis 2 - The Un-Hackathon',
-    date: '2020-03-01',
-    yearOnly: true,
+    date: '2020-03-06',
+    endDate: '2020-03-08',
     description:
       "ETHParis 2 was hosted by the Department of Decentralization and Ethereum France as an unconference-style hackathon in the engineering school l'ESGI",
     link: {
@@ -203,7 +208,7 @@ export const events: Event[] = [
     title: 'Crypto grows on trees',
     date: '2019-10-01',
     yearOnly: true,
-    description: 'an art exhibition at the Ethereum Devcon 4 in Osaka.',
+    description: 'an art exhibition at the Ethereum Devcon 5 in Osaka.',
   },
   {
     title: 'Ecosystem Job-Openings',
@@ -239,15 +244,13 @@ export const events: Event[] = [
   },
   {
     title: 'Goerli Testnet',
-    date: '2019-02-01',
-    yearOnly: true,
+    date: '2019-01-31',
     description:
       'Born at ETHBerlin and launched at GoerliCon, the Goerli Testnet is now the essential public-facing Ethereum testnets after the Merge.',
   },
   {
     title: 'GörliCon 0',
     date: '2019-01-31',
-    yearOnly: true,
     description:
       'The Ethereum testnet and infrastructure conference where the Goerli Testnet was launched live on stage',
     link: {

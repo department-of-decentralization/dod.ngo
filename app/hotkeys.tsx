@@ -1,6 +1,7 @@
 import React from 'react'
 import headerNavLinks from '@/data/headerNavLinks'
 import footerNavLinks from '@/data/footerNavLinks'
+import { SHORTCUTS_KEY, SHORTCUTS_OFF } from '@/lib/shortcuts'
 
 // Check for hotkey collisions at build time
 function checkHotkeyCollisions() {
@@ -36,8 +37,8 @@ export default function ButtonScript() {
             const headerNavLinks = ${navLinksStr};
             const footerNavLinks = ${footerLinksStr};
             
-            // Attach the key event listener to the document
-            document.onkeydown = checkKey;
+            // Listen without replacing any other keydown handler (SPEC.md D44)
+            document.addEventListener('keydown', checkKey);
 
             function checkKey(e) {
                 // Normalize event object for cross-browser compatibility
@@ -47,6 +48,14 @@ export default function ButtonScript() {
                 if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey) {
                     return;
                 }
+
+                // Do nothing while the visitor has turned the shortcuts off
+                // (SPEC.md D44); a storage that cannot be read counts as on
+                try {
+                    if (window.localStorage.getItem(${JSON.stringify(SHORTCUTS_KEY)}) === ${JSON.stringify(SHORTCUTS_OFF)}) {
+                        return;
+                    }
+                } catch (err) {}
 
                 // Ignore keys meant for a focused control (SPEC.md D29): text typed
                 // into a form field, and type-ahead inside an open menu

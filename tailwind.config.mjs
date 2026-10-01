@@ -100,16 +100,23 @@ const config = {
       typography: ({ theme }) => ({
         DEFAULT: {
           css: {
+            // primary-600 reaches 4.5:1 on butter-400; primary-500 does not
+            // (SPEC.md, Bugfix: Design Review, #3).
             a: {
-              color: theme('colors.primary.500'),
+              color: theme('colors.primary.600'),
               '&:hover': {
-                color: `${theme('colors.primary.600')}`,
+                color: `${theme('colors.primary.700')}`,
               },
               code: { color: theme('colors.primary.400') },
             },
             img: {
               marginLeft: 'auto',
               marginRight: 'auto',
+            },
+            // Copy stops at about 72 characters a line; photos and video keep
+            // the full column (SPEC.md, Bugfix: Design Review, #4).
+            'p, ul, ol, blockquote': {
+              maxWidth: '38rem',
             },
             'h1,h2': {
               fontWeight: '700',
@@ -126,9 +133,9 @@ const config = {
         invert: {
           css: {
             a: {
-              color: theme('colors.primary.500'),
+              color: theme('colors.primary.400'),
               '&:hover': {
-                color: `${theme('colors.primary.400')}`,
+                color: `${theme('colors.primary.300')}`,
               },
               code: { color: theme('colors.primary.400') },
             },

@@ -46,7 +46,8 @@ import PhotoGrid from './PhotoGrid'
 type Params = { params: Promise<{ slug: string }> }
 
 /** Colour of every link on the page, as on the rest of the site. */
-const LINK = 'text-primary-500 hover:text-primary-600 dark:hover:text-primary-400'
+const LINK =
+  'text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300'
 
 /** Only the registry's galleries exist; any other slug is a 404 (`SPEC.md` I3). */
 export const dynamicParams = false

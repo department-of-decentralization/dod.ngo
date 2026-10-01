@@ -94,7 +94,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           {author.bsky && (
                             <Link
                               href={bskyHref(author.bsky)}
-                              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                              className="flex items-center gap-1 text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                             >
                               <BlueSky className="h-4 w-4 fill-current" aria-hidden="true" />
                               {bskyLabel(author.bsky)}
@@ -106,7 +106,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           {author.twitter && (
                             <Link
                               href={author.twitter}
-                              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                              className="flex items-center gap-1 text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                             >
                               <Twitter className="h-4 w-4 fill-current" aria-hidden="true" />
                               {author.twitter
@@ -156,7 +156,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                         <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
                           Previous Article
                         </h2>
-                        <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                        <div className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
                           <Link href={`/${prev.path}`}>{prev.title}</Link>
                         </div>
                       </div>
@@ -166,7 +166,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                         <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
                           Next Article
                         </h2>
-                        <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                        <div className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">
                           <Link href={`/${next.path}`}>{next.title}</Link>
                         </div>
                       </div>
@@ -177,7 +177,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               <div className="pt-4 xl:pt-8">
                 <Link
                   href={`/${basePath}`}
-                  className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                  className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                   aria-label="Back to the blog"
                 >
                   &larr; Back to the blog

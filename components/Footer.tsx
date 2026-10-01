@@ -31,7 +31,7 @@ export default function Footer() {
           </Link>
         </div> */}
         <div>
-          <div className="flex flex-col text-sm text-gray-500 md:flex-row md:space-x-4 dark:text-gray-400">
+          <div className="flex flex-row flex-wrap justify-center gap-x-3 text-sm text-gray-600 md:gap-x-4 dark:text-gray-400">
             {footerNavLinks.map((link, index) => (
               <>
                 {index > 0 && <div>{` • `}</div>}

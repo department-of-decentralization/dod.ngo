@@ -1,9 +1,8 @@
 import siteMetadata from '@/data/siteMetadata'
-import headerNavLinks from '@/data/headerNavLinks'
 import Logo from '@/data/wolpy.png'
 import Link from '../Link'
 import MobileNav from './MobileNav'
-import ThemeSwitch from '../ThemeSwitch'
+import NavLinks from './NavLinks'
 import SearchButton from '../SearchButton'
 import Image from 'next/image'
 import SocialIcons from '../SocialIcons'
@@ -30,58 +29,8 @@ const Menu = () => {
           )}
         </div>
       </Link>
-      {/* Navigation Links */}
-      <div className="mx-1 mt-8 hidden flex-1 flex-col md:flex">
-        {headerNavLinks
-          .filter((link) => link.href !== '/')
-          .map((link) => (
-            <Link
-              key={link.title}
-              href={link.href}
-              className="group block text-2xl leading-10 font-medium text-gray-900 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
-            >
-              {(() => {
-                // This component renders navigation links with hotkeys
-                // Format: "About" with hotkey 'b' becomes "A[b]ut"
-                // If no hotkey specified or not found, defaults to first letter [A]bout
-
-                const hotkeyChar = link.hotkey
-                const title = link.title
-                let beforeChar = '' // Text before the bracketed char
-                let char = '' // Character to be bracketed
-                let afterChar = '' // Text after the bracketed char
-
-                // If hotkey exists and is found in title (case insensitive)
-                if (hotkeyChar && title.toLowerCase().includes(hotkeyChar.toLowerCase())) {
-                  const index = title.toLowerCase().indexOf(hotkeyChar.toLowerCase())
-                  beforeChar = title.slice(0, index) // Get text before hotkey
-                  char = title.charAt(index) // Get actual character at hotkey position
-                  afterChar = title.slice(index + 1) // Get remaining text
-                } else {
-                  // Fallback: use first character
-                  char = title.charAt(0)
-                  afterChar = title.slice(1)
-                }
-
-                return (
-                  <>
-                    {beforeChar}
-                    <span className="relative mx-1">
-                      <span className="text-primary-500 dark:text-primary-400">[</span>
-                      <span className="">{char}</span>
-                      <span className="text-primary-500 dark:text-primary-400">]</span>
-                    </span>
-                    {afterChar}
-                  </>
-                )
-              })()}
-            </Link>
-          ))}
-        <div className="mt-4">
-          <ThemeSwitch />
-        </div>
-        {/* <SearchButton /> */}
-      </div>
+      {/* Navigation Links, the theme switch and the shortcuts toggle */}
+      <NavLinks />
 
       <MobileNav />
 

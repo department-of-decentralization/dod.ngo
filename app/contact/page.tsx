@@ -12,7 +12,7 @@ export default function Contact() {
         <h2>Away from Keyboard</h2>
         <p>
           Our public, in-person <span className="font-medium">Stammtisch</span> happens every 2nd
-          Wednesday at the{' '}
+          Wednesday of the month at the{' '}
           <a href="https://c-base.org/" target="_blank" rel="noreferrer">
             c-base
           </a>{' '}
@@ -24,13 +24,24 @@ export default function Contact() {
           <p>
             Next Stammtisch: <NextStammtisch /> at 19:00 Berlin time.
             <br />
-            Please check the <span className="font-medium">c-base calendar</span> or our [Matrix]
-            space if the meetup is happening!
+            Please check the{' '}
+            <a href="https://c-base.org/calendar/" target="_blank" rel="noreferrer">
+              c-base calendar
+            </a>{' '}
+            or our{' '}
+            <a
+              href="https://matrix.to/#/%23stammtisch:dod.ngo"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              [Matrix] space
+            </a>{' '}
+            if the meetup is happening!
           </p>
         </div>
         <h2>On the Internet</h2>
         <p>
-          We are chatting on [Matrix]:
+          We are chatting on [Matrix]:{' '}
           <a
             href="https://matrix.to/#/%23stammtisch:dod.ngo"
             target="_blank"
@@ -56,7 +67,7 @@ export default function Contact() {
           </a>
         </p>
         <p>
-          Follow us on Bluesky:
+          Follow us on Bluesky:{' '}
           <a href="https://bsky.app/profile/dod.ngo" target="_blank" rel="noopener noreferrer">
             @dod.ngo
           </a>
@@ -78,7 +89,7 @@ export default function Contact() {
           </a>
         </p>
         <p>
-          Follow us on Twitter:
+          Follow us on Twitter:{' '}
           <a href="https://twitter.com/dod_berlin" target="_blank" rel="noopener noreferrer">
             @dod_berlin
           </a>
@@ -92,7 +103,7 @@ export default function Contact() {
           </a>
         </p>
         <p>
-          All event recordings are available on Youtube:
+          All event recordings are available on Youtube:{' '}
           <a
             href="https://www.youtube.com/@departmentofdecentralization/playlists"
             target="_blank"

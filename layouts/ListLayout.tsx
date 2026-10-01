@@ -7,6 +7,7 @@ import { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
+import PageTitle from '@/components/PageTitle'
 import siteMetadata from '@/data/siteMetadata'
 import Image from 'next/image'
 import tagData from 'app/tag-data.json'
@@ -84,11 +85,9 @@ export default function ListLayout({
 
   return (
     <>
-      <div className="mx-4 divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-          <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
-            {title}
-          </h1>
+          <PageTitle>{title}</PageTitle>
           <div className="relative max-w-lg">
             <label>
               <span className="sr-only">Search articles</span>
