@@ -28,8 +28,8 @@ const skippedStammtisch = {
     },
     {
       year: 2026,
-      month: 8, // august
-      reason: 'summer break',
+      month: 9, // september
+      reason: 'complex',
     },
   ],
 }
