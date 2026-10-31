@@ -263,7 +263,7 @@ describe('the shipped registry', () => {
     }
   })
 
-  it('keeps the six verified and three opaque services as measured', () => {
+  it('keeps the six verified and three opaque services of SPEC.md D11 and D50', () => {
     const byTier = (tier: string) => services.filter((s) => s.tier === tier).map((s) => s.name)
     expect(byTier('verified')).toEqual([
       'Synapse',
@@ -407,9 +407,10 @@ describe('a 5xx at tix or talx reads Down [regression 2026-10-31]', () => {
   // talx.dod.ngo answered 502. Pretix, probed in no-cors mode, read Reachable,
   // because an opaque response resolves the same on 200 and on 502 (#97).
   // Pretalx read No answer, because nginx's own error page carried no CORS
-  // header and the cors-mode fetch rejected. The edge now sends the header on
-  // every answer of both probe paths, its own errors included (SPEC.md D50),
-  // so both probes run in cors mode and read the status code.
+  // header and the cors-mode fetch rejected. SPEC.md D50 has the edge send the
+  // header on every answer of both probe paths, its own errors included, so
+  // both probes run in cors mode and read the status code. This block pins the
+  // Pretix half; the Pretalx half lives in the edge, measured by acceptance S4.
 
   /** The registry's own entry, so the test follows the shipped tier. */
   const entry = (name: string): Service => {

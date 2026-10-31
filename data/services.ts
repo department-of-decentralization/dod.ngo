@@ -66,10 +66,12 @@ export type Service = {
  * The single registry of DoD-operated services (`SPEC.md` D14).
  *
  * Every probe endpoint and tier below was measured directly: the seven original
- * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. A tier is a
- * property of the service's CORS policy, not a preference: do not promote a
- * service to `verified` without confirming it sends an
- * `Access-Control-Allow-Origin` that covers `https://dod.ngo`.
+ * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. Pretix's
+ * tier is the exception: `SPEC.md` D50 sets it, and acceptance S4's maintenance
+ * step measures the header it relies on. A tier is a property of the service's
+ * CORS policy, not a preference: do not promote a service to `verified` without
+ * confirming it sends an `Access-Control-Allow-Origin` that covers
+ * `https://dod.ngo`.
  *
  * Several entries are easy to get wrong, so each carries its reason inline.
  */
@@ -120,9 +122,9 @@ const services: Service[] = [
     host: 'tix.dod.ngo',
     repo: 'pretix/pretix',
     img: '/static/images/services/pretix.png',
-    // pretix sends no CORS headers. The nginx in front of it adds
-    // Access-Control-Allow-Origin on this path, to its own 502 too, which is
-    // what makes Pretix verified (SPEC.md D50).
+    // pretix sends no CORS headers. Verified only because SPEC.md D50 has the
+    // nginx in front of it add Access-Control-Allow-Origin on this path, to its
+    // own 502 too. Without that header every probe rejects and reads No answer.
     probeUrl: 'https://tix.dod.ngo/healthcheck/',
     tier: 'verified',
     access: 'Invite only',
@@ -135,8 +137,8 @@ const services: Service[] = [
     repo: 'pretalx/pretalx',
     img: '/static/images/services/pretalx.png',
     // /healthcheck/ exists but sends no CORS headers. This path does: pretalx
-    // sends the header, and the nginx in front of it adds one to its own errors
-    // (SPEC.md D50).
+    // sends the header itself, and SPEC.md D50 has the nginx in front of it add
+    // one to its own errors.
     probeUrl: 'https://talx.dod.ngo/api/events/',
     tier: 'verified',
     access: 'Invite only',
