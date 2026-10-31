@@ -10180,7 +10180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.5.30, postcss@npm:^8.5.31":
+"postcss@npm:^8.5.30":
   version: 8.5.31
   resolution: "postcss@npm:8.5.31"
   dependencies:
@@ -10188,6 +10188,17 @@ __metadata:
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.2"
   checksum: 10/d2a3415681570c4687cbb34d7a9cdb570619da73b764229260f7c7337d2359cffa1045f4081a4599bd0b9320bd23b05f9915057f7b13ad9534b0121c2e9de564
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.5.32":
+  version: 8.5.32
+  resolution: "postcss@npm:8.5.32"
+  dependencies:
+    nanoid: "npm:^3.3.20"
+    picocolors: "npm:^1.1.1"
+    source-map-js: "npm:^1.2.2"
+  checksum: 10/c86fd279d9f29d34bbec6482e01f54effe00eaf8f4dadbe17f8345d11eac68439da45d642b04bfb5d704886f665d2c31f9a0904f2a3f1b9f8098ee0894f76cea
   languageName: node
   linkType: hard
 
@@ -12011,7 +12022,7 @@ __metadata:
     next-contentlayer2: "npm:0.5.8"
     next-themes: "npm:^0.4.6"
     pliny: "npm:0.4.1"
-    postcss: "npm:^8.5.31"
+    postcss: "npm:^8.5.32"
     prettier: "npm:^3.9.10"
     prettier-plugin-tailwindcss: "npm:^0.8.1"
     react: "npm:19.3.1"
@@ -12029,7 +12040,7 @@ __metadata:
     remark-math: "npm:^6.0.0"
     tailwindcss: "npm:^4.3.3"
     typescript: "npm:^6.0.3"
-    unist-util-visit: "npm:^5.0.0"
+    unist-util-visit: "npm:^5.2.0"
     vite: "npm:^8.3.5"
     vitest: "npm:^5.0.5"
     yet-another-react-lightbox: "npm:3.32.2"
@@ -12476,6 +12487,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unist-util-visit-parents@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "unist-util-visit-parents@npm:6.1.0"
+  dependencies:
+    "@types/unist": "npm:^3.0.0"
+    unist-util-is: "npm:^6.0.0"
+  checksum: 10/aaf70d04be02e8eb78050ffc3a2e3acc29c67a05ef8a59f009ed6c4d2e4aa5321dd83e242ef1b9b830dab6e4442c969ee91cd6972f25f2140d8824de25906fdc
+  languageName: node
+  linkType: hard
+
 "unist-util-visit@npm:^5.0.0, unist-util-visit@npm:^5.1.0":
   version: 5.1.0
   resolution: "unist-util-visit@npm:5.1.0"
@@ -12484,6 +12505,17 @@ __metadata:
     unist-util-is: "npm:^6.0.0"
     unist-util-visit-parents: "npm:^6.0.0"
   checksum: 10/340fc1929062d21156200284105caad79cc188bd98f285b60aba887492a70e6e6cadbc7e383a68909c7e0fdd83f855cb9f4184ad8e5aa153eb2d810445aea8e5
+  languageName: node
+  linkType: hard
+
+"unist-util-visit@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "unist-util-visit@npm:5.2.0"
+  dependencies:
+    "@types/unist": "npm:^3.0.0"
+    unist-util-is: "npm:^6.0.0"
+    unist-util-visit-parents: "npm:^6.1.0"
+  checksum: 10/33cd45cab326c497c5bef838f901d398bdf7c151e380b82e4ec74b3b2c0a1c5e6f5c95b26f3d9057d64920ca9d317a642b1eebc023194390ace4c04ca200352f
   languageName: node
   linkType: hard
 
