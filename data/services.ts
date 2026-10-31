@@ -120,8 +120,11 @@ const services: Service[] = [
     host: 'tix.dod.ngo',
     repo: 'pretix/pretix',
     img: '/static/images/services/pretix.png',
+    // pretix sends no CORS headers. The nginx in front of it adds
+    // Access-Control-Allow-Origin on this path, to its own 502 too, which is
+    // what makes Pretix verified (SPEC.md D50).
     probeUrl: 'https://tix.dod.ngo/healthcheck/',
-    tier: 'opaque',
+    tier: 'verified',
     access: 'Invite only',
   },
   {
@@ -131,8 +134,9 @@ const services: Service[] = [
     host: 'talx.dod.ngo',
     repo: 'pretalx/pretalx',
     img: '/static/images/services/pretalx.png',
-    // /healthcheck/ exists but sends no CORS headers. This path does, which is
-    // the only reason Pretalx is verified and Pretix is not.
+    // /healthcheck/ exists but sends no CORS headers. This path does: pretalx
+    // sends the header, and the nginx in front of it adds one to its own errors
+    // (SPEC.md D50).
     probeUrl: 'https://talx.dod.ngo/api/events/',
     tier: 'verified',
     access: 'Invite only',

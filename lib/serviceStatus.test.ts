@@ -263,16 +263,17 @@ describe('the shipped registry', () => {
     }
   })
 
-  it('keeps the five verified and four opaque services as measured', () => {
+  it('keeps the six verified and three opaque services as measured', () => {
     const byTier = (tier: string) => services.filter((s) => s.tier === tier).map((s) => s.name)
     expect(byTier('verified')).toEqual([
       'Synapse',
+      'Pretix',
       'Pretalx',
       'Potato Mesh',
       'MeshINT',
       'DWeb Camp Mesh',
     ])
-    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element', 'Pretix', 'Freescout'])
+    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element', 'Freescout'])
   })
 
   it('marks Cryptpad opaque despite it sending a CORS header', () => {
@@ -398,6 +399,49 @@ describe('a probe that got no answer claims nothing [regression 2026-09-26]', ()
     const result = await probeService(fixture(), stubOk(503).fetch)
     expect(result.status).toBe('down')
     expect(result.httpStatus).toBe(503)
+  })
+})
+
+describe('a 5xx at tix or talx reads Down [regression 2026-10-31]', () => {
+  // Shipped defect: with pretix and pretalx down behind nginx, tix.dod.ngo and
+  // talx.dod.ngo answered 502. Pretix, probed in no-cors mode, read Reachable,
+  // because an opaque response resolves the same on 200 and on 502 (#97).
+  // Pretalx read No answer, because nginx's own error page carried no CORS
+  // header and the cors-mode fetch rejected. The edge now sends the header on
+  // every answer of both probe paths, its own errors included (SPEC.md D50),
+  // so both probes run in cors mode and read the status code.
+
+  /** The registry's own entry, so the test follows the shipped tier. */
+  const entry = (name: string): Service => {
+    const service = services.find((s) => s.name === name)
+    if (!service) throw new Error(`${name} is missing from the registry`)
+    return service
+  }
+  const probed = [entry('Pretix'), entry('Pretalx')]
+
+  it('probes both in cors mode, so the status code is readable', async () => {
+    for (const service of probed) {
+      const stub = stubOk(200)
+      await probeService(service, stub.fetch)
+      expect(stub.calls[0].mode).toBeUndefined()
+    }
+  })
+
+  it('reports Down with the status code on a 502, 503 or 504', async () => {
+    for (const service of probed) {
+      for (const code of [502, 503, 504]) {
+        const result = await probeService(service, stubOk(code).fetch, 8000, fakeClock(140))
+        expect(result.status).toBe('down')
+        expect(describeEvidence(result)).toBe(`HTTP ${code} · 140 ms`)
+      }
+    }
+  })
+
+  it('reports a healthy answer as Operational', async () => {
+    for (const service of probed) {
+      const result = await probeService(service, stubOk(200).fetch)
+      expect(result.status).toBe('operational')
+    }
   })
 })
 
