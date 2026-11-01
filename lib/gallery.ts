@@ -322,14 +322,25 @@ export function cardMeta(gallery: Gallery, eventList: readonly DodEvent[]): stri
  * Classes of the lightbox elements that show nothing but backdrop
  * (`SPEC.md` D26): the container, whose padding keeps the photo clear of the
  * caption and the key legend; the carousel, which shows between two slides;
- * and the toolbar, whose padding rings the close button. The lightbox library
- * closes on a click on the slide itself only.
+ * the toolbar, whose padding rings the close button; and the slide, whose
+ * padding frames the photo, with the zoom plugin's wrapper around the photo
+ * inside it. The site decides every close on them ({@link followPress}). The
+ * library's own backdrop close stays off: it closed on any release on the
+ * slide that started no swipe, a long vertical drag included.
  */
 export const LIGHTBOX_BACKDROP_CLASSES = [
   'yarl__container',
   'yarl__carousel',
   'yarl__toolbar',
+  'yarl__slide',
+  'yarl__slide_wrapper',
 ] as const
+
+/**
+ * Class the zoom plugin adds to the slide wrapper while the photo is zoomed.
+ * The wrapper is then the plugin's surface for panning, not backdrop.
+ */
+const ZOOMED_WRAPPER_CLASS = 'yarl__slide_wrapper_interactive'
 
 /**
  * Pointer travel, in pixels, past which a press on the lightbox is a drag
@@ -341,9 +352,11 @@ const CLICK_TRAVEL = 30
  * Whether a click landed on the lightbox backdrop (`SPEC.md` D26).
  *
  * @param classList - Classes of the element the press and release landed on.
- * @returns `true` for the lightbox's container, carousel or toolbar.
+ * @returns `true` for the lightbox's container, carousel, toolbar, slide or
+ *   slide wrapper, unless the wrapper's photo is zoomed.
  */
 export function isLightboxBackdrop(classList: { contains(token: string): boolean }): boolean {
+  if (classList.contains(ZOOMED_WRAPPER_CLASS)) return false
   return LIGHTBOX_BACKDROP_CLASSES.some((name) => classList.contains(name))
 }
 
@@ -358,6 +371,78 @@ export function isLightboxBackdrop(classList: { contains(token: string): boolean
  */
 export function isDrag(dx: number, dy: number): boolean {
   return Math.max(Math.abs(dx), Math.abs(dy)) > CLICK_TRAVEL
+}
+
+/** A press on the open lightbox, followed from its pointerdown to its release. */
+export type LightboxPress = {
+  /** The pointer that pressed. */
+  pointerId: number
+  /** The element it pressed; a click releases on the same one. */
+  target: unknown
+  /** Viewport x of the press, in pixels. */
+  x: number
+  /** Viewport y of the press, in pixels. */
+  y: number
+  /** Whether it has become a drag: travel past 30 pixels, or a second pointer. */
+  drag: boolean
+}
+
+/** The fields of a DOM `PointerEvent` that {@link followPress} reads. */
+export type LightboxPointer = {
+  /** The event type, such as `pointerdown`. */
+  type: string
+  /** The pointer the event belongs to. */
+  pointerId: number
+  /** The element the event targets. */
+  target: unknown
+  /** Viewport x, in pixels. */
+  clientX: number
+  /** Viewport y, in pixels. */
+  clientY: number
+}
+
+/**
+ * Follow a press on the lightbox through one pointer event, by the click rule
+ * of `SPEC.md` D26: a press and a release by one pointer on the same element,
+ * with no travel past 30 pixels and no second pointer in between. Travel
+ * counts at every move and at the release, so a release far from its press is
+ * a drag even when no move was seen.
+ *
+ * @param press - The press so far, or `null` when none is followed.
+ * @param event - A `pointerdown`, `pointermove` or `pointerup`; a
+ *   `pointercancel` or any `pointerleave` ends the press. Passing on only the
+ *   lightbox container's own `pointerleave` is the caller's job
+ *   (`BackdropClose` in `app/gallery/[slug]/PhotoGrid.tsx`). Any other type
+ *   changes nothing.
+ * @returns The press after the event, and whether the event released a click.
+ */
+export function followPress(
+  press: LightboxPress | null,
+  event: LightboxPointer
+): { press: LightboxPress | null; click: boolean } {
+  const { type, pointerId, target, clientX: x, clientY: y } = event
+  switch (type) {
+    case 'pointerdown':
+      // A second pointer turns the press into a pinch.
+      if (press) return { press: { ...press, drag: true }, click: false }
+      return { press: { pointerId, target, x, y, drag: false }, click: false }
+    case 'pointermove':
+      if (press?.pointerId !== pointerId || press.drag || !isDrag(x - press.x, y - press.y)) {
+        return { press, click: false }
+      }
+      return { press: { ...press, drag: true }, click: false }
+    case 'pointerup':
+      if (press?.pointerId !== pointerId) return { press, click: false }
+      return {
+        press: null,
+        click: !press.drag && target === press.target && !isDrag(x - press.x, y - press.y),
+      }
+    case 'pointercancel':
+    case 'pointerleave':
+      return { press: null, click: false }
+    default:
+      return { press, click: false }
+  }
 }
 
 /**
