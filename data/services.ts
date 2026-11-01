@@ -66,11 +66,11 @@ export type Service = {
  * The single registry of DoD-operated services (`SPEC.md` D14).
  *
  * Every probe endpoint and tier below was measured directly: the seven original
- * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. Pretix's
- * and Freescout's tiers are the exception: `SPEC.md` D50 and D52 set them, and
- * acceptance S4's maintenance step measures the header each relies on. A tier
- * is a property of the service's CORS policy, not a preference: do not promote
- * a service to `verified` without confirming it sends an
+ * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. Pretix's,
+ * Freescout's and Cryptpad's tiers are the exception: `SPEC.md` D50 and D52 set
+ * them, and acceptance S4's maintenance step measures the header each relies
+ * on. A tier is a property of the service's CORS policy, not a preference: do
+ * not promote a service to `verified` without confirming it sends an
  * `Access-Control-Allow-Origin` that covers `https://dod.ngo`.
  *
  * Several entries are easy to get wrong, so each carries its reason inline.
@@ -83,10 +83,14 @@ const services: Service[] = [
     host: 'office.dod.ngo',
     repo: 'cryptpad/cryptpad',
     img: '/static/images/services/cryptpad.png',
-    // Sends Access-Control-Allow-Origin, but pinned to https://sicher.dod.ngo
-    // (CryptPad's sandbox origin), so it is opaque to dod.ngo specifically.
+    // CryptPad pins Access-Control-Allow-Origin to https://sicher.dod.ngo, its
+    // sandbox origin, which dod.ngo cannot read. Verified only because SPEC.md
+    // D52 has the nginx in front of it answer dod.ngo's Origin with
+    // https://dod.ngo on exactly this path, to its own 502 too. Any other path,
+    // a query string, or a page on another origin (a deploy preview, yarn dev)
+    // gets CryptPad's own header and reads No answer.
     probeUrl: 'https://office.dod.ngo/api/config',
-    tier: 'opaque',
+    tier: 'verified',
     access: 'Public',
   },
   {
