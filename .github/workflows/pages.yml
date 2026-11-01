@@ -36,6 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - run: yarn
+      - run: yarn test
       - run: yarn build
         env:
           EXPORT: 1
