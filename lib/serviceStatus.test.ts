@@ -263,9 +263,10 @@ describe('the shipped registry', () => {
     }
   })
 
-  it('keeps the seven verified and two opaque services of SPEC.md D11, D50 and D52', () => {
+  it('keeps the eight verified and one opaque services of SPEC.md D11, D50 and D52', () => {
     const byTier = (tier: string) => services.filter((s) => s.tier === tier).map((s) => s.name)
     expect(byTier('verified')).toEqual([
+      'Cryptpad',
       'Synapse',
       'Pretix',
       'Pretalx',
@@ -274,14 +275,17 @@ describe('the shipped registry', () => {
       'MeshINT',
       'DWeb Camp Mesh',
     ])
-    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element'])
+    expect(byTier('opaque')).toEqual(['Element'])
   })
 
-  it('marks Cryptpad opaque despite it sending a CORS header', () => {
-    // office.dod.ngo pins Access-Control-Allow-Origin to https://sicher.dod.ngo,
-    // so the header being present does not make it readable from dod.ngo.
+  it("marks Cryptpad verified on its edge's answer, not on CryptPad's own header", () => {
+    // office.dod.ngo's CryptPad pins Access-Control-Allow-Origin to
+    // https://sicher.dod.ngo, which dod.ngo cannot read. The tier rests on the
+    // nginx in front of it, which answers dod.ngo's Origin with
+    // https://dod.ngo on exactly this probe path (SPEC.md D52).
     const cryptpad = services.find((s) => s.name === 'Cryptpad')
-    expect(cryptpad?.tier).toBe('opaque')
+    expect(cryptpad?.tier).toBe('verified')
+    expect(cryptpad?.probeUrl).toBe('https://office.dod.ngo/api/config')
   })
 })
 
@@ -478,6 +482,50 @@ describe('a 5xx at post.dod.ngo reads Down [regression 2026-11-01]', () => {
 
   it('reports a healthy answer as Operational', async () => {
     const result = await probeService(freescout(), stubOk(200).fetch)
+    expect(result.status).toBe('operational')
+  })
+})
+
+describe('a 5xx at office.dod.ngo reads Down [regression 2026-11-01]', () => {
+  // Shipped defect (SPEC.md K24): Cryptpad was probed in no-cors mode, so a
+  // 502 from the nginx in front of CryptPad read Reachable, because an opaque
+  // response resolves the same on 200 and on 502. CryptPad's own
+  // Access-Control-Allow-Origin admits only its sandbox, https://sicher.dod.ngo.
+  // SPEC.md D52 makes it verified and has that nginx answer dod.ngo's Origin
+  // with https://dod.ngo on this exact path, its own errors included, so the
+  // probe runs in cors mode and reads the status code. Acceptance S4 measures
+  // the edge.
+
+  /** The registry's own entry, so the test follows the shipped tier. */
+  const cryptpad = (): Service => {
+    const service = services.find((s) => s.name === 'Cryptpad')
+    if (!service) throw new Error('Cryptpad is missing from the registry')
+    return service
+  }
+
+  it('probes Cryptpad in cors mode, at exactly the path its edge names', async () => {
+    // The edge's map matches "$host$request_uri" exactly: a query string or
+    // another path gets CryptPad's own header and reads No answer.
+    const urls: string[] = []
+    const stub = stubOk(200)
+    await probeService(cryptpad(), (url, init) => {
+      urls.push(url)
+      return stub.fetch(url, init)
+    })
+    expect(urls).toEqual(['https://office.dod.ngo/api/config'])
+    expect(stub.calls[0].mode).toBeUndefined()
+  })
+
+  it('reports Down with the status code on a 502, 503 or 504', async () => {
+    for (const code of [502, 503, 504]) {
+      const result = await probeService(cryptpad(), stubOk(code).fetch, 8000, fakeClock(140))
+      expect(result.status).toBe('down')
+      expect(describeEvidence(result)).toBe(`HTTP ${code} · 140 ms`)
+    }
+  })
+
+  it('reports a healthy answer as Operational', async () => {
+    const result = await probeService(cryptpad(), stubOk(200).fetch)
     expect(result.status).toBe('operational')
   })
 })
