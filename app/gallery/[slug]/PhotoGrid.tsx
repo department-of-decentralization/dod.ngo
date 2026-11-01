@@ -26,21 +26,14 @@
 
 import Image from 'next/image'
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
-import Lightbox, {
-  EVENT_ON_POINTER_CANCEL,
-  EVENT_ON_POINTER_DOWN,
-  EVENT_ON_POINTER_LEAVE,
-  EVENT_ON_POINTER_MOVE,
-  EVENT_ON_POINTER_UP,
-  cleanup,
-  useController,
-} from 'yet-another-react-lightbox'
+import Lightbox, { useController } from 'yet-another-react-lightbox'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 import {
+  type LightboxPress,
   aspectRatio,
+  followPress,
   hashForPhoto,
-  isDrag,
   isLightboxBackdrop,
   openPhotoLabel,
   originalUrl,
@@ -51,9 +44,6 @@ import {
 
 /** One photo, as the grid and the lightbox need it. */
 type Photo = { name: string; width: number; height: number }
-
-/** A press on the open lightbox, followed until its release. */
-type Press = { pointerId: number; target: EventTarget; x: number; y: number; drag: boolean }
 
 /** Props of {@link PhotoGrid}. */
 type Props = {
@@ -96,52 +86,57 @@ function Key({ children }: { children: ReactNode }) {
 }
 
 /**
- * Closes the lightbox on a click on its backdrop (`SPEC.md` D26).
+ * Closes the lightbox on a click on its backdrop, and never on a drag
+ * (`SPEC.md` D26).
  *
- * The library closes on a click on the slide only. The design frames the
- * photo with padding that keeps it clear of the caption and the key legend,
- * and a click there lands on the lightbox's container, or on its carousel
- * between two slides. This closes on those as well: a press and a release by
- * one pointer on the same backdrop element, with no drag and no second pointer
- * in between.
+ * The backdrop is every lightbox element that shows only the dark
+ * background: the container, whose padding keeps the photo clear of the
+ * caption and the key legend; the carousel between two slides; the toolbar
+ * around the close button; and the slide and the zoom plugin's wrapper around
+ * the photo (`LIGHTBOX_BACKDROP_CLASSES` in `lib/gallery.ts`). A click is a
+ * press and a release by one pointer on the same element, with no travel past
+ * 30 pixels and no second pointer in between ({@link followPress}). The
+ * library's own backdrop close stays off: it closed on any release on the
+ * slide that started no swipe, a long vertical drag included.
  *
- * It listens through the library's own pointer sensors on the lightbox
- * element, and adds no document or window listener.
+ * It listens on the lightbox's container element, and adds no document or
+ * window listener.
  *
  * @returns Nothing visible.
  */
 function BackdropClose() {
-  const { subscribeSensors, close } = useController()
+  const { containerRef, close } = useController()
 
   useEffect(() => {
-    let press: Press | null = null
-    const forget = () => {
-      press = null
+    const container = containerRef.current
+    if (!container) return
+    let press: LightboxPress | null = null
+    const follow = (event: PointerEvent) => {
+      // A capture listener also hears the pointerleave of every element inside
+      // the container; only the container's own ends the press.
+      if (event.type === 'pointerleave' && event.target !== container) return
+      const { press: after, click } = followPress(press, event)
+      press = after
+      const { target } = event
+      if (click && target instanceof HTMLElement && isLightboxBackdrop(target.classList)) close()
     }
-    return cleanup(
-      subscribeSensors(EVENT_ON_POINTER_DOWN, (event) => {
-        // A second pointer turns the press into a pinch.
-        if (press) press.drag = true
-        else {
-          const { pointerId, target, clientX: x, clientY: y } = event
-          press = { pointerId, target, x, y, drag: false }
-        }
-      }),
-      subscribeSensors(EVENT_ON_POINTER_MOVE, (event) => {
-        if (press?.pointerId !== event.pointerId) return
-        if (isDrag(event.clientX - press.x, event.clientY - press.y)) press.drag = true
-      }),
-      subscribeSensors(EVENT_ON_POINTER_UP, (event) => {
-        if (press?.pointerId !== event.pointerId) return
-        const { target } = event
-        const click = !press.drag && target === press.target
-        press = null
-        if (click && target instanceof HTMLElement && isLightboxBackdrop(target.classList)) close()
-      }),
-      subscribeSensors(EVENT_ON_POINTER_CANCEL, forget),
-      subscribeSensors(EVENT_ON_POINTER_LEAVE, forget)
-    )
-  }, [subscribeSensors, close])
+    // On the container, in the capture phase. React hands a pointer event to
+    // the library's sensors only after the capture phase, from its root
+    // listener, and there the zoom plugin, called first, stops every move and
+    // every press on the photo while the photo is zoomed. A capture listener
+    // here sees each event before the library's sensors do.
+    const types = [
+      'pointerdown',
+      'pointermove',
+      'pointerup',
+      'pointercancel',
+      'pointerleave',
+    ] as const
+    for (const type of types) container.addEventListener(type, follow, true)
+    return () => {
+      for (const type of types) container.removeEventListener(type, follow, true)
+    }
+  }, [containerRef, close])
 
   return null
 }
@@ -157,8 +152,9 @@ function BackdropClose() {
  *
  * The lightbox is `yet-another-react-lightbox`, configured as in protocol-v2.
  * It handles its keys on its own element and adds no document listener
- * (`SPEC.md` D19). A click anywhere on its backdrop closes it
- * ({@link BackdropClose}). The open photo is mirrored in the URL fragment
+ * (`SPEC.md` D19). A click anywhere on its backdrop closes it, and a drag
+ * never does: {@link BackdropClose} decides every backdrop close, and the
+ * library's own stays off. The open photo is mirrored in the URL fragment
  * (D27).
  */
 export default function PhotoGrid({ title, repo, dir, photos }: Props) {
@@ -243,7 +239,6 @@ export default function PhotoGrid({ title, repo, dir, photos }: Props) {
           spacing: '30%',
           imageFit: 'contain',
         }}
-        controller={{ closeOnBackdropClick: true }}
         zoom={{
           maxZoomPixelRatio: 1,
           zoomInMultiplier: 2,

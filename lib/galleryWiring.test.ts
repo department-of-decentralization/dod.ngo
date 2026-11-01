@@ -138,11 +138,26 @@ describe('gallery page wiring (SPEC.md D22, D26 to D28)', () => {
   })
 
   it('closes the lightbox on a click anywhere on its backdrop', () => {
-    // The library closes on the slide; BackdropClose covers the padding
-    // around it and the gap between slides (SPEC.md D26).
-    expect(grid).toContain('controller={{ closeOnBackdropClick: true }}')
+    // BackdropClose decides every backdrop close, the slide's included. The
+    // library's own close, which closed on a drag on the slide, stays off
+    // (SPEC.md D26, amended 2026-11-01).
+    expect(grid).not.toMatch(/closeOnBackdropClick\s*:/)
     expect(grid).toMatch(/controls: \(\) => \(\s*<>\s*<BackdropClose \/>/)
-    expect(grid).toContain('subscribeSensors(EVENT_ON_POINTER_UP,')
+    // It listens on the lightbox's own element in the capture phase, before
+    // any of the library's pointer sensors can stop an event, and on no
+    // document or window.
+    expect(grid).toContain('const { containerRef, close } = useController()')
+    expect(grid).toContain('const container = containerRef.current')
+    expect(grid).toContain('container.addEventListener(type, follow, true)')
+    expect(grid).toContain('container.removeEventListener(type, follow, true)')
+    // All five pointer events, the moves among them: without the moves, a
+    // drag that comes back to its start reads as a click.
+    expect(grid).toMatch(
+      /const types = \[\s*'pointerdown',\s*'pointermove',\s*'pointerup',\s*'pointercancel',\s*'pointerleave',?\s*\] as const/
+    )
+    expect(grid).not.toContain('subscribeSensors(')
+    expect(grid).not.toMatch(/(document|window)\.addEventListener\('pointer/)
+    expect(grid).toContain('followPress(press, event)')
     expect(grid).toMatch(/isLightboxBackdrop\(target\.classList\)\) close\(\)/)
     // The caption and the legend let clicks through to the backdrop.
     expect(grid.match(/className="pointer-events-none absolute /g)).toHaveLength(2)

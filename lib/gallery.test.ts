@@ -31,11 +31,14 @@ import {
   PHOTOGRAPHER_UNKNOWN,
   PREVIEW_LAYOUTS,
   type DodEvent,
+  type LightboxPointer,
+  type LightboxPress,
   type RandomFn,
   aspectRatio,
   cardMeta,
   findEvent,
   findGallery,
+  followPress,
   formatGalleryDate,
   hashForPhoto,
   isDrag,
@@ -515,20 +518,45 @@ describe('lightbox backdrop click (SPEC.md D26)', () => {
   const classes = (...names: string[]) => ({ contains: (name: string) => names.includes(name) })
 
   it('treats the container, the carousel and the toolbar as backdrop', () => {
-    expect(LIGHTBOX_BACKDROP_CLASSES).toEqual([
-      'yarl__container',
-      'yarl__carousel',
-      'yarl__toolbar',
-    ])
     expect(isLightboxBackdrop(classes('yarl__container', 'yarl__flex_center'))).toBe(true)
     expect(isLightboxBackdrop(classes('yarl__carousel', 'yarl__carousel_with_slides'))).toBe(true)
     // The ring of toolbar padding around the close button.
     expect(isLightboxBackdrop(classes('yarl__toolbar'))).toBe(true)
   })
 
-  it('leaves the photo, the slide and the controls to the library', () => {
+  it('treats the slide and its wrapper as backdrop too [regression 2026-11-01]', () => {
+    // The slide's padding, and the zoom plugin's wrapper around the photo
+    // inside it. The library's own close took these and closed on a drag
+    // there as well (SPEC.md D26, amended 2026-11-01).
+    expect(
+      isLightboxBackdrop(classes('yarl__slide', 'yarl__slide_current', 'yarl__flex_center'))
+    ).toBe(true)
+    expect(
+      isLightboxBackdrop(classes('yarl__fullsize', 'yarl__flex_center', 'yarl__slide_wrapper'))
+    ).toBe(true)
+    expect(LIGHTBOX_BACKDROP_CLASSES).toEqual([
+      'yarl__container',
+      'yarl__carousel',
+      'yarl__toolbar',
+      'yarl__slide',
+      'yarl__slide_wrapper',
+    ])
+  })
+
+  it("leaves out the photo, a zoomed photo's wrapper and the controls", () => {
     expect(isLightboxBackdrop(classes('yarl__slide_image'))).toBe(false)
-    expect(isLightboxBackdrop(classes('yarl__slide'))).toBe(false)
+    // While the photo is zoomed, its wrapper is the zoom plugin's: a press
+    // there pans the photo, and a double click zooms it out.
+    expect(
+      isLightboxBackdrop(
+        classes(
+          'yarl__fullsize',
+          'yarl__flex_center',
+          'yarl__slide_wrapper',
+          'yarl__slide_wrapper_interactive'
+        )
+      )
+    ).toBe(false)
     expect(isLightboxBackdrop(classes('yarl__button', 'yarl__navigation_next'))).toBe(false)
     expect(isLightboxBackdrop(classes('yarl__button'))).toBe(false)
     expect(isLightboxBackdrop(classes('yarl__icon'))).toBe(false)
@@ -542,6 +570,143 @@ describe('lightbox backdrop click (SPEC.md D26)', () => {
     expect(isDrag(-31, 0)).toBe(true)
     expect(isDrag(0, 31)).toBe(true)
     expect(isDrag(0, -31)).toBe(true)
+  })
+
+  describe('followPress', () => {
+    const slide = { name: 'slide' }
+    const photo = { name: 'photo' }
+
+    /**
+     * A pointer event, by pointer 1 on the slide unless given otherwise.
+     *
+     * @param type - The DOM event type.
+     * @param clientX - Viewport x.
+     * @param clientY - Viewport y.
+     * @param target - The element the event targets.
+     * @param pointerId - The pointer.
+     * @returns The fields {@link followPress} reads.
+     */
+    const pointer = (
+      type: string,
+      clientX: number,
+      clientY: number,
+      target: unknown = slide,
+      pointerId = 1
+    ): LightboxPointer => ({ type, pointerId, target, clientX, clientY })
+
+    /**
+     * Run events through {@link followPress}, starting with no press.
+     *
+     * @param events - The pointer events, in order.
+     * @returns Whether each event was the release of a click.
+     */
+    const clicks = (...events: LightboxPointer[]) => {
+      let press: LightboxPress | null = null
+      return events.map((event) => {
+        const step = followPress(press, event)
+        press = step.press
+        return step.click
+      })
+    }
+
+    it('counts a still press and release on one element as a click', () => {
+      expect(clicks(pointer('pointerdown', 80, 200), pointer('pointerup', 80, 200))).toEqual([
+        false,
+        true,
+      ])
+    })
+
+    it('counts up to 30 pixels of travel as a click', () => {
+      expect(
+        clicks(
+          pointer('pointerdown', 80, 200),
+          pointer('pointermove', 80, 225),
+          pointer('pointerup', 80, 230)
+        )
+      ).toEqual([false, false, true])
+    })
+
+    it('is no click after a vertical drag past 30 pixels [regression 2026-11-01]', () => {
+      // At 1280x900 a drag from (80, 102) to (80, 400) on the slide's padding
+      // closed the lightbox (SPEC.md D26, amended 2026-11-01).
+      expect(
+        clicks(
+          pointer('pointerdown', 80, 102),
+          pointer('pointermove', 80, 133),
+          pointer('pointermove', 80, 400),
+          pointer('pointerup', 80, 400)
+        )
+      ).toEqual([false, false, false, false])
+    })
+
+    it('is no click after a drag out and back', () => {
+      expect(
+        clicks(
+          pointer('pointerdown', 640, 72),
+          pointer('pointermove', 640, 400),
+          pointer('pointermove', 640, 80),
+          pointer('pointerup', 640, 72)
+        )
+      ).toEqual([false, false, false, false])
+    })
+
+    it('is no click when released more than 30 pixels away, with no move seen', () => {
+      expect(clicks(pointer('pointerdown', 640, 6), pointer('pointerup', 640, 58))).toEqual([
+        false,
+        false,
+      ])
+    })
+
+    it('is no click once a second pointer has pressed', () => {
+      // A pinch with one finger still on the backdrop and one on the photo.
+      expect(
+        clicks(
+          pointer('pointerdown', 100, 30),
+          pointer('pointerdown', 188, 406, photo, 2),
+          pointer('pointerup', 100, 30)
+        )
+      ).toEqual([false, false, false])
+    })
+
+    it('is no click when released on another element', () => {
+      expect(clicks(pointer('pointerdown', 80, 200), pointer('pointerup', 80, 200, photo))).toEqual(
+        [false, false]
+      )
+    })
+
+    it('ignores the moves and the release of another pointer', () => {
+      expect(
+        clicks(
+          pointer('pointerdown', 80, 200),
+          pointer('pointermove', 400, 200, slide, 2),
+          pointer('pointerup', 400, 200, slide, 2),
+          pointer('pointerup', 80, 200)
+        )
+      ).toEqual([false, false, false, true])
+    })
+
+    it('forgets the press on a cancel, or when the pointer leaves the lightbox', () => {
+      for (const end of ['pointercancel', 'pointerleave']) {
+        expect(
+          clicks(
+            pointer('pointerdown', 80, 200),
+            pointer(end, 80, 200),
+            pointer('pointerup', 80, 200)
+          )
+        ).toEqual([false, false, false])
+      }
+    })
+
+    it('ignores a release without a press, and other event types', () => {
+      expect(clicks(pointer('pointerup', 80, 200))).toEqual([false])
+      expect(
+        clicks(
+          pointer('pointerdown', 80, 200),
+          pointer('pointerover', 80, 200),
+          pointer('pointerup', 80, 200)
+        )
+      ).toEqual([false, false, true])
+    })
   })
 })
 
