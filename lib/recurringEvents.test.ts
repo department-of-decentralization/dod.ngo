@@ -72,7 +72,10 @@ describe('recurring events skip summer breaks (regression)', () => {
 describe('Stammtisch and Chaos Mesh week-of-month are not swapped (regression)', () => {
   // Both September 2026 occurrences are already past on this date, so the next
   // occurrence for both series is in October 2026 (Wednesdays 7, 14, 21, 28).
-  // Neither series skips October 2026.
+  // The calls pass no skip list, so they pin the slot alone (SPEC D2, D51): a
+  // month the community skips cannot fail them, as October 2026 did (#86,
+  // ACCEPTANCE A5, regression 2026-10-31). Which list each call site passes is
+  // pinned by recurringEventsWiring.test.ts.
   const afterSeptember = new Date('2026-09-23T12:00:00Z')
 
   it('DoD Stammtisch is the 2nd Wednesday: 2026-10-14, not the 3rd', () => {
@@ -81,7 +84,6 @@ describe('Stammtisch and Chaos Mesh week-of-month are not swapped (regression)',
       weekday: WEDNESDAY,
       weekOfMonth: STAMMTISCH_WEEK,
       startHourUtc: START_HOUR_UTC,
-      skipMonths: skippedStammtisch.skippedDates,
     })
     expect(next.toISOString()).toBe('2026-10-14T21:00:00.000Z')
   })
@@ -92,7 +94,6 @@ describe('Stammtisch and Chaos Mesh week-of-month are not swapped (regression)',
       weekday: WEDNESDAY,
       weekOfMonth: BERLIN_MESH_WEEK,
       startHourUtc: START_HOUR_UTC,
-      skipMonths: skippedBerlinMesh.skippedDates,
     })
     expect(next.toISOString()).toBe('2026-10-21T21:00:00.000Z')
   })
