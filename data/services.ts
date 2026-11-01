@@ -67,11 +67,11 @@ export type Service = {
  *
  * Every probe endpoint and tier below was measured directly: the seven original
  * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. Pretix's
- * tier is the exception: `SPEC.md` D50 sets it, and acceptance S4's maintenance
- * step measures the header it relies on. A tier is a property of the service's
- * CORS policy, not a preference: do not promote a service to `verified` without
- * confirming it sends an `Access-Control-Allow-Origin` that covers
- * `https://dod.ngo`.
+ * and Freescout's tiers are the exception: `SPEC.md` D50 and D52 set them, and
+ * acceptance S4's maintenance step measures the header each relies on. A tier
+ * is a property of the service's CORS policy, not a preference: do not promote
+ * a service to `verified` without confirming it sends an
+ * `Access-Control-Allow-Origin` that covers `https://dod.ngo`.
  *
  * Several entries are easy to get wrong, so each carries its reason inline.
  */
@@ -151,9 +151,13 @@ const services: Service[] = [
     repo: 'freescout-help-desk/freescout',
     img: '/static/images/services/freescout.png',
     // The root 302-redirects here; probing it directly measures the app, not
-    // the redirect.
+    // the redirect. FreeScout sends no CORS headers. Verified only because
+    // SPEC.md D52 has the nginx in front of it add Access-Control-Allow-Origin
+    // on this path, to its own 502 too. Without that header every probe
+    // rejects and reads No answer, as it does while the container is gone and
+    // Traefik answers for it.
     probeUrl: 'https://post.dod.ngo/login',
-    tier: 'opaque',
+    tier: 'verified',
     access: 'Invite only',
   },
   {

@@ -263,17 +263,18 @@ describe('the shipped registry', () => {
     }
   })
 
-  it('keeps the six verified and three opaque services of SPEC.md D11 and D50', () => {
+  it('keeps the seven verified and two opaque services of SPEC.md D11, D50 and D52', () => {
     const byTier = (tier: string) => services.filter((s) => s.tier === tier).map((s) => s.name)
     expect(byTier('verified')).toEqual([
       'Synapse',
       'Pretix',
       'Pretalx',
+      'Freescout',
       'Potato Mesh',
       'MeshINT',
       'DWeb Camp Mesh',
     ])
-    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element', 'Freescout'])
+    expect(byTier('opaque')).toEqual(['Cryptpad', 'Element'])
   })
 
   it('marks Cryptpad opaque despite it sending a CORS header', () => {
@@ -443,6 +444,41 @@ describe('a 5xx at tix or talx reads Down [regression 2026-10-31]', () => {
       const result = await probeService(service, stubOk(200).fetch)
       expect(result.status).toBe('operational')
     }
+  })
+})
+
+describe('a 5xx at post.dod.ngo reads Down [regression 2026-11-01]', () => {
+  // Shipped defect (SPEC.md K24): Freescout was probed in no-cors mode, so a
+  // 502 from the nginx in front of FreeScout read Reachable, because an opaque
+  // response resolves the same on 200 and on 502. SPEC.md D52 makes it
+  // verified and has that nginx add the header on post.dod.ngo/login, its own
+  // errors included (D50's map), so the probe runs in cors mode and reads the
+  // status code. Acceptance S4 measures the edge.
+
+  /** The registry's own entry, so the test follows the shipped tier. */
+  const freescout = (): Service => {
+    const service = services.find((s) => s.name === 'Freescout')
+    if (!service) throw new Error('Freescout is missing from the registry')
+    return service
+  }
+
+  it('probes Freescout in cors mode, so the status code is readable', async () => {
+    const stub = stubOk(200)
+    await probeService(freescout(), stub.fetch)
+    expect(stub.calls[0].mode).toBeUndefined()
+  })
+
+  it('reports Down with the status code on a 502, 503 or 504', async () => {
+    for (const code of [502, 503, 504]) {
+      const result = await probeService(freescout(), stubOk(code).fetch, 8000, fakeClock(140))
+      expect(result.status).toBe('down')
+      expect(describeEvidence(result)).toBe(`HTTP ${code} · 140 ms`)
+    }
+  })
+
+  it('reports a healthy answer as Operational', async () => {
+    const result = await probeService(freescout(), stubOk(200).fetch)
+    expect(result.status).toBe('operational')
   })
 })
 
