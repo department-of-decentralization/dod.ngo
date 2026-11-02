@@ -67,11 +67,13 @@ export type Service = {
  *
  * Every probe endpoint and tier below was measured directly: the seven original
  * services on 2026-09-23, MeshINT and DWeb Camp Mesh on 2026-09-24. Pretix's,
- * Freescout's and Cryptpad's tiers are the exception: `SPEC.md` D50 and D52 set
- * them, and acceptance S4's maintenance step measures the header each relies
- * on. A tier is a property of the service's CORS policy, not a preference: do
- * not promote a service to `verified` without confirming it sends an
- * `Access-Control-Allow-Origin` that covers `https://dod.ngo`.
+ * Freescout's, Cryptpad's and Element's tiers are the exception: `SPEC.md` D50
+ * and D52 set them, and acceptance S4's maintenance step measures the header
+ * each relies on. No service is `opaque` since D52; the tier and its probe stay
+ * for a service whose answers dod.ngo cannot read. A tier is a property of the
+ * service's CORS policy, not a preference: do not promote a service to
+ * `verified` without confirming it sends an `Access-Control-Allow-Origin` that
+ * covers `https://dod.ngo`.
  *
  * Several entries are easy to get wrong, so each carries its reason inline.
  */
@@ -100,8 +102,12 @@ const services: Service[] = [
     host: 'element.dod.ngo',
     repo: 'element-hq/element-web',
     img: '/static/images/services/element.png',
+    // Element's static files send no CORS headers. Verified only because
+    // SPEC.md D52 has its edge send Access-Control-Allow-Origin: * on this
+    // path, to Element's own errors too. While the container is gone, its
+    // proxy may answer for it without the header, and the row reads No answer.
     probeUrl: 'https://element.dod.ngo/version',
-    tier: 'opaque',
+    tier: 'verified',
     access: 'Public',
   },
   {
