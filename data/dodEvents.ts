@@ -17,6 +17,13 @@ interface Event {
 
 export const events: Event[] = [
   {
+    title: 'DoD at 40C3',
+    date: '2026-12-27',
+    endDate: '2026-12-30',
+    description:
+      'We will be present at 40C3 with an assembly in the c-base habitat.',
+  },
+  {
     title: 'Decent Code Collaboration Concepts after GitHub',
     date: '2026-10-05',
     description:
