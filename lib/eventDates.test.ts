@@ -28,6 +28,8 @@ import {
   berlinDay,
   groupByYear,
   isUpcoming,
+  meetupDate,
+  monthlyCadence,
   pastDate,
   sentenceCase,
   upcomingDate,
@@ -127,9 +129,38 @@ describe('an event shows its own day in every time zone [regression 2026-09-29]'
       ])
     })
   })
+
+  it("reads a meetup's occurrence in Berlin", () => {
+    // getNextMonthlyWeekdayDate returns 21:00 UTC on the Wednesday; east of
+    // UTC+3 that instant is already Thursday (SPEC.md K3).
+    inEveryZone((zone) => {
+      expect(meetupDate(new Date('2026-10-14T21:00:00Z')), zone).toEqual({
+        weekday: 'Wed',
+        day: 'Oct 14',
+      })
+    })
+  })
 })
 
 describe('the rows of /events', () => {
+  it("names a monthly meetup's cadence from its occurrence, of the month", () => {
+    expect(monthlyCadence(new Date('2026-10-07T21:00:00Z'))).toBe(
+      'every 1st Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-10-14T21:00:00Z'))).toBe(
+      'every 2nd Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-10-21T21:00:00Z'))).toBe(
+      'every 3rd Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-10-28T21:00:00Z'))).toBe(
+      'every 4th Wednesday of the month'
+    )
+    expect(monthlyCadence(new Date('2026-09-30T21:00:00Z'))).toBe(
+      'every 5th Wednesday of the month'
+    )
+  })
+
   it('starts a description with a capital letter', () => {
     expect(sentenceCase('an evening at c-base')).toBe('An evening at c-base')
     expect(sentenceCase('#39c3 assembly')).toBe('#39c3 assembly')
