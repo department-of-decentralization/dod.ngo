@@ -1,6 +1,5 @@
 import PageTitle from '@/components/PageTitle'
 import { genPageMetadata } from 'app/seo'
-import NextStammtisch from '../NextStammtisch'
 
 export const metadata = genPageMetadata({ title: 'Contact' })
 
@@ -9,36 +8,6 @@ export default function Contact() {
     <>
       <PageTitle>Contact</PageTitle>
       <div className="prose max-w-none pt-8 pb-8 dark:prose-invert">
-        <h2>Away from Keyboard</h2>
-        <p>
-          Our public, in-person <span className="font-medium">Stammtisch</span> happens every 2nd
-          Wednesday of the month at the{' '}
-          <a href="https://c-base.org/" target="_blank" rel="noreferrer">
-            c-base
-          </a>{' '}
-          in Berlin. A Stammtisch (also known as "regulars' table") is not a structured meeting or
-          meetup with talks, but simply a friendly get-together of like-minded people. Come by and
-          say hi!
-        </p>
-        <div>
-          <p>
-            Next Stammtisch: <NextStammtisch /> at 19:00 Berlin time.
-            <br />
-            Please check the{' '}
-            <a href="https://c-base.org/calendar/" target="_blank" rel="noreferrer">
-              c-base calendar
-            </a>{' '}
-            or our{' '}
-            <a
-              href="https://matrix.to/#/%23stammtisch:dod.ngo"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              [Matrix] space
-            </a>{' '}
-            if the meetup is happening!
-          </p>
-        </div>
         <h2>On the Internet</h2>
         <p>
           We are chatting on [Matrix]:{' '}
