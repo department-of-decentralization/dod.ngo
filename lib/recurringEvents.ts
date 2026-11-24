@@ -22,7 +22,7 @@ export function getNextMonthlyWeekdayDate({
   const currentYear = currentDate.getUTCFullYear()
   let nextDate = new Date()
   let nextMonth = 0
-  let shouldSkip = false
+  let shouldSkip: boolean
 
   do {
     nextDate = new Date(Date.UTC(currentYear, currentMonth + nextMonth, 1))
