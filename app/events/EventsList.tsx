@@ -2,18 +2,14 @@
 
 import type { ReactNode } from 'react'
 import { events } from '@/data/dodEvents'
-import skippedBerlinMesh from '@/data/skippedBerlinMesh'
 import {
   type UpcomingDate,
   groupByYear,
   isUpcoming,
-  meetupDate,
-  monthlyCadence,
   pastDate,
   sentenceCase,
   upcomingDate,
 } from '@/lib/eventDates'
-import { getNextMonthlyWeekdayDate } from '@/lib/recurringEvents'
 
 /** One entry of `data/dodEvents.ts`. */
 type EventEntry = (typeof events)[number]
@@ -94,73 +90,16 @@ function EventLink({ event }: { event: EventEntry }) {
 }
 
 /**
- * The events page's lists: what comes next, the meetups included, and every
- * past event by year (SPEC.md, Bugfix: Design Review, #11). Dates are read so
- * that no time zone moves them (`lib/eventDates.ts`, SPEC.md I1).
+ * The events page's lists: what comes next, and every past event by year
+ * (SPEC.md, Bugfix: Design Review, #11). Dates are read so that no time zone
+ * moves them (`lib/eventDates.ts`, SPEC.md I1).
  */
 export default function EventsList() {
   const now = new Date()
-  const upcomingEvents = events.filter((event) => isUpcoming(event, now))
+  const upcomingEvents = events
+    .filter((event) => isUpcoming(event, now))
+    .sort((a, b) => a.date.localeCompare(b.date))
   const pastEvents = events.filter((event) => !isUpcoming(event, now))
-
-  const nextBerlinMeshDate = getNextMonthlyWeekdayDate({
-    weekday: 3,
-    weekOfMonth: 3,
-    startHourUtc: 21,
-    skipMonths: skippedBerlinMesh.skippedDates,
-  })
-
-  const cbase = (
-    <a href="https://c-base.org" target="_blank" rel="noopener noreferrer" className={LINK}>
-      c-base
-    </a>
-  )
-
-  const upcomingItems: { key: string; date: Date; row: ReactNode }[] = [
-    ...upcomingEvents.map((event) => ({
-      key: `${event.title}-${event.date}`,
-      date: new Date(`${event.date}T00:00:00Z`),
-      row: (
-        <>
-          <UpcomingDateColumn date={upcomingDate(event)} />
-          <div>
-            <div data-title className={TITLE}>
-              {event.title}
-            </div>
-            <div data-description className={DESCRIPTION}>
-              {describe(event)}
-            </div>
-            <EventLink event={event} />
-          </div>
-        </>
-      ),
-    })),
-    {
-      key: 'berlin-mesh',
-      date: nextBerlinMeshDate,
-      row: (
-        <>
-          <UpcomingDateColumn date={meetupDate(nextBerlinMeshDate)} />
-          <div>
-            <div data-title className={TITLE}>
-              <a
-                href="https://chaosmesh.net/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-butter-600 underline-offset-[3px] hover:text-primary-700 dark:decoration-gray-600 dark:hover:text-primary-300"
-              >
-                Berlin Chaos Mesh
-              </a>
-            </div>
-            <div data-description className={DESCRIPTION}>
-              Meshtastic/Meshcore/Reticulum meetup at {cbase}, 19:00 Berlin time ·{' '}
-              {monthlyCadence(nextBerlinMeshDate)}
-            </div>
-          </div>
-        </>
-      ),
-    },
-  ].sort((a, b) => a.date.getTime() - b.date.getTime())
 
   return (
     <div className="pt-8 pb-8">
@@ -168,13 +107,28 @@ export default function EventsList() {
         <h2 className="border-b border-butter-600 pb-3 text-2xl leading-8 font-bold tracking-tight text-gray-900 dark:border-gray-700 dark:text-gray-100">
           Upcoming
         </h2>
-        <ul>
-          {upcomingItems.map((item) => (
-            <li key={item.key} className={ROW}>
-              {item.row}
-            </li>
-          ))}
-        </ul>
+        {upcomingEvents.length === 0 ? (
+          <p className="border-b border-butter-600 py-4 text-base leading-6 text-gray-700 dark:border-gray-700 dark:text-gray-300">
+            No upcoming events.
+          </p>
+        ) : (
+          <ul>
+            {upcomingEvents.map((event) => (
+              <li key={`${event.title}-${event.date}`} className={ROW}>
+                <UpcomingDateColumn date={upcomingDate(event)} />
+                <div>
+                  <div data-title className={TITLE}>
+                    {event.title}
+                  </div>
+                  <div data-description className={DESCRIPTION}>
+                    {describe(event)}
+                  </div>
+                  <EventLink event={event} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
       <section className="mt-12 max-w-[52rem]">
         <h2 className="text-2xl leading-8 font-bold tracking-tight text-gray-900 dark:text-gray-100">

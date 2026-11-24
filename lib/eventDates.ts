@@ -26,16 +26,12 @@
 /**
  * Dates on `/events` (SPEC.md, Bugfix: Design Review, #11).
  *
- * Two kinds of date reach the page, and each is read in the one way that
- * cannot drift with the visitor's time zone (`SPEC.md` I1, K1, K2):
- *
- * - An event's `date` and `endDate` are calendar days (`2026-10-05`). They are
- *   read as that day, whatever the zone: parsed and formatted in UTC.
- * - A meetup's next occurrence is an instant (`getNextMonthlyWeekdayDate`
- *   returns 21:00 UTC). It is read in Berlin, where the meetup happens.
+ * An event's `date` and `endDate` are calendar days (`2026-10-05`). They are
+ * read as that day, whatever the zone: parsed and formatted in UTC, so they
+ * cannot drift with the visitor's time zone (`SPEC.md` I1, K1, K2).
  */
 
-/** The zone the meetups happen in. */
+/** The zone the events happen in: an event ends at midnight in Berlin. */
 const BERLIN = 'Europe/Berlin'
 
 /** The fields of a `data/dodEvents.ts` entry the dates are read from. */
@@ -143,19 +139,6 @@ export function upcomingDate(event: Pick<EventDay, 'date' | 'endDate'>): Upcomin
 }
 
 /**
- * The date of a meetup's next occurrence, read in Berlin.
- *
- * @param instant - The occurrence, as `getNextMonthlyWeekdayDate` returns it.
- * @returns For example `{ weekday: 'Wed', day: 'Oct 14' }`.
- */
-export function meetupDate(instant: Date): UpcomingDate {
-  return {
-    weekday: part(instant, BERLIN, { weekday: 'short' }),
-    day: `${part(instant, BERLIN, { month: 'short' })} ${part(instant, BERLIN, { day: 'numeric' })}`,
-  }
-}
-
-/**
  * The date of a past event, as precise as the data is: its days, the month
  * alone when the day is not known, nothing when only the year is (its year
  * group shows the year).
@@ -185,21 +168,6 @@ export function groupByYear<T extends Pick<EventDay, 'date'>>(
     groups.set(year, [...(groups.get(year) ?? []), event])
   }
   return [...groups].map(([year, list]) => ({ year, events: list }))
-}
-
-/**
- * How often a monthly meetup happens, read from one of its occurrences: the
- * occurrence's weekday and which of the month's weekdays it is, in Berlin.
- * Deriving it from the date keeps the schedule defined once (`SPEC.md` I2).
- *
- * @param instant - An occurrence of the meetup.
- * @returns For example `every 2nd Wednesday of the month`: "every 2nd
- *   Wednesday" alone reads as every other week.
- */
-export function monthlyCadence(instant: Date): string {
-  const nth = Math.ceil(Number(part(instant, BERLIN, { day: 'numeric' })) / 7)
-  const suffix = ['st', 'nd', 'rd'][nth - 1] ?? 'th'
-  return `every ${nth}${suffix} ${part(instant, BERLIN, { weekday: 'long' })} of the month`
 }
 
 /**
