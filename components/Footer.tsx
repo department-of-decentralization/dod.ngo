@@ -44,8 +44,8 @@ export default function Footer() {
                     const hotkeyChar = link.hotkey
                     const title = link.title
                     let beforeChar = '' // Text before the bracketed char
-                    let char = '' // Character to be bracketed
-                    let afterChar = '' // Text after the bracketed char
+                    let char: string // Character to be bracketed
+                    let afterChar: string // Text after the bracketed char
 
                     // If hotkey exists and is found in title (case insensitive)
                     if (hotkeyChar && title.toLowerCase().includes(hotkeyChar.toLowerCase())) {

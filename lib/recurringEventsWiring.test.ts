@@ -20,13 +20,11 @@ import { describe, expect, it } from 'vitest'
  * into one constant per series.
  */
 
-/** Schedule of record: SPEC D1/D2, ACCEPTANCE A1. Both series meet Wednesday. */
+/** Schedule of record: SPEC D1/D2, ACCEPTANCE A1. The series meets Wednesday. */
 const WEDNESDAY = '3'
-const STAMMTISCH_WEEK = '2'
 const BERLIN_MESH_WEEK = '3'
 
 /** Skip lists belong to the series, not the slot (SPEC 4.3, ACCEPTANCE A4). */
-const STAMMTISCH_DATA = '@/data/skippedStammtisch'
 const BERLIN_MESH_DATA = '@/data/skippedBerlinMesh'
 
 /** Reads a repository file as UTF-8 text, relative to the repository root. */
@@ -83,36 +81,12 @@ function expectSeriesWiring(
   expect(importedFrom(source, skipIdentifier), 'skip list').toBe(expected.data)
 }
 
-describe('recurring series are wired to the right week of month (regression)', () => {
-  it('app/NextStammtisch.tsx uses the 2nd Wednesday and the Stammtisch skip list', () => {
-    expectSeriesWiring(readSource('app/NextStammtisch.tsx'), 'getNextMonthlyWeekdayDate({', {
-      weekOfMonth: STAMMTISCH_WEEK,
-      data: STAMMTISCH_DATA,
-    })
-  })
-
-  it('app/events/EventsList.tsx wires both series, the Chaos Mesh only there (SPEC.md D49)', () => {
-    const source = readSource('app/events/EventsList.tsx')
-
-    expectSeriesWiring(source, 'const nextStammtischDate = getNextMonthlyWeekdayDate({', {
-      weekOfMonth: STAMMTISCH_WEEK,
-      data: STAMMTISCH_DATA,
-    })
-    expectSeriesWiring(source, 'const nextBerlinMeshDate = getNextMonthlyWeekdayDate({', {
-      weekOfMonth: BERLIN_MESH_WEEK,
-      data: BERLIN_MESH_DATA,
-    })
-  })
-})
-
-describe('prose agrees with the schedule (regression)', () => {
-  it('app/contact/page.tsx announces the Stammtisch as the 2nd Wednesday', () => {
-    // JSX wraps the sentence across lines, so collapse whitespace before matching.
-    const source = readSource('app/contact/page.tsx').replace(/\s+/g, ' ')
-    const matches = [...source.matchAll(/happens every (\d)(?:st|nd|rd|th) Wednesday/g)]
-
-    // Exactly one claim, so a second contradictory sentence cannot hide behind it.
-    expect(matches, 'Stammtisch schedule sentence').toHaveLength(1)
-    expect(matches[0][1]).toBe(STAMMTISCH_WEEK)
+describe('the recurring series is wired to the right week of month (regression)', () => {
+  it('app/events/EventsList.tsx wires the Chaos Mesh to the 3rd Wednesday (SPEC.md D49)', () => {
+    expectSeriesWiring(
+      readSource('app/events/EventsList.tsx'),
+      'const nextBerlinMeshDate = getNextMonthlyWeekdayDate({',
+      { weekOfMonth: BERLIN_MESH_WEEK, data: BERLIN_MESH_DATA }
+    )
   })
 })

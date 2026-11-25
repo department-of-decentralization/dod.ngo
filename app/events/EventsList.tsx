@@ -3,7 +3,6 @@
 import type { ReactNode } from 'react'
 import { events } from '@/data/dodEvents'
 import skippedBerlinMesh from '@/data/skippedBerlinMesh'
-import skippedDates from '@/data/skippedStammtisch'
 import {
   type UpcomingDate,
   groupByYear,
@@ -104,13 +103,6 @@ export default function EventsList() {
   const upcomingEvents = events.filter((event) => isUpcoming(event, now))
   const pastEvents = events.filter((event) => !isUpcoming(event, now))
 
-  const nextStammtischDate = getNextMonthlyWeekdayDate({
-    weekday: 3,
-    weekOfMonth: 2,
-    startHourUtc: 21,
-    skipMonths: skippedDates.skippedDates,
-  })
-
   const nextBerlinMeshDate = getNextMonthlyWeekdayDate({
     weekday: 3,
     weekOfMonth: 3,
@@ -143,23 +135,6 @@ export default function EventsList() {
         </>
       ),
     })),
-    {
-      key: 'stammtisch',
-      date: nextStammtischDate,
-      row: (
-        <>
-          <UpcomingDateColumn date={meetupDate(nextStammtischDate)} />
-          <div>
-            <div data-title className={TITLE}>
-              DoD Stammtisch
-            </div>
-            <div data-description className={DESCRIPTION}>
-              Informal meetup at {cbase}, 19:00 Berlin time · {monthlyCadence(nextStammtischDate)}
-            </div>
-          </div>
-        </>
-      ),
-    },
     {
       key: 'berlin-mesh',
       date: nextBerlinMeshDate,
