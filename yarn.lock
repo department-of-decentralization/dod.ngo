@@ -8394,9 +8394,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^17.6.1":
-  version: 17.6.1
-  resolution: "lint-staged@npm:17.6.1"
+"lint-staged@npm:^17.6.2":
+  version: 17.6.2
+  resolution: "lint-staged@npm:17.6.2"
   dependencies:
     picomatch: "npm:^4.0.7"
     string-argv: "npm:^0.4.0"
@@ -8407,7 +8407,7 @@ __metadata:
       optional: true
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 10/d449ca6c269e058feb796dd629dbe4393254f56d05d95101edd6baa4519d3cf098f3f9bb628eff15819f64fa76a0dbf8829218bfb2d4199b1089d8fb28e0247c
+  checksum: 10/51e75c0d1dadefd0a4769c9057acfe593e484d7c52e885a825e0aef298fa15d466b81ff1da0a20711bc8f5d282e7e5f14281c0d4790e3ec5b60a6c1e7df41bcc
   languageName: node
   linkType: hard
 
@@ -10979,12 +10979,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-github-blockquote-alert@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "remark-github-blockquote-alert@npm:2.1.0"
+"remark-github-blockquote-alert@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "remark-github-blockquote-alert@npm:2.1.1"
   dependencies:
     unist-util-visit: "npm:^5.0.0"
-  checksum: 10/9c4591363f001eceb754a66c15dbfdbcabc0ef8121cfaef10734d3f176d7beed0f1e1304b7fc13ffdc9edd5c2e48cb29a7863f6deb8cbde179923c409b7f982c
+  checksum: 10/67437143ed10aeb74fc618f98a9c435160136e4baa8e89cbbfc7d4db9fe9f8c65b45502b2f9df77581ecbb3236a016c73d8e52cf31bf8f2024d49f36f9ce288e
   languageName: node
   linkType: hard
 
@@ -11924,7 +11924,7 @@ __metadata:
     gray-matter: "npm:^4.0.2"
     hast-util-from-html-isomorphic: "npm:^2.0.0"
     husky: "npm:^9.0.0"
-    lint-staged: "npm:^17.6.1"
+    lint-staged: "npm:^17.6.2"
     next: "npm:16.4.6"
     next-contentlayer2: "npm:0.5.8"
     next-themes: "npm:^0.4.6"
@@ -11943,7 +11943,7 @@ __metadata:
     rehype-slug: "npm:^6.0.0"
     remark: "npm:^15.0.0"
     remark-gfm: "npm:^4.0.0"
-    remark-github-blockquote-alert: "npm:^2.1.0"
+    remark-github-blockquote-alert: "npm:^2.1.1"
     remark-math: "npm:^6.0.0"
     tailwindcss: "npm:^4.3.5"
     typescript: "npm:^6.0.3"
